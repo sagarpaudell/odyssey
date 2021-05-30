@@ -1,74 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:odyssey/pages/register_page.dart';
+import './login_page.dart';
 
-class LoginPage extends StatelessWidget {
-  static const routeName = '/login_page';
+class RegisterPage extends StatelessWidget {
+  static const routeName = '/register';
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _userNameController = TextEditingController();
   final _passController = TextEditingController();
+
+  Widget inputTextAreaWidget(String labelText, Function tapFunction) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: 15,
+        vertical: 15,
+      ),
+      padding: EdgeInsets.all(10),
+      child: TextField(
+        decoration: InputDecoration(
+            labelText: labelText,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 20,
+            )),
+        controller: _passController,
+        onSubmitted: (_) => {tapFunction},
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Login',
-          style: Theme.of(context).textTheme.headline6,
+          'Register',
         ),
       ),
       body: Column(
         children: [
           Container(
-            height: 200,
+            margin: EdgeInsets.only(top: 30),
+            height: 80,
+            alignment: Alignment.center,
             child: Image.asset(
               './assets/images/logo.png',
               fit: BoxFit.cover,
             ),
           ),
-          Column(
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(
-                  horizontal: 15,
-                ),
-                padding: EdgeInsets.all(10),
-                child: TextField(
-                  decoration:
-                      InputDecoration(labelText: 'Email or Phone Number'),
-                  controller: _userNameController,
-                  onSubmitted: (_) {},
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(
-                  horizontal: 15,
-                ),
-                padding: EdgeInsets.all(10),
-                child: TextField(
-                  decoration: InputDecoration(
-                      labelText: 'Password',
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 20,
-                      )),
-                  controller: _passController,
-                  onSubmitted: (_) => {},
-                ),
-              ),
-            ],
+          inputTextAreaWidget(
+            'E-mail',
+            () {},
           ),
-          TextButton(
-            onPressed: () {},
-            child: Text(
-              'Forgot Password',
-            ),
+          inputTextAreaWidget(
+            'Phone',
+            () {},
           ),
-          SizedBox(
-            height: 5,
+          inputTextAreaWidget(
+            'Username',
+            () {},
+          ),
+          inputTextAreaWidget(
+            'Password',
+            () {},
           ),
           ElevatedButton(
             onPressed: () {},
             child: Text(
-              'Login',
+              'Sign Up',
             ),
           ),
           Stack(
@@ -107,15 +104,15 @@ class LoginPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Don\'t have an account? '),
+              Text('Already have an account? '),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pushNamed(
-                    RegisterPage.routeName,
+                    LoginPage.routeName,
                   );
                 },
                 child: Text(
-                  'Sign Up!',
+                  'Log In',
                 ),
               ),
             ],

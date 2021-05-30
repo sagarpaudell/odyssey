@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './pages/splash_page.dart';
+import './pages/register_page.dart';
 import './pages/login_page.dart';
 
 void main() {
@@ -33,6 +33,7 @@ class _MyAppState extends State<MyApp> {
       home: MyHomePage(),
       routes: {
         LoginPage.routeName: (ctx) => LoginPage(),
+        RegisterPage.routeName: (ctx) => RegisterPage(),
       },
     );
   }
