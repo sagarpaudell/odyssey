@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import './pages/register_page.dart';
-import './pages/login_page.dart';
+import './pages/auth_page.dart';
 
 void main() {
   runApp(
@@ -32,8 +31,7 @@ class _MyAppState extends State<MyApp> {
       ),
       home: MyHomePage(),
       routes: {
-        LoginPage.routeName: (ctx) => LoginPage(),
-        RegisterPage.routeName: (ctx) => RegisterPage(),
+        AuthPage.routeName: (ctx) => AuthPage(),
       },
     );
   }
@@ -56,7 +54,7 @@ class MyHomePage extends StatelessWidget {
           ),
           TextButton(
               onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (ctx) => LoginPage())),
+                  .push(MaterialPageRoute(builder: (ctx) => AuthPage())),
               child: Text(
                 'Login',
               ))
