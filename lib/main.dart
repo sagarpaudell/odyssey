@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import './pages/auth_page.dart';
+import 'package:provider/provider.dart';
+import './providers/auth.dart';
 
 void main() {
   runApp(
@@ -16,23 +18,30 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Odyssey',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-        accentColor: Colors.amber,
-        fontFamily: 'Montserrat',
-        textTheme: ThemeData.light().textTheme.copyWith(
-              headline6: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Mulish'),
-            ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (ctx) => Auth(),
+        )
+      ],
+      child: MaterialApp(
+        title: 'Odyssey',
+        theme: ThemeData(
+          primarySwatch: Colors.purple,
+          accentColor: Colors.amber,
+          fontFamily: 'Montserrat',
+          textTheme: ThemeData.light().textTheme.copyWith(
+                headline6: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Mulish'),
+              ),
+        ),
+        home: MyHomePage(),
+        routes: {
+          AuthPage.routeName: (ctx) => AuthPage(),
+        },
       ),
-      home: MyHomePage(),
-      routes: {
-        AuthPage.routeName: (ctx) => AuthPage(),
-      },
     );
   }
 }

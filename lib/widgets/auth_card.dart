@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../providers/auth.dart';
+import 'package:provider/provider.dart';
+import '../models/http_exception.dart';
 
 enum AuthMode {
   Signup,
@@ -30,7 +33,7 @@ class _AuthCardState extends State<AuthCard> {
   Map<String, String> _authData = {
     'email': '',
     'phone': '',
-    'username': '',
+    'userName': '',
     'password': '',
   };
   void _switchAuthMode() {
@@ -45,21 +48,40 @@ class _AuthCardState extends State<AuthCard> {
     }
   }
 
+  void _showErrorDialog(String errorText) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text('Oops! An error occured'),
+              content: Text(
+                errorText,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: Text(
+                    'Okay',
+                  ),
+                )
+              ],
+            ));
+  }
+
   @override
   void initState() {
     super.initState();
   }
 
-  // @override
-  // void dispose() {
-  //   final _phoneFocusNode.dispose();
-  //   final _userNameFocusNode.dispose();
-  //   final _passFocusNode.dispose();
-  //   final _confirmPassFocusNode.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _phoneFocusNode.dispose();
+    _userNameFocusNode.dispose();
+    _passFocusNode.dispose();
+    _confirmPassFocusNode.dispose();
+    super.dispose();
+  }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -68,10 +90,39 @@ class _AuthCardState extends State<AuthCard> {
     setState(() {
       _isLoading = true;
     });
-    if (_authMode == AuthMode.Login) {
-      // Log user in
-    } else {
-      // Sign user up
+    try {
+      if (_authMode == AuthMode.Login) {
+        // Log user in
+        await Provider.of<Auth>(context, listen: false).login(
+          _authData['email'],
+          _authData['password'],
+        );
+      } else {
+        // Sign user up
+        await Provider.of<Auth>(context, listen: false).signup(
+            _authData['email'],
+            _authData['phone'],
+            _authData['userName'],
+            _authData['password']);
+      }
+    } on HttpException catch (error) {
+      var errorMessage = 'Authentication failed';
+      if (error.toString().contains('EMAIL_EXISTS')) {
+        errorMessage = 'This email address is already in use.';
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        errorMessage = 'This is not a valid email address';
+      } else if (error.toString().contains('WEAK_PASSWORD')) {
+        errorMessage = 'This password is too weak.';
+      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+        errorMessage = 'Could not find a user with that email.';
+      } else if (error.toString().contains('INVALID_PASSWORD')) {
+        errorMessage = 'Invalid password.';
+      }
+      _showErrorDialog(errorMessage);
+    } catch (error) {
+      const errorMessage =
+          'Could not authenticate you. Please try again later.';
+      _showErrorDialog(errorMessage);
     }
     setState(() {
       _isLoading = false;
@@ -163,7 +214,7 @@ class _AuthCardState extends State<AuthCard> {
                                   return null;
                                 },
                                 onSaved: (value) {
-                                  _authData['username'] = value;
+                                  _authData['userName'] = value;
                                 },
                               ),
                               TextFormField(
@@ -249,7 +300,6 @@ class _AuthCardState extends State<AuthCard> {
                               ],
                             ),
                           ),
-                    //login form,
                     ElevatedButton(
                       onPressed: () {
                         _saveForm();
