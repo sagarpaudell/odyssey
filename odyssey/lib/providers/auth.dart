@@ -9,25 +9,28 @@ class Auth with ChangeNotifier {
   String _userId;
   DateTime _expiryDate;
 
-  Future<void> _authenticate(String email, String password) async {
-    const url = ''; //...
-    final response = await http.post(
-      url,
-      body: json.encode(
-        {
-          'email': email,
-          'password': password,
-        },
-      ),
-    );
-  }
+  // Future<void> _authenticate(String email, String password) async {
+  //   const url = ''; //...
+  //   final response = await http.post(
+  //     url,
+  //     body: json.encode(
+  //       {
+  //         'email': email,
+  //         'password': password,
+  //       },
+  //     ),
+  //   );
+  // }
 
   Future<void> signup(
       String email, String phone, String userName, String password) async {
-    const url = ''; //...
+    const _url = 'http://localhost:9000/accounts-api/user/';
     try {
       final response = await http.post(
-        url,
+        Uri.parse(_url),
+        headers: <String, String>{
+          'Authorization': 'TOKEN; 6afedf61ba291a48c0ecb54e793b7b83b0e79c0c'
+        },
         body: json.encode(
           {
             'email': email,
@@ -47,10 +50,10 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> login(String email, String password) async {
-    const url = ''; //...
+    const url = 'https://localhost:8000/accounts-api/get-auth-token/ '; //...
     try {
       final response = await http.post(
-        url,
+        Uri.parse(url),
         body: json.encode(
           {
             'email': email,
@@ -59,6 +62,7 @@ class Auth with ChangeNotifier {
         ),
       );
       final responseData = json.decode(response.body);
+      print(responseData);
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
       }
