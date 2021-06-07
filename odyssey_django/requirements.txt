@@ -45,3 +45,4 @@ traitlets==5.0.5
 urllib3==1.26.5
 wcwidth==0.2.5
 wrapt==1.12.1
+Pillow==8.2.0
