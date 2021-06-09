@@ -9,4 +9,5 @@ urlpatterns = [
         path('user/', UserRecordView.as_view(), name='user'),
         # make post request to api-get-auth to get the token of the user
         path('get-auth-token/', views.obtain_auth_token, name='api-token-auth'),
+        path('get-auth-token/<int:pk>/',views.obtain_auth_token, name='api-token-auth'),
     ]

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:odyssey/pages/auth_page.dart';
 import './pages/auth_page.dart';
 import 'package:provider/provider.dart';
 import './providers/auth.dart';
+import './pages/feeds_page.dart';
 
 void main() {
   runApp(
@@ -24,23 +26,26 @@ class _MyAppState extends State<MyApp> {
           create: (ctx) => Auth(),
         )
       ],
-      child: MaterialApp(
-        title: 'Odyssey',
-        theme: ThemeData(
-          primarySwatch: Colors.purple,
-          accentColor: Colors.amber,
-          fontFamily: 'Montserrat',
-          textTheme: ThemeData.light().textTheme.copyWith(
-                headline6: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Mulish'),
-              ),
+      child: Consumer<Auth>(
+        builder: (ctx, auth, _) => MaterialApp(
+          title: 'Odyssey',
+          theme: ThemeData(
+            primarySwatch: Colors.purple,
+            accentColor: Colors.amber,
+            fontFamily: 'Montserrat',
+            textTheme: ThemeData.light().textTheme.copyWith(
+                  headline6: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Mulish'),
+                ),
+          ),
+          home: auth.isAuth ? FeedsPage() : AuthPage(),
+          routes: {
+            AuthPage.routeName: (ctx) => AuthPage(),
+            FeedsPage.routeName: (ctx) => FeedsPage(),
+          },
         ),
-        home: MyHomePage(),
-        routes: {
-          AuthPage.routeName: (ctx) => AuthPage(),
-        },
       ),
     );
   }
@@ -48,6 +53,9 @@ class _MyAppState extends State<MyApp> {
 
 class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
+    // Provider.of<Auth>(context, listen: false)
+    //     .getToken(username: 'dhgrfwhe', password: 'password');
+    //     .signup('dhbsdrrh@mail.com', '3324237423', 'dhgrfwhe', 'password');
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(
@@ -62,6 +70,7 @@ class MyHomePage extends StatelessWidget {
             ),
           ),
           TextButton(
+              //onPressed: () {},
               onPressed: () => Navigator.of(context)
                   .push(MaterialPageRoute(builder: (ctx) => AuthPage())),
               child: Text(
