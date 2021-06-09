@@ -12,7 +12,7 @@ class TravellerView(APIView):
         try:
             return Traveller.objects.get(id=id)
         except Traveller.DoesNotExist:
-            return Response(status=status.HTTP_404_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, id):
         traveller = self.get_object(id)
@@ -20,7 +20,7 @@ class TravellerView(APIView):
         return Response(serializer.data)
 
     def put(self, request , id):
-        traveller = self.get_object(id) 
+        traveller = self.get_object(id)
         serializer = TravellerSerializer(traveller, data=request.data)
         if serializer.is_valid():
             serializer.save()
