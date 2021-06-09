@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:odyssey/pages/auth_page.dart';
+import '../pages/feeds_page.dart';
 import '../providers/auth.dart';
 import 'package:provider/provider.dart';
 import '../models/http_exception.dart';
@@ -21,7 +23,7 @@ class _AuthCardState extends State<AuthCard> {
   // final _userNameController = TextEditingController();
 
   // final _passController = TextEditingController();
-  final _form = GlobalKey<FormState>();
+  final GlobalKey<FormState> _form = GlobalKey();
   final _phoneFocusNode = FocusNode();
   final _userNameFocusNode = FocusNode();
   final _passFocusNode = FocusNode();
@@ -68,11 +70,6 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     _phoneFocusNode.dispose();
     _userNameFocusNode.dispose();
@@ -81,20 +78,23 @@ class _AuthCardState extends State<AuthCard> {
     super.dispose();
   }
 
+  //_saveForm() {}
   Future<void> _saveForm() async {
     final isValid = _form.currentState.validate();
     if (!isValid) {
+      print('invalid');
       return;
     }
     _form.currentState.save();
     setState(() {
       _isLoading = true;
+      //print('$_isLoading form saved');
     });
     try {
       if (_authMode == AuthMode.Login) {
         // Log user in
         await Provider.of<Auth>(context, listen: false).login(
-          _authData['email'],
+          _authData['userName'],
           _authData['password'],
         );
       } else {
@@ -104,26 +104,40 @@ class _AuthCardState extends State<AuthCard> {
             _authData['phone'],
             _authData['userName'],
             _authData['password']);
+        Navigator.of(context).popAndPushNamed(AuthPage.routeName);
       }
     } on HttpException catch (error) {
-      var errorMessage = 'Authentication failed';
-      if (error.toString().contains('EMAIL_EXISTS')) {
-        errorMessage = 'This email address is already in use.';
-      } else if (error.toString().contains('INVALID_EMAIL')) {
-        errorMessage = 'This is not a valid email address';
-      } else if (error.toString().contains('WEAK_PASSWORD')) {
-        errorMessage = 'This password is too weak.';
-      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
-        errorMessage = 'Could not find a user with that email.';
-      } else if (error.toString().contains('INVALID_PASSWORD')) {
-        errorMessage = 'Invalid password.';
+      var errorMessage = error.toString();
+      print(errorMessage);
+      if (error.toString().contains('email')) {
+        errorMessage = 'Enter a valid email address.';
+      } else if (error.toString().contains('username')) {
+        errorMessage = 'A user with that username already exists.';
       }
       _showErrorDialog(errorMessage);
-    } catch (error) {
+    }
+    // } on HttpException catch (error) {
+    //   var errorMessage = 'Authentication failed';
+    //   if (error.toString().contains('EMAIL_EXISTS')) {
+    //     errorMessage = 'This email address is already in use.';
+    //   } else if (error.toString().contains('INVALID_EMAIL')) {
+    //     errorMessage = 'This is not a valid email address';
+    //   } else if (error.toString().contains('WEAK_PASSWORD')) {
+    //     errorMessage = 'This password is too weak.';
+    //   } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+    //     errorMessage = 'Could not find a user with that email.';
+    //   } else if (error.toString().contains('INVALID_PASSWORD')) {
+    //     errorMessage = 'Invalid password.';
+    //   }
+    //   _showErrorDialog(errorMessage);
+    catch (error) {
       const errorMessage =
           'Could not authenticate you. Please try again later.';
       _showErrorDialog(errorMessage);
     }
+
+    // print('logged in');
+    //_showErrorDialog('Logged in Succesfully');
     setState(() {
       _isLoading = false;
     });
@@ -133,232 +147,229 @@ class _AuthCardState extends State<AuthCard> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
 
-    return _isLoading
-        ? CircularProgressIndicator()
-        : SingleChildScrollView(
-            child: Form(
-              key: _form,
-              child: Container(
-                height: deviceSize.height,
-                child: Column(
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Form(
+          key: _form,
+          child: Container(
+            height: deviceSize.height,
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 30),
+                  height: _authMode == AuthMode.Signup ? 80 : 200,
+                  alignment: Alignment.center,
+                  child: Image.asset(
+                    './assets/images/logo.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                _authMode == AuthMode.Signup
+                    ? Container(
+                        height: (deviceSize.height - 80) * 0.6,
+                        padding: EdgeInsets.all(20),
+                        child: ListView(children: [
+                          TextFormField(
+                            decoration: InputDecoration(labelText: 'E-mail'),
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (_) {
+                              FocusScope.of(context)
+                                  .requestFocus(_phoneFocusNode);
+                            },
+                            validator: (value) {
+                              // if (value.isEmpty || !value.contains('@')) {
+                              //   return 'Invalid email!';
+                              // }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _authData['email'] = value;
+                            },
+                          ),
+                          TextFormField(
+                            decoration: InputDecoration(labelText: 'Phone'),
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.number,
+                            focusNode: _phoneFocusNode,
+                            onFieldSubmitted: (_) => FocusScope.of(context)
+                                .requestFocus(_userNameFocusNode),
+                            validator: (value) {
+                              if (value.isEmpty || value.length < 7) {
+                                return 'Number too short';
+                              }
+                              if (double.tryParse(value) == null) {
+                                return 'Please enter a valid number.';
+                              }
+                              if (double.parse(value) <= 0) {
+                                return 'Please enter a number greater than zero.';
+                              }
+
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _authData['phone'] = value;
+                            },
+                          ),
+                          TextFormField(
+                            decoration: InputDecoration(labelText: 'UserName'),
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.text,
+                            focusNode: _userNameFocusNode,
+                            onFieldSubmitted: (_) => FocusScope.of(context)
+                                .requestFocus(_passFocusNode),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please Provide a value';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _authData['userName'] = value;
+                            },
+                          ),
+                          TextFormField(
+                            decoration: InputDecoration(labelText: 'Password'),
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.number,
+                            obscureText: true,
+                            controller: _passwordController,
+                            focusNode: _passFocusNode,
+                            onFieldSubmitted: (_) => FocusScope.of(context)
+                                .requestFocus(_confirmPassFocusNode),
+                            validator: (value) {
+                              if (value.isEmpty || value.length < 6) {
+                                return 'Please Provide a value greater than 6 characters';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _authData['password'] = value;
+                            },
+                          ),
+                          TextFormField(
+                            decoration:
+                                InputDecoration(labelText: 'Confirm Password'),
+                            textInputAction: TextInputAction.done,
+                            obscureText: true,
+                            focusNode: _confirmPassFocusNode,
+                            validator: (value) {
+                              if (value != _passwordController.text) {
+                                return 'Passwords do not match!';
+                              }
+
+                              return null;
+                            },
+                            // onSaved: (_) {
+                            //   _saveForm();
+                            // },
+                          ),
+                        ]),
+                      )
+                    : Container(
+                        height: (deviceSize.height - 80) * 0.4,
+                        padding: EdgeInsets.all(20),
+                        child: ListView(
+                          children: [
+                            TextFormField(
+                              decoration:
+                                  InputDecoration(labelText: 'Username'),
+                              keyboardType: TextInputType.text,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(_confirmPassFocusNode);
+                              },
+                              validator: (value) {
+                                // if (value.isEmpty || !value.contains('@')) {
+                                //   return 'Invalid email!';
+                                // }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _authData['userName'] = value;
+                              },
+                            ),
+                            TextFormField(
+                              decoration:
+                                  InputDecoration(labelText: 'Password'),
+                              textInputAction: TextInputAction.done,
+                              obscureText: true,
+                              focusNode: _confirmPassFocusNode,
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Passwords is empty';
+                                }
+
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _authData['password'] = value;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: _saveForm,
+                        child: Text(
+                          _authMode == AuthMode.Signup ? 'Sign Up' : 'Login',
+                        ),
+                      ),
+                Stack(
+                  alignment: Alignment.center,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(top: 30),
-                      height: _authMode == AuthMode.Signup ? 80 : 200,
-                      alignment: Alignment.center,
-                      child: Image.asset(
-                        './assets/images/logo.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    _authMode == AuthMode.Signup
-                        ? Container(
-                            height: (deviceSize.height - 80) * 0.6,
-                            padding: EdgeInsets.all(20),
-                            child: ListView(children: [
-                              TextFormField(
-                                decoration:
-                                    InputDecoration(labelText: 'E-mail'),
-                                keyboardType: TextInputType.emailAddress,
-                                textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (_) {
-                                  FocusScope.of(context)
-                                      .requestFocus(_phoneFocusNode);
-                                },
-                                validator: (value) {
-                                  if (value.isEmpty || !value.contains('@')) {
-                                    return 'Invalid email!';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (value) {
-                                  _authData['email'] = value;
-                                },
-                              ),
-                              TextFormField(
-                                decoration: InputDecoration(labelText: 'Phone'),
-                                textInputAction: TextInputAction.next,
-                                keyboardType: TextInputType.number,
-                                focusNode: _phoneFocusNode,
-                                onFieldSubmitted: (_) => FocusScope.of(context)
-                                    .requestFocus(_userNameFocusNode),
-                                validator: (value) {
-                                  if (value.isEmpty || value.length < 7) {
-                                    return 'Number too short';
-                                  }
-                                  if (double.tryParse(value) == null) {
-                                    return 'Please enter a valid number.';
-                                  }
-                                  if (double.parse(value) <= 0) {
-                                    return 'Please enter a number greater than zero.';
-                                  }
-
-                                  return null;
-                                },
-                                onSaved: (value) {
-                                  _authData['phone'] = value;
-                                },
-                              ),
-                              TextFormField(
-                                decoration:
-                                    InputDecoration(labelText: 'UserName'),
-                                textInputAction: TextInputAction.next,
-                                keyboardType: TextInputType.number,
-                                focusNode: _userNameFocusNode,
-                                onFieldSubmitted: (_) => FocusScope.of(context)
-                                    .requestFocus(_passFocusNode),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Please Provide a value';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (value) {
-                                  _authData['userName'] = value;
-                                },
-                              ),
-                              TextFormField(
-                                decoration:
-                                    InputDecoration(labelText: 'Password'),
-                                textInputAction: TextInputAction.next,
-                                keyboardType: TextInputType.number,
-                                obscureText: true,
-                                controller: _passwordController,
-                                focusNode: _passFocusNode,
-                                onFieldSubmitted: (_) => FocusScope.of(context)
-                                    .requestFocus(_confirmPassFocusNode),
-                                validator: (value) {
-                                  if (value.isEmpty || value.length < 6) {
-                                    return 'Please Provide a value greater than 6 characters';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (value) {
-                                  _authData['password'] = value;
-                                },
-                              ),
-                              TextFormField(
-                                decoration: InputDecoration(
-                                    labelText: 'Confirm Password'),
-                                textInputAction: TextInputAction.done,
-                                obscureText: true,
-                                focusNode: _confirmPassFocusNode,
-                                validator: (value) {
-                                  if (value != _passwordController.text) {
-                                    return 'Passwords do not match!';
-                                  }
-
-                                  return null;
-                                },
-                                onSaved: (_) {
-                                  _saveForm();
-                                },
-                              ),
-                            ]),
-                          )
-                        : Container(
-                            height: (deviceSize.height - 80) * 0.4,
-                            padding: EdgeInsets.all(20),
-                            child: ListView(
-                              children: [
-                                TextFormField(
-                                  decoration: InputDecoration(
-                                      labelText: 'E-mail or Phone'),
-                                  keyboardType: TextInputType.emailAddress,
-                                  textInputAction: TextInputAction.next,
-                                  onFieldSubmitted: (_) {
-                                    FocusScope.of(context)
-                                        .requestFocus(_phoneFocusNode);
-                                  },
-                                  validator: (value) {
-                                    if (value.isEmpty || !value.contains('@')) {
-                                      return 'Invalid email!';
-                                    }
-                                    return null;
-                                  },
-                                  onSaved: (value) {
-                                    _authData['email'] = value;
-                                  },
-                                ),
-                                TextFormField(
-                                  decoration:
-                                      InputDecoration(labelText: 'Password'),
-                                  textInputAction: TextInputAction.done,
-                                  obscureText: true,
-                                  focusNode: _confirmPassFocusNode,
-                                  validator: (value) {
-                                    if (value.isEmpty) {
-                                      return 'Passwords is empty';
-                                    }
-
-                                    return null;
-                                  },
-                                  onSaved: (_) {
-                                    _saveForm();
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _saveForm();
-                      },
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Theme.of(context).primaryColor,
+                            style: BorderStyle.solid,
+                          )),
                       child: Text(
-                        _authMode == AuthMode.Signup ? 'Sign Up' : 'Login',
-                      ),
-                    ),
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Theme.of(context).primaryColor,
-                                style: BorderStyle.solid,
-                              )),
-                          child: Text(
-                            'OR',
-                          ),
-                        ),
-                        SizedBox(
-                          height: 7,
-                        ),
-                        Divider(
-                          thickness: 1,
-                          color: Colors.black,
-                        ),
-                      ],
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Continue with Facebook',
+                        'OR',
                       ),
                     ),
                     SizedBox(
-                      height: 15,
+                      height: 7,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(_authMode == AuthMode.Signup
-                            ? 'Already have an account? '
-                            : 'Don\'t have an account? '),
-                        TextButton(
-                          onPressed: () => _switchAuthMode(),
-                          child: Text(
-                            _authMode == AuthMode.Signup ? 'Log In' : 'Sign Up',
-                          ),
-                        ),
-                      ],
+                    Divider(
+                      thickness: 1,
+                      color: Colors.black,
                     ),
                   ],
                 ),
-              ),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Continue with Facebook',
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(_authMode == AuthMode.Signup
+                        ? 'Already have an account? '
+                        : 'Don\'t have an account? '),
+                    TextButton(
+                      onPressed: () => _switchAuthMode(),
+                      child: Text(
+                        _authMode == AuthMode.Signup ? 'Log In' : 'Sign Up',
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          );
+          ),
+        ),
+      ),
+    );
   }
 }
