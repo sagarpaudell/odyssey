@@ -1,6 +1,6 @@
 # Odyssey
 
-A new Flutter project.
+A new Flutter and Django project
 
 ## Getting Started
 
@@ -45,7 +45,7 @@ and  the folling as body in the json
 }
 ```
 ##  Login:
-To get user token send get request to **https://localhost:8000/accounts-api/get-auth-token/** 
+To get user token send get request to **http://localhost:8000/accounts-api/get-auth-token/** 
 with the following json as the body of the request
 ```
  {
@@ -55,5 +55,5 @@ with the following json as the body of the request
 ```
 This will give you the token for the user
 
-Now if you send a get request to **https://localhost:8000/accounts-api/get-auth-token/** 
+Now if you send a get request to **http://localhost:8000/accounts-api/get-auth-token/** 
 with the token as the authorization header. You will receive the information of the user from the database
