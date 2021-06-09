@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:odyssey/pages/auth_page.dart';
 import '../pages/feeds_page.dart';
 import '../providers/auth.dart';
 import 'package:provider/provider.dart';
@@ -103,6 +104,7 @@ class _AuthCardState extends State<AuthCard> {
             _authData['phone'],
             _authData['userName'],
             _authData['password']);
+        Navigator.of(context).popAndPushNamed(AuthPage.routeName);
       }
     } on HttpException catch (error) {
       var errorMessage = error.toString();
@@ -271,12 +273,12 @@ class _AuthCardState extends State<AuthCard> {
                           children: [
                             TextFormField(
                               decoration:
-                                  InputDecoration(labelText: 'UserName'),
-                              keyboardType: TextInputType.emailAddress,
+                                  InputDecoration(labelText: 'Username'),
+                              keyboardType: TextInputType.text,
                               textInputAction: TextInputAction.next,
                               onFieldSubmitted: (_) {
                                 FocusScope.of(context)
-                                    .requestFocus(_phoneFocusNode);
+                                    .requestFocus(_confirmPassFocusNode);
                               },
                               validator: (value) {
                                 // if (value.isEmpty || !value.contains('@')) {

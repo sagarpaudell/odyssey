@@ -55,5 +55,5 @@ with the following json as the body of the request
 ```
 This will give you the token for the user
 
-Now if you send a get request to **http://localhost:8000/accounts-api/get-auth-token/** 
+Now if you send a get request to **http://localhost:8000/accounts-api/user/** 
 with the token as the authorization header. You will receive the information of the user from the database

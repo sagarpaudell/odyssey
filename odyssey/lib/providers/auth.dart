@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 class Auth with ChangeNotifier {
   String _token;
   String _rootToken;
+  String userName;
   String _userId;
   DateTime _expiryDate;
 
@@ -35,17 +36,22 @@ class Auth with ChangeNotifier {
         //print(json.decode(response.body));
       } else {
         _token = json.decode(response.body)['token'];
-        // final tokenHeader = 'TOKEN ' + _token;
-        // print(tokenHeader);
-        // final userData = await http.get(
-        //   Uri.parse(url),
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     'Authorization': tokenHeader
-        //   },
-        // );
-        //print(json.decode(userData.body));
-        // print(_token);
+        const url = 'http://10.0.2.2:8000/accounts-api/user/'; //...
+
+        final tokenHeader = 'TOKEN ' + _token;
+        try {
+          final userDataResponse = await http.get(
+            Uri.parse(url),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': tokenHeader
+            },
+          );
+          final userData = json.decode(userDataResponse.body);
+          userName = userData['username'];
+        } catch (error) {
+          throw error;
+        }
       }
 
       notifyListeners();
@@ -85,13 +91,12 @@ class Auth with ChangeNotifier {
         ),
       );
       final responseData = json.decode(response.body);
-      print(responseData['username']);
-      if (responseData['email'] != null) {
-        throw HttpException('email');
-      }
-      if (responseData['username'] != null) {
-        throw HttpException('username');
-      }
+      // if (responseData['email']) {
+      //   throw HttpException('email');
+      // }
+      // if (responseData['username'] != null) {
+      //   throw HttpException('username');
+      // }
     } catch (error) {
       //print(error);
       throw error;
@@ -100,31 +105,21 @@ class Auth with ChangeNotifier {
 
   Future<void> login(String username, String password) async {
     return getToken(username: username, password: password);
-    // const url = 'http://10.0.2.2:8000/accounts-api/get-auth-token/'; //...
+    // const url = 'http://10.0.2.2:8000/accounts-api/user/'; //...
 
-    // print(json.decode(response.body));
-
-    //   const url = 'https://10.0.2.2:8000/accounts-api/get-auth-token/ '; //...
-    //   try {
-    //     final response = await http.get(
-    //       Uri.parse(url),
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: json.encode(
-    //         {
-    //           'email': email,
-    //           'password': password,
-    //         },
-    //       ),
-    //     );
-    //     final responseData = json.decode(response.body);
-    //     print(responseData);
-    //     if (responseData['error'] != null) {
-    //       throw HttpException(responseData['error']['message']);
-    //     }
-    //   } catch (error) {
-    //     throw error;
-    //   }
+    // final tokenHeader = 'TOKEN ' + _token;
+    // try {
+    //   final userDataResponse = await http.get(
+    //     Uri.parse(url),
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Authorization': tokenHeader
+    //     },
+    //   );
+    //   final userData = json.decode(userDataResponse.body);
+    //   userName = userData['username'];
+    // } catch (error) {
+    //   throw error;
+    // }
   }
 }
