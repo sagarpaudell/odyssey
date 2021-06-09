@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime
-
+from django.db.models.signals import post_save
 
 class Traveller(models.Model):
     first_name = models.CharField(max_length=200,blank=True)
@@ -19,3 +18,10 @@ class Traveller(models.Model):
 
     def __str__(self):
         return self.first_name
+
+
+
+def create_traveller(sender, instance, **kwargs):
+    Traveller.objects.create(username=instance)
+
+post_save.connect(create_traveller, sender=User)
