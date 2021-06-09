@@ -1,6 +1,6 @@
 # Odyssey
 
-A new Flutter project.
+A new Flutter and Django project
 
 ## Getting Started
 
