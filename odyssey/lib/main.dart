@@ -18,6 +18,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final pColors= const Color(0xFF6A1B4D);
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -30,7 +31,7 @@ class _MyAppState extends State<MyApp> {
         builder: (ctx, auth, _) => MaterialApp(
           title: 'Odyssey',
           theme: ThemeData(
-            primarySwatch: Colors.purple,
+            primarySwatch: Colors.deepPurple,
             accentColor: Colors.amber,
             fontFamily: 'Montserrat',
             textTheme: ThemeData.light().textTheme.copyWith(

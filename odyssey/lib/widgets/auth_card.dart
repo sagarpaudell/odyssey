@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:odyssey/pages/auth_page.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../pages/feeds_page.dart';
 import '../providers/auth.dart';
 import 'package:provider/provider.dart';
 import '../models/http_exception.dart';
+
 
 enum AuthMode {
   Signup,
@@ -156,18 +158,19 @@ class _AuthCardState extends State<AuthCard> {
             child: Column(
               children: [
                 Container(
-                  margin: EdgeInsets.only(top: 30),
+                  margin: EdgeInsets.only(top: 40),
                   height: _authMode == AuthMode.Signup ? 80 : 200,
                   alignment: Alignment.center,
                   child: Image.asset(
-                    './assets/images/logo.png',
+                    './assets/images/logo1.png',
                     fit: BoxFit.cover,
                   ),
+
                 ),
                 _authMode == AuthMode.Signup
                     ? Container(
                         height: (deviceSize.height - 80) * 0.6,
-                        padding: EdgeInsets.all(20),
+                        padding: EdgeInsets.only(left: 30, right: 30),
                         child: ListView(children: [
                           TextFormField(
                             decoration: InputDecoration(labelText: 'E-mail'),
@@ -267,8 +270,8 @@ class _AuthCardState extends State<AuthCard> {
                         ]),
                       )
                     : Container(
-                        height: (deviceSize.height - 80) * 0.4,
-                        padding: EdgeInsets.all(20),
+                        height: (deviceSize.height - 80) * 0.3,
+                        padding: EdgeInsets.only(left: 30, right: 30),
                         child: ListView(
                           children: [
                             TextFormField(
@@ -312,12 +315,18 @@ class _AuthCardState extends State<AuthCard> {
                       ),
                 _isLoading
                     ? CircularProgressIndicator()
-                    : ElevatedButton(
-                        onPressed: _saveForm,
-                        child: Text(
-                          _authMode == AuthMode.Signup ? 'Sign Up' : 'Login',
+                    : Container(
+                      width: deviceSize.width*0.8,
+                      child: ElevatedButton(
+                          onPressed: _saveForm,
+                          child: Text(
+                            _authMode == AuthMode.Signup ? 'Sign Up' : 'Login',
+                          ),
                         ),
-                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                 Stack(
                   alignment: Alignment.center,
                   children: [
@@ -333,23 +342,36 @@ class _AuthCardState extends State<AuthCard> {
                         'OR',
                       ),
                     ),
-                    SizedBox(
-                      height: 7,
-                    ),
+                    
                     Divider(
                       thickness: 1,
                       color: Colors.black,
                     ),
                   ],
                 ),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Continue with Facebook',
+                SizedBox(
+                      height: 10,
+                    ),
+                Container(
+                  width: deviceSize.width*0.8,
+                  child: OutlinedButton(                   
+                    onPressed: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(FontAwesomeIcons.facebook, color: Colors.blue,),
+                        SizedBox(width: 8,
+                        ),
+                        Text(
+                          'Continue with Facebook',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(
-                  height: 15,
+                  height: 7,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
