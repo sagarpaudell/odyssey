@@ -18,7 +18,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final pColors= const Color(0xFF6A1B4D);
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -76,7 +75,7 @@ class MyHomePage extends StatelessWidget {
                   .push(MaterialPageRoute(builder: (ctx) => AuthPage())),
               child: Text(
                 'Login',
-              ))
+              )),
         ],
       ),
     );

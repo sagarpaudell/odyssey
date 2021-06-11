@@ -263,14 +263,12 @@ class _AuthCardState extends State<AuthCard> {
 
                               return null;
                             },
-                            // onSaved: (_) {
-                            //   _saveForm();
-                            // },
+                            
                           ),
                         ]),
                       )
                     : Container(
-                        height: (deviceSize.height - 80) * 0.3,
+                        height: (deviceSize.height - 80) * 0.25,
                         padding: EdgeInsets.only(left: 30, right: 30),
                         child: ListView(
                           children: [
@@ -313,10 +311,28 @@ class _AuthCardState extends State<AuthCard> {
                           ],
                         ),
                       ),
+                _authMode==AuthMode.Login ?    
+                Container(
+                   margin: EdgeInsets.only(right: 20, bottom: 5),
+                   child: Row(
+                     mainAxisAlignment: MainAxisAlignment.end,
+                     children: [
+                       TextButton(onPressed:(){
+
+                       }, child: Text("Forgot password?"),)
+                       
+                     ],
+                   ),
+                 )                
+
+                 :Center(),         //if signup, nothing
+
+
+                      
                 _isLoading
                     ? CircularProgressIndicator()
                     : Container(
-                      width: deviceSize.width*0.8,
+                      width: deviceSize.width*0.9,
                       child: ElevatedButton(
                           onPressed: _saveForm,
                           child: Text(
@@ -327,33 +343,30 @@ class _AuthCardState extends State<AuthCard> {
                     SizedBox(
                       height: 10,
                     ),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Theme.of(context).primaryColor,
-                            style: BorderStyle.solid,
-                          )),
-                      child: Text(
-                        'OR',
-                      ),
-                    ),
-                    
-                    Divider(
-                      thickness: 1,
-                      color: Colors.black,
-                    ),
-                  ],
-                ),
+
+                Row(children: <Widget>[
+                  Expanded(
+                    child: new Container(
+                        margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                        child: Divider(
+                          color: Colors.black,                    
+                        )),
+                  ),
+                  Text("OR"),
+                  Expanded(
+                    child: new Container(
+                        margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                        child: Divider(
+                          color: Colors.black,
+                        )),
+                  ),
+                ]),    
+
                 SizedBox(
                       height: 10,
                     ),
                 Container(
-                  width: deviceSize.width*0.8,
+                  width: deviceSize.width*0.9,
                   child: OutlinedButton(                   
                     onPressed: () {},
                     child: Row(
