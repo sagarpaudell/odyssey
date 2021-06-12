@@ -1,0 +1,4 @@
+#Fri Jun 11 16:50:18 NPT 2021
+base.0=F\:\\odyssey\\odyssey\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

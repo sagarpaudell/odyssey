@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
         builder: (ctx, auth, _) => MaterialApp(
           title: 'Odyssey',
           theme: ThemeData(
-            primarySwatch: Colors.purple,
+            primarySwatch: Colors.deepPurple,
             accentColor: Colors.amber,
             fontFamily: 'Montserrat',
             textTheme: ThemeData.light().textTheme.copyWith(
@@ -75,7 +75,7 @@ class MyHomePage extends StatelessWidget {
                   .push(MaterialPageRoute(builder: (ctx) => AuthPage())),
               child: Text(
                 'Login',
-              ))
+              )),
         ],
       ),
     );
