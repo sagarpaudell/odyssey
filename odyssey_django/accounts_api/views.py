@@ -13,11 +13,7 @@ class UserRecordView(APIView):
     def get(self, format=None):
         """make get request with token present in the authentication header
         to get user info"""
-        token = self.request.headers["Authorization"].split(" ")[1]
-        print(token)
-        user = Token.objects.get(key=token).user
-        print(user)
-        serializer = UserSerializer(user)
+        serializer = UserSerializer(self.request.user)
         return Response(serializer.data)
 
     def post(self, request):
