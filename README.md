@@ -1,22 +1,5 @@
-# Odyssey
-
-A new Flutter and Django project
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-
-# To call the authentication api endpoint
+# JWT authentication
+## Requesting the token
 First send a post request to **https://localhost:8000/accounts-api/get-auth-token/** with following json as the body of the request:
 ```
 {
@@ -27,14 +10,29 @@ First send a post request to **https://localhost:8000/accounts-api/get-auth-toke
 
 You will recieve something like the following as the response. 
 ```
+
 {
-    "token": "6afedf61ba291a48c0ecb54e793b7b83b0e79c0c"
-} 
+    "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYyMzU2NDEyNywianRpIjoiZmI3MTA0YWQzYWIzNDAyZDkzNjk0YzczMjhiZGYwZWIiLCJ1c2VyX2lkIjo5fQ.Clr_d8CCKA6vq-31TcQjRlAr9Ks2TYnQdrgdTuha2mQ",
+    "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjIzNDc4MDI3LCJqdGkiOiI4YzgwNDMwZGZhNzI0OGI5OGNlMmI4YTk5NmUyNGJjZCIsInVzZXJfaWQiOjl9.MS3PTh3RgCPE9zcfXSC3F4aCU_bR4rKhDWWi_pDB8eQ"
+}
+ 
 ```
+## Refresh token
+When the short-lived access token expires, you can use the longer-lived refresh
+token to obtain another access token by sending following json as the body of
+the request to **http://localhost:8000/accounts-api/refresh-auth-token/**
+```
+{
+    "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYyMzU2NDEyNywianRpIjoiZmI3MTA0YWQzYWIzNDAyZDkzNjk0YzczMjhiZGYwZWIiLCJ1c2VyX2lkIjo5fQ.Clr_d8CCKA6vq-31TcQjRlAr9Ks2TYnQdrgdTuha2mQ"
+}
+```
+
+
+
 ## Register :
-Send post request to **http://localhost:8000/accounts-api/user/** with following in the header:\
-`Authorization : TOKEN 6afedf61ba291a48c0ecb54e793b7b83b0e79c0c`    
-and  the folling as body in the json
+Send post request to **http://localhost:8000/accounts-api/user/** with
+following in the header:\ `Authorization : Bearer <access>`      
+and  the following as body in the json
 ```
 {
     "username": "alisha231",
@@ -45,15 +43,7 @@ and  the folling as body in the json
 }
 ```
 ##  Login:
-To get user token send get request to **http://localhost:8000/accounts-api/get-auth-token/** 
-with the following json as the body of the request
-```
- {
-    "username": "alisha231",
-    "password": "heytheredelilah"
- }
-```
-This will give you the token for the user
 
-Now if you send a get request to **http://localhost:8000/accounts-api/user/** 
-with the token as the authorization header. You will receive the information of the user from the database
+if you send a get request to **http://localhost:8000/accounts-api/user/** with
+authorization header with the users access token, you will receive the
+information of the user from the database

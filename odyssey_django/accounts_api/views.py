@@ -5,7 +5,6 @@ from rest_framework.authtoken.models import Token
 
 from .serializers import UserSerializer
 
-
 class UserRecordView(APIView):
     """ API View to create or get user info.
     a POST request allows to create a new user.
@@ -22,6 +21,24 @@ class UserRecordView(APIView):
         print(serializer)
         if serializer.is_valid(raise_exception=ValueError):
             serializer.create(validated_data=request.data)
+            return Response(
+                    serializer.data,
+                    status=status.HTTP_201_CREATED,
+                )
+        return Response(
+               {
+                   "error":True,
+                   "error_msg": serializer.error_messages,
+               },
+               status=status.HTTP_400_BAD_REQUEST
+               )
+
+    def put(self, request):
+        """make post request with user info to register"""
+        user = self.request.user
+        serializer = UserSerializer(user, data = request.data)
+        if serializer.is_valid(raise_exception=ValueError):
+            serializer.save(validated_data=request.data)
             return Response(
                     serializer.data,
                     status=status.HTTP_201_CREATED,
