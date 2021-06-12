@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
+from rest_framework.permissions import IsAuthenticated
 
 class UserSerializer(serializers.ModelSerializer):
+    permission_classes = [IsAuthenticated]
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user

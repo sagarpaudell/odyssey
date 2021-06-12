@@ -32,6 +32,7 @@ Pipfile
 .pub-cache/
 .pub/
 build/
+photos/
 
 # Web related
 lib/generated_plugin_registrant.dart

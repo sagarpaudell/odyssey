@@ -4,10 +4,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import TravellerSerializer
 from .models import Traveller
-
+from rest_framework.parsers import MultiPartParser
 
 class TravellerView(APIView):
-
+    parser_classes = [MultiPartParser]
     def get_object(self, id):
         try:
             return Traveller.objects.get(id=id)
@@ -21,6 +21,7 @@ class TravellerView(APIView):
 
     def put(self, request , id):
         traveller = self.get_object(id)
+        print(request.data)
         serializer = TravellerSerializer(traveller, data=request.data)
         if serializer.is_valid():
             serializer.save()
