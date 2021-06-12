@@ -21,7 +21,18 @@ class Traveller(models.Model):
 
 
 
-def create_traveller(sender, instance, **kwargs):
-    Traveller.objects.create(username=instance)
+def edit_or_create_traveller(sender, instance, **kwargs):
+    traveller = Traveller.objects.filter(username=instance)
+    if traveller.exists():
+        traveller = traveller.first()
+        traveller.first_name = instance.first_name
+        print(f"first_name={traveller.first_name}")
+        traveller.last_name = instance.last_name
+        traveller.save()
+    else:
+        Traveller.objects.create(username=instance, 
+            first_name=instance.first_name,
+            last_name=instance.last_name
+            )
 
-post_save.connect(create_traveller, sender=User)
+post_save.connect(edit_or_create_traveller, sender=User)
