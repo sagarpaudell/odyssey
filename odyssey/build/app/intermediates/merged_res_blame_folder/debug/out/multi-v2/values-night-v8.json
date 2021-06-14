@@ -1,17 +1,17 @@
 {
     "logs": [
         {
-            "outputFile": "F:\\odyssey\\odyssey\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-night-v8\\values-night-v8.xml",
+            "outputFile": "/mnt/sdb/flutterProjects/odyssey/odyssey/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "F:\\odyssey\\odyssey\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "/mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/main/res/values-night/styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
-                        "startOffsets": "175,829",
+                        "startOffsets": "172,815",
                         "endLines": "7,16",
                         "endColumns": "12,12",
-                        "endOffsets": "471,995"
+                        "endOffsets": "464,979"
                     },
                     "to": {
                         "startLines": "2,7",

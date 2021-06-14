@@ -1,6 +1,6 @@
 # JWT authentication
 ## Requesting the token
-First send a post request to **https://localhost:8000/accounts-api/get-auth-token/** with following json as the body of the request:
+First send a post request to **https://travellum.herokuapp.com/accounts-api/get-auth-token/** with following json as the body of the request:
 ```
 {
     "username": "admin",
@@ -20,7 +20,7 @@ You will recieve something like the following as the response.
 ## Refresh token
 When the short-lived access token expires, you can use the longer-lived refresh
 token to obtain another access token by sending following json as the body of
-the request to **http://localhost:8000/accounts-api/refresh-auth-token/**
+the request to **http://travellum.herokuapp.com/accounts-api/refresh-auth-token/**
 ```
 {
     "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYyMzU2NDEyNywianRpIjoiZmI3MTA0YWQzYWIzNDAyZDkzNjk0YzczMjhiZGYwZWIiLCJ1c2VyX2lkIjo5fQ.Clr_d8CCKA6vq-31TcQjRlAr9Ks2TYnQdrgdTuha2mQ"
@@ -30,7 +30,7 @@ the request to **http://localhost:8000/accounts-api/refresh-auth-token/**
 
 
 ## Register :
-Send post request to **http://localhost:8000/accounts-api/user/** with
+Send post request to **http://travellum.herokuapp.com/accounts-api/user/** with
 following in the header:\ `Authorization : Bearer <access>`      
 and  the following as body in the json
 ```
@@ -44,6 +44,6 @@ and  the following as body in the json
 ```
 ##  Login:
 
-if you send a get request to **http://localhost:8000/accounts-api/user/** with
+if you send a get request to **http://travellum.herokuapp.com/accounts-api/user/** with
 authorization header with the users access token, you will receive the
 information of the user from the database

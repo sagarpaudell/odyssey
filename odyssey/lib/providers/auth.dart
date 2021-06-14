@@ -10,14 +10,15 @@ class Auth with ChangeNotifier {
   String userName;
   String _userId;
   DateTime _expiryDate;
-
+  String _userRefreshToken;
   bool get isAuth {
     return _token != null;
   }
 
   Future<void> getToken(
       {String username = 'postgres', String password = 'postgres'}) async {
-    const url = 'http://10.0.2.2:8000/accounts-api/get-auth-token/'; //...
+    const url =
+        'https://travellum.herokuapp.com/accounts-api/get-auth-token/'; //...
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -32,13 +33,15 @@ class Auth with ChangeNotifier {
         ),
       );
       if (username == 'postgres') {
-        _rootToken = json.decode(response.body)['token'];
+        // print(json.decode(response.body));
+        _rootToken = json.decode(response.body)['access'];
         //print(json.decode(response.body));
       } else {
-        _token = json.decode(response.body)['token'];
-        const url = 'http://10.0.2.2:8000/accounts-api/user/'; //...
+        _token = json.decode(response.body)['access'];
+        _userRefreshToken = json.decode(response.body)['refresh'];
+        const url = 'https://travellum.herokuapp.com/accounts-api/user/'; //...
 
-        final tokenHeader = 'TOKEN ' + _token;
+        final tokenHeader = 'Bearer ' + _token;
         try {
           final userDataResponse = await http.get(
             Uri.parse(url),
@@ -49,6 +52,7 @@ class Auth with ChangeNotifier {
           );
           final userData = json.decode(userDataResponse.body);
           userName = userData['username'];
+          _userId = userData['id'];
         } catch (error) {
           throw error;
         }
@@ -71,15 +75,15 @@ class Auth with ChangeNotifier {
 
   Future<void> signup(
       String email, String phone, String userName, String password) async {
-    const _url = 'http://10.0.2.2:8000/accounts-api/user/';
-    // getToken();
-    // final authToken = ('TOKEN ' + _rootToken);
+    const _url = 'https://travellum.herokuapp.com/accounts-api/user/';
+    getToken();
+    final authToken = 'Bearer ' + _rootToken;
     try {
       final response = await http.post(
         Uri.parse(_url),
         headers: <String, String>{
           'Content-Type': 'application/json',
-          'Authorization': 'TOKEN b18930dd9cb5d1ba53e04138fd87e03fd962e0f1'
+          'Authorization': authToken
         },
         body: json.encode(
           {
@@ -105,7 +109,7 @@ class Auth with ChangeNotifier {
 
   Future<void> login(String username, String password) async {
     return getToken(username: username, password: password);
-    // const url = 'http://10.0.2.2:8000/accounts-api/user/'; //...
+    // const url = 'https://travellum.herokuapp.com/accounts-api/user/'; //...
 
     // final tokenHeader = 'TOKEN ' + _token;
     // try {
