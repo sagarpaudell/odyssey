@@ -11,6 +11,20 @@ void main() {
   );
 }
 
+Map<int, Color> color = {
+  50: Color.fromRGBO(28, 46, 74, .1),
+  100: Color.fromRGBO(28, 46, 74, .2),
+  200: Color.fromRGBO(28, 46, 74, .3),
+  300: Color.fromRGBO(28, 46, 74, .4),
+  400: Color.fromRGBO(28, 46, 74, .5),
+  500: Color.fromRGBO(28, 46, 74, .6),
+  600: Color.fromRGBO(28, 46, 74, .7),
+  700: Color.fromRGBO(28, 46, 74, .8),
+  800: Color.fromRGBO(28, 46, 74, .9),
+  900: Color.fromRGBO(28, 46, 74, 1),
+};
+MaterialColor colorCustom = MaterialColor(0xFF1C2E4A, color);
+
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.
   @override
@@ -30,7 +44,7 @@ class _MyAppState extends State<MyApp> {
         builder: (ctx, auth, _) => MaterialApp(
           title: 'Odyssey',
           theme: ThemeData(
-            primarySwatch: Colors.deepPurple,
+            primarySwatch: colorCustom,
             accentColor: Colors.amber,
             fontFamily: 'Montserrat',
             textTheme: ThemeData.light().textTheme.copyWith(

@@ -6,7 +6,6 @@ import '../providers/auth.dart';
 import 'package:provider/provider.dart';
 import '../models/http_exception.dart';
 
-
 enum AuthMode {
   Signup,
   Login,
@@ -17,7 +16,8 @@ class AuthCard extends StatefulWidget {
   _AuthCardState createState() => _AuthCardState();
 }
 
-class _AuthCardState extends State<AuthCard> {
+class _AuthCardState extends State<AuthCard>
+    with SingleTickerProviderStateMixin {
   // final _emailController = TextEditingController();
 
   // final _phoneController = TextEditingController();
@@ -157,7 +157,9 @@ class _AuthCardState extends State<AuthCard> {
             height: deviceSize.height,
             child: Column(
               children: [
-                Container(
+                AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
                   margin: EdgeInsets.only(top: 40),
                   height: _authMode == AuthMode.Signup ? 80 : 200,
                   alignment: Alignment.center,
@@ -165,7 +167,6 @@ class _AuthCardState extends State<AuthCard> {
                     './assets/images/logo1.png',
                     fit: BoxFit.cover,
                   ),
-
                 ),
                 _authMode == AuthMode.Signup
                     ? Container(
@@ -263,12 +264,11 @@ class _AuthCardState extends State<AuthCard> {
 
                               return null;
                             },
-                            
                           ),
                         ]),
                       )
                     : Container(
-                        height: (deviceSize.height - 80) * 0.25,
+                        height: (deviceSize.height - 200) * 0.35,
                         padding: EdgeInsets.only(left: 30, right: 30),
                         child: ListView(
                           children: [
@@ -311,45 +311,48 @@ class _AuthCardState extends State<AuthCard> {
                           ],
                         ),
                       ),
-                _authMode==AuthMode.Login ?    
-                Container(
-                   margin: EdgeInsets.only(right: 20, bottom: 5),
-                   child: Row(
-                     mainAxisAlignment: MainAxisAlignment.end,
-                     children: [
-                       TextButton(onPressed:(){
+                _authMode == AuthMode.Login
+                    ? Container(
+                        height: (deviceSize.height - 200) * 0.10,
+                        margin: EdgeInsets.only(right: 20, bottom: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () {},
+                              child: Text("Forgot password?"),
+                            )
+                          ],
+                        ),
+                      )
+                    : SizedBox(
+                        height: 0,
+                      ), //if signup, nothing
 
-                       }, child: Text("Forgot password?"),)
-                       
-                     ],
-                   ),
-                 )                
-
-                 :Center(),         //if signup, nothing
-
-
-                      
                 _isLoading
                     ? CircularProgressIndicator()
                     : Container(
-                      width: deviceSize.width*0.9,
-                      child: ElevatedButton(
+                        height: _authMode == AuthMode.Signup
+                            ? (deviceSize.height - 80) * 0.10
+                            : (deviceSize.height - 200) * 0.10,
+                        width: deviceSize.width * 0.9,
+                        child: ElevatedButton(
                           onPressed: _saveForm,
                           child: Text(
                             _authMode == AuthMode.Signup ? 'Sign Up' : 'Login',
                           ),
                         ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                      ),
+                SizedBox(
+                  height: 10,
+                ),
 
                 Row(children: <Widget>[
                   Expanded(
                     child: new Container(
                         margin: const EdgeInsets.only(left: 10.0, right: 20.0),
                         child: Divider(
-                          color: Colors.black,                    
+                          color: Colors.black,
                         )),
                   ),
                   Text("OR"),
@@ -360,20 +363,24 @@ class _AuthCardState extends State<AuthCard> {
                           color: Colors.black,
                         )),
                   ),
-                ]),    
+                ]),
 
                 SizedBox(
-                      height: 10,
-                    ),
+                  height: 10,
+                ),
                 Container(
-                  width: deviceSize.width*0.9,
-                  child: OutlinedButton(                   
+                  width: deviceSize.width * 0.9,
+                  child: OutlinedButton(
                     onPressed: () {},
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(FontAwesomeIcons.facebook, color: Colors.blue,),
-                        SizedBox(width: 8,
+                        Icon(
+                          FontAwesomeIcons.facebook,
+                          color: Colors.blue,
+                        ),
+                        SizedBox(
+                          width: 8,
                         ),
                         Text(
                           'Continue with Facebook',
