@@ -1,3 +1,10 @@
+# Virtualenv related
+odyssey_django/bin/
+odyssey_django/include/
+pip-selfcheck.json
+
+
+
 # Miscellaneous
 *.class
 *.log
