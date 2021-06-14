@@ -5,6 +5,7 @@ pip-selfcheck.json
 
 
 
+
 # Miscellaneous
 *.class
 *.log
@@ -39,6 +40,10 @@ Pipfile
 .pub-cache/
 .pub/
 build/
+odyssey/build/
+odyssey/ios/
+odyssey/android/
+
 photos/
 
 # Web related
@@ -56,7 +61,3 @@ app.*.map.json
 /android/app/release
 
 
-/android
-/ios
-odyssey/android
-odyssey/ios
