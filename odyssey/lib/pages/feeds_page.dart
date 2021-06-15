@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './edit_profile_page.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
 
@@ -10,11 +11,20 @@ class FeedsPage extends StatelessWidget {
     return Scaffold(
       body: Container(
         child: Center(
-          child: Text(
-            'Feeds ${authData.userName}',
-            style: TextStyle(
-              fontSize: 40,
-            ),
+          child: Column(
+            children: [
+              Text(
+                'Feeds ${authData.userName}',
+                style: TextStyle(
+                  fontSize: 40,
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(EditProfilePage.routeName),
+                child: Text('add profile'),
+              )
+            ],
           ),
         ),
       ),

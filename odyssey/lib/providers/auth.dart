@@ -42,6 +42,7 @@ class Auth with ChangeNotifier {
         const url = 'https://travellum.herokuapp.com/accounts-api/user/'; //...
 
         final tokenHeader = 'Bearer ' + _token;
+        print(tokenHeader);
         try {
           final userDataResponse = await http.get(
             Uri.parse(url),
@@ -52,8 +53,11 @@ class Auth with ChangeNotifier {
           );
           final userData = json.decode(userDataResponse.body);
           userName = userData['username'];
-          _userId = userData['id'];
+          print(isAuth);
+          _userId = userData['id'].toString();
         } catch (error) {
+          print('cscsd');
+          print(json.decode(error));
           throw error;
         }
       }
@@ -78,6 +82,7 @@ class Auth with ChangeNotifier {
     const _url = 'https://travellum.herokuapp.com/accounts-api/user/';
     getToken();
     final authToken = 'Bearer ' + _rootToken;
+    print(authToken);
     try {
       final response = await http.post(
         Uri.parse(_url),

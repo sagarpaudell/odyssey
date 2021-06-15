@@ -4,6 +4,7 @@ import './pages/auth_page.dart';
 import 'package:provider/provider.dart';
 import './providers/auth.dart';
 import './pages/feeds_page.dart';
+import './pages/edit_profile_page.dart';
 
 void main() {
   runApp(
@@ -58,6 +59,7 @@ class _MyAppState extends State<MyApp> {
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsPage.routeName: (ctx) => FeedsPage(),
+            EditProfilePage.routeName: (ctx) => EditProfilePage(),
           },
         ),
       ),
