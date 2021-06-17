@@ -28,7 +28,7 @@
 21        android:label="odyssey"
 21-->/mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/main/AndroidManifest.xml:4:9-32
 22        android:usesCleartextTraffic="true" >
-22-->/mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/debug/AndroidManifest.xml:9:18-53
+22-->/mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/debug/AndroidManifest.xml:10:18-53
 23        <activity
 23-->/mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/main/AndroidManifest.xml:6:9-34:20
 24            android:name="com.example.odyssey.MainActivity"

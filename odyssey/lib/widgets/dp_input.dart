@@ -38,23 +38,27 @@ class _DpInputState extends State<DpInput> {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: <Widget>[
-        Container(
-          width: 150,
-          height: 100,
-          decoration: BoxDecoration(
-            border: Border.all(width: 1, color: Colors.grey),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: Container(
+            width: 150,
+            height: 150,
+            decoration: BoxDecoration(
+              border: Border.all(width: 1, color: Colors.grey),
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: _storedImage != null
+                ? Image.file(
+                    _storedImage,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  )
+                : Text(
+                    'No Image Taken',
+                    textAlign: TextAlign.center,
+                  ),
+            alignment: Alignment.center,
           ),
-          child: _storedImage != null
-              ? Image.file(
-                  _storedImage,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                )
-              : Text(
-                  'No Image Taken',
-                  textAlign: TextAlign.center,
-                ),
-          alignment: Alignment.center,
         ),
         IconButton(
           icon: Icon(Icons.camera),

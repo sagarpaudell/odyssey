@@ -22,9 +22,9 @@ MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /home/saga/.gradl
 MERGED from [androidx.arch.core:core-runtime:2.0.0] /home/saga/.gradle/caches/transforms-2/files-2.1/5f606c30f064eed94124828de37fadc0/core-runtime-2.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/saga/.gradle/caches/transforms-2/files-2.1/96aee308bccd03bc62c306516c23a410/versionedparcelable-1.1.0/AndroidManifest.xml:17:1-27:12
 MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /home/saga/.gradle/caches/transforms-2/files-2.1/15792e6083b2b5b5a7ffa285d47daa24/lifecycle-viewmodel-2.1.0/AndroidManifest.xml:17:1-22:12
-INJECTED from /mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/debug/AndroidManifest.xml:1:1-11:12
-INJECTED from /mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/debug/AndroidManifest.xml:1:1-11:12
-INJECTED from /mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/debug/AndroidManifest.xml:1:1-11:12
+INJECTED from /mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/debug/AndroidManifest.xml:1:1-12:12
+INJECTED from /mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/debug/AndroidManifest.xml:1:1-12:12
+INJECTED from /mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/debug/AndroidManifest.xml:1:1-12:12
 	package
 		ADDED from /mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/main/AndroidManifest.xml:2:5-34
 		INJECTED from /mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/main/AndroidManifest.xml
@@ -58,7 +58,7 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/saga/
 		ADDED from /mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/main/AndroidManifest.xml:5:9-43
 		ADDED from /mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/main/AndroidManifest.xml:5:9-43
 	android:usesCleartextTraffic
-		ADDED from /mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/debug/AndroidManifest.xml:9:18-53
+		ADDED from /mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/debug/AndroidManifest.xml:10:18-53
 activity#com.example.odyssey.MainActivity
 ADDED from /mnt/sdb/flutterProjects/odyssey/odyssey/android/app/src/main/AndroidManifest.xml:6:9-34:20
 	android:launchMode

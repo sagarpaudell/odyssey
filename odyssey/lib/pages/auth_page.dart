@@ -7,7 +7,7 @@ class AuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AuthCard(),
+      body: SafeArea(child: AuthCard()),
       // body: Column(
       //   children: [
       //     Container(

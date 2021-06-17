@@ -5,8 +5,14 @@ import 'package:provider/provider.dart';
 import './providers/auth.dart';
 import './pages/feeds_page.dart';
 import './pages/edit_profile_page.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setEnabledSystemUIOverlays([]);
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIOverlays([]);
+
   runApp(
     new MyApp(),
   );
