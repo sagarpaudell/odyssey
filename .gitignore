@@ -47,7 +47,8 @@ odyssey/build
 odyssey/ios
 odyssey/android
 photos/
-
+odyssey/build/app/
+odyssey/build/app
 # Web related
 lib/generated_plugin_registrant.dart
 
