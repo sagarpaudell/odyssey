@@ -35,36 +35,40 @@ class _DpInputState extends State<DpInput> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: <Widget>[
-        ClipRRect(
-          borderRadius: BorderRadius.circular(100),
-          child: Container(
-            width: 150,
-            height: 150,
-            decoration: BoxDecoration(
-              border: Border.all(width: 1, color: Colors.grey),
-              borderRadius: BorderRadius.circular(100),
+    Size deviceSize = MediaQuery.of(context).size;
+    return Container(
+      width: deviceSize.width * 0.45,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.grey),
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: _storedImage != null
+                  ? Image.file(
+                      _storedImage,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    )
+                  : Text(
+                      'No Image Taken',
+                      textAlign: TextAlign.center,
+                    ),
+              alignment: Alignment.center,
             ),
-            child: _storedImage != null
-                ? Image.file(
-                    _storedImage,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                  )
-                : Text(
-                    'No Image Taken',
-                    textAlign: TextAlign.center,
-                  ),
-            alignment: Alignment.center,
           ),
-        ),
-        IconButton(
-          icon: Icon(Icons.camera),
-          onPressed: _takePicture,
-        ),
-      ],
+          IconButton(
+            icon: Icon(Icons.camera),
+            onPressed: _takePicture,
+          ),
+        ],
+      ),
     );
   }
 }

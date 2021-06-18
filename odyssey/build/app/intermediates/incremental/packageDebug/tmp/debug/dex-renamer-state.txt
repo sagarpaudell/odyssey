@@ -1,4 +1,4 @@
-#Thu Jun 17 17:01:22 NPT 2021
+#Fri Jun 18 17:57:46 NPT 2021
 base.0=/mnt/sdb/flutterProjects/odyssey/odyssey/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
 renamed.0=classes.dex
 path.0=classes.dex
