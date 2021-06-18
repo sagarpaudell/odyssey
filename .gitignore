@@ -39,11 +39,11 @@ Pipfile
 .packages
 .pub-cache/
 .pub/
-build/
-odyssey/build/
-odyssey/ios/
-odyssey/android/
-odyssey/build
+**/build/
+**/odyssey/build/
+**/odyssey/ios/
+**/odyssey/android/
+**/odyssey/build
 odyssey/ios
 odyssey/android
 photos/
