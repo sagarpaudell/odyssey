@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:odyssey/widgets/chat_list.dart';
 
@@ -12,7 +10,6 @@ class _ChatPageState extends State<ChatPage> {
   Color bgColor = Color(0xffe8edea);
   @override
   Widget build(BuildContext context) {
-    Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -25,7 +22,7 @@ class _ChatPageState extends State<ChatPage> {
               backgroundColor: Colors.greenAccent[400],
               child: CircleAvatar(
                 radius: 16,
-                backgroundImage: AssetImage('./assets/images/guptaji.jpg'),
+                backgroundImage: AssetImage('./assets/images/samesh.jpg'),
                 
                 
               ),
@@ -81,7 +78,3 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 }
-// Container(
-//         height: deviceSize.height*0.15,
-//         color: Theme.of(context).primaryColor,
-//       ),

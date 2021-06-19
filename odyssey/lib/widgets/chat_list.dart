@@ -16,7 +16,7 @@ class ChatList extends StatelessWidget {
                 return Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.only(left:20, top: 10, bottom: 5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -49,7 +49,7 @@ class ChatList extends StatelessWidget {
                           ),
                           Flexible(
                             child: Padding(                          
-                              padding: const EdgeInsets.only(left: 20,right: 20),
+                              padding: const EdgeInsets.only(left: 20, right: 20),
                               child: Column(                
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -66,21 +66,31 @@ class ChatList extends StatelessWidget {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          'K gardai ho bro ',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                          ),                                                                           
+                                        Container(
+                                          width: deviceSize.width*0.45,
+                                          child: Text(
+                                            'K gardai ho bro? Sanchai chau?',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              
+                                            ),                                                                           
+                                          ),
                                         ),
-                                        Text(
-                                          '10:37 a.m.',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                          )),
+                                        Container(
+                                          padding: EdgeInsets.only(right: 0),
+                                          width: deviceSize.width*0.18,
+                                          child: Text(
+                                            
+                                            '3 hrs ago',
+                                            //11:49 a.m
+                                            
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                            )),
+                                        ),
                                       ],
                                     ),
                                   ),
