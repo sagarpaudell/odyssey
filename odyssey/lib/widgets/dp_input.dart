@@ -56,9 +56,8 @@ class _DpInputState extends State<DpInput> {
                       fit: BoxFit.cover,
                       width: double.infinity,
                     )
-                  : Text(
-                      'No Image Taken',
-                      textAlign: TextAlign.center,
+                  : Image.asset(
+                      './assets/images/default_dp.png',
                     ),
               alignment: Alignment.center,
             ),

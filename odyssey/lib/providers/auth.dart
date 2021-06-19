@@ -5,14 +5,14 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 class Auth with ChangeNotifier {
-  String _token;
+  String token;
   String _rootToken;
   String userName;
-  String _userId;
+  String userId;
   DateTime _expiryDate;
   String _userRefreshToken;
   bool get isAuth {
-    return _token != null;
+    return token != null;
   }
 
   Future<void> getToken(
@@ -37,11 +37,11 @@ class Auth with ChangeNotifier {
         _rootToken = json.decode(response.body)['access'];
         //print(json.decode(response.body));
       } else {
-        _token = json.decode(response.body)['access'];
+        token = json.decode(response.body)['access'];
         _userRefreshToken = json.decode(response.body)['refresh'];
         const url = 'https://travellum.herokuapp.com/accounts-api/user/'; //...
 
-        final tokenHeader = 'Bearer ' + _token;
+        final tokenHeader = 'Bearer ' + token;
         print(tokenHeader);
         try {
           final userDataResponse = await http.get(
@@ -54,7 +54,7 @@ class Auth with ChangeNotifier {
           final userData = json.decode(userDataResponse.body);
           userName = userData['username'];
           print(isAuth);
-          _userId = userData['id'].toString();
+          userId = userData['id'].toString();
         } catch (error) {
           print('cscsd');
           print(json.decode(error));
@@ -116,7 +116,7 @@ class Auth with ChangeNotifier {
     return getToken(username: username, password: password);
     // const url = 'https://travellum.herokuapp.com/accounts-api/user/'; //...
 
-    // final tokenHeader = 'TOKEN ' + _token;
+    // final tokenHeader = 'TOKEN ' + token;
     // try {
     //   final userDataResponse = await http.get(
     //     Uri.parse(url),

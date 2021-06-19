@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:odyssey/pages/auth_page.dart';
 import './pages/auth_page.dart';
+import './providers/profile.dart';
 import 'package:provider/provider.dart';
 import './providers/auth.dart';
 import './pages/feeds_page.dart';
@@ -45,6 +45,11 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(
           create: (ctx) => Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, Profile>(
+          create: (ctx) => Profile(),
+          update: (ctx, auth, traveller) => Profile(auth.userName, auth.userId,
+              auth.token, traveller == null ? null : traveller.travellerUser),
         )
       ],
       child: Consumer<Auth>(
