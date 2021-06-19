@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'accounts_api',
     'traveller_api',
+    'places_api',
 ]
 
 REST_FRAMEWORK = {
