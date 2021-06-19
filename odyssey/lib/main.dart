@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:odyssey/pages/auth_page.dart';
+import 'package:odyssey/pages/chat_page.dart';
 import './pages/auth_page.dart';
 import 'package:provider/provider.dart';
 import './providers/auth.dart';
@@ -49,6 +50,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Odyssey',
           theme: ThemeData(
             primarySwatch: colorCustom,
@@ -61,7 +63,9 @@ class _MyAppState extends State<MyApp> {
                       fontFamily: 'Mulish'),
                 ),
           ),
-          home: auth.isAuth ? FeedsPage() : EditProfilePage(),
+          // home: auth.isAuth ? FeedsPage() : EditProfilePage(),
+
+          home: ChatPage(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsPage.routeName: (ctx) => FeedsPage(),
