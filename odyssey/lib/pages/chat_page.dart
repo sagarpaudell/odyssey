@@ -12,8 +12,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        leading: Icon(Icons.arrow_back_ios),
+        
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20),
@@ -30,11 +29,17 @@ class _ChatPageState extends State<ChatPage> {
           )
         ],
         title:
-        Text('Messages',
-        style:        
-        TextStyle(
-          fontWeight: FontWeight.w600,
-        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+             Icon(Icons.arrow_back_ios),
+            Text('Messages',
+            style:        
+            TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+            ),
+          ],
         )
       ,),
       body: Container(
