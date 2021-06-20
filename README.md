@@ -82,7 +82,7 @@ Same as getting the message but send post request instead with following as the 
 ```
 
 ## Message overview page:
-Send get request to **http://travellum.herokuapp.com/chat-api/**. You will 
+Send get request to **http://travellum.herokuapp.com/chat-api/**. You will get
 something like the following as the response:
 ```
 [
