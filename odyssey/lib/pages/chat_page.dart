@@ -44,9 +44,7 @@ class _ChatPageState extends State<ChatPage> {
       ,),
       body: Container(
         color: bgColor,
-        child: SingleChildScrollView(
-          
-          
+        child: SingleChildScrollView(       
           scrollDirection: Axis.vertical,
           child: Column(
             children: [
@@ -54,8 +52,7 @@ class _ChatPageState extends State<ChatPage> {
                 padding: EdgeInsets.all(20),
                 child: Container(
                   height: 40,
-                  child: TextField(
-                    
+                  child: TextField(                    
                     cursorHeight: 20,
                     decoration: InputDecoration(
                       fillColor: Colors.white,
