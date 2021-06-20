@@ -137,7 +137,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       body: Container(
         margin: EdgeInsets.all(10),
         width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 22),
         height: deviceSize.height,
         child: SingleChildScrollView(
           child: Column(
