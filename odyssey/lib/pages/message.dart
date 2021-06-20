@@ -36,7 +36,7 @@ class _MessageState extends State<Message> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "hello  jfeqhj hwhe uhj dwhfuh jdhbpkjh bwdpfhp kdwjfbh pkdwfjh dpfkjhb pkjdbwh kpj",
+                        "hello..ihihihihihi. Ma Guptaji. Chineu?",
                         style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontSize: 15),
@@ -68,7 +68,7 @@ class _MessageState extends State<Message> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "hello  jfeqhj hwhe uhj dwhfuh jdhbpkjh bwdpfhp kdwjfbh pkdwfjh dpfkjhb pkjdbwh kpj",
+                    "Hello! How are you doing? hehehehehe",
                     style: TextStyle(color: Colors.white, fontSize: 15),
                   ),
                   SizedBox(

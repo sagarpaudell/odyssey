@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:odyssey/pages/auth_page.dart';
 import 'package:odyssey/pages/chat_page.dart';
 import './pages/auth_page.dart';
 import 'package:provider/provider.dart';
@@ -63,8 +62,8 @@ class _MyAppState extends State<MyApp> {
                       fontFamily: 'Mulish'),
                 ),
           ),
+          
           // home: auth.isAuth ? FeedsPage() : EditProfilePage(),
-
           home: ChatPage(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as syspaths;
+import 'package:flutter_svg/flutter_svg.dart';
 
 class DpInput extends StatefulWidget {
   Function onSelectImg;
@@ -36,37 +37,52 @@ class _DpInputState extends State<DpInput> {
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
-    return Container(
+    return SizedBox(
+      height: deviceSize.width * 0.45,
       width: deviceSize.width * 0.45,
       child: Stack(
-        alignment: Alignment.bottomCenter,
+        fit: StackFit.expand,
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(100),
-            child: Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.grey),
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: _storedImage != null
-                  ? Image.file(
-                      _storedImage,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    )
-                  : Text(
-                      'No Image Taken',
-                      textAlign: TextAlign.center,
+          CircleAvatar(
+            backgroundImage: _storedImage != null
+                ? FileImage(
+                    _storedImage,
+                  )
+                : null,
+            child: _storedImage == null
+                ? SvgPicture.asset("assets/icons/man.svg")
+                : null,
+          ),
+          Positioned(
+            right: 7,
+            bottom: 0,
+            child: SizedBox(
+              height: 40,
+              width: 40,
+              child: TextButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Color(0xFFF5F6F9)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      side: BorderSide(color: Colors.white),
                     ),
-              alignment: Alignment.center,
+                  ),
+
+                  //RoundedRectangleBorder(
+                  //   borderRadius: BorderRadius.circular(50),
+                  //   side: BorderSide(color: Colors.white),
+                ),
+                onPressed: _takePicture,
+                child: SvgPicture.asset("assets/icons/Camera Icon.svg"),
+              ),
             ),
           ),
-          IconButton(
-            icon: Icon(Icons.camera),
-            onPressed: _takePicture,
-          ),
+          // IconButton(
+          //   icon: Icon(Icons.camera),
+          //   onPressed: _takePicture,
+          // ),
         ],
       ),
     );

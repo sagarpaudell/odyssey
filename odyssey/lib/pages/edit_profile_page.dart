@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
+import '../providers/profile.dart';
+
 import '../widgets/dp_input.dart';
+import '../models/traveller.dart';
 import 'dart:io';
 
 enum Gender {
@@ -21,14 +25,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
   File _pickedImage;
   final GlobalKey<FormState> _form = GlobalKey();
   final _lastNameFocusNode = FocusNode();
-  final _addressFocusNode = FocusNode();
+  final _cityFocusNode = FocusNode();
+  final _countryFocusNode = FocusNode();
+
   final _genderFocusNode = FocusNode();
 
-  Map<String, String> _profileData = {
+  var _profileTraveller = Traveller(
+    username: '',
+    firstname: '',
+    lastname: '',
+    profilePic: null,
+    gender: '',
+    country: '',
+    city: '',
+    travellerId: null,
+  );
+
+  Map _profileData = {
     'firstname': '',
     'lastname': '',
-    'address': '',
-    'gender': '',
+    'country': '',
+    'city': '',
   };
 
   String get genderText {
@@ -56,6 +73,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Radio<Gender>(
+          focusNode: _genderFocusNode,
           value: genderVal,
           groupValue: gender,
           activeColor: Theme.of(context).primaryColor,
@@ -78,26 +96,37 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void dispose() {
     _lastNameFocusNode.dispose();
-    _addressFocusNode.dispose();
+    _cityFocusNode.dispose();
+    _countryFocusNode.dispose();
     _genderFocusNode.dispose();
     super.dispose();
   }
 
-  Future<void> _saveForm() async {
+  void _saveForm() {
     final _isValid = _form.currentState.validate();
     if (!_isValid) {
       print('svsfvs');
       return;
     }
+    print('control');
     if (gender == null) {
       print('Null gender');
       return;
     }
-    _profileData['gender'] = genderText;
 
     _form.currentState.save();
-
-    setState(() {});
+    _profileTraveller = Traveller(
+      username: '',
+      firstname: _profileData['firstname'],
+      lastname: _profileData['lastname'],
+      profilePic: _pickedImage,
+      gender: genderText,
+      country: _profileData['country'],
+      city: _profileData['city'],
+      travellerId: null,
+    );
+    Provider.of<Profile>(context, listen: false).editProfile(_profileTraveller);
+    //setState(() {});
   }
 
   @override
@@ -113,25 +142,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Text(
-                'Let\'s create a profile for you',
-                style: TextStyle(
-                  color: Colors.amber,
+              Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: Text(
+                  'Let\'s create a profile for you',
+                  style: TextStyle(color: Color(0XFF8B8B8B), fontSize: 18),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
               Container(
                 height: deviceSize.height * 0.2,
                 width: deviceSize.width * 0.8,
                 child: Row(
-                  mainAxisAlignment: _profileData['firstname'].isEmpty &&
-                          _profileData['lastname'].isEmpty
+                  mainAxisAlignment: _profileTraveller.firstname.isEmpty &&
+                          _profileTraveller.lastname.isEmpty
                       ? MainAxisAlignment.center
                       : MainAxisAlignment.spaceBetween,
                   children: [
                     DpInput(_selectImage),
-                    _profileData['firstname'].isEmpty &&
-                            _profileData['lastname'].isEmpty
+                    _profileTraveller.firstname.isEmpty &&
+                            _profileTraveller.lastname.isEmpty
                         ? SizedBox(
                             height: 0,
                             width: 0,
@@ -141,7 +171,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             child: ListTile(
                               title: FittedBox(
                                 child: Text(
-                                  '${_profileData['firstname']} ${_profileData['lastname']}',
+                                  'vsdvd',
+                                  //'${_profileData.firstname} ${_profileData.lastname}',
                                   style: TextStyle(
                                       fontSize: 30, fontFamily: 'Lato'),
                                 ),
@@ -186,8 +217,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         textInputAction: TextInputAction.next,
                         focusNode: _lastNameFocusNode,
                         onFieldSubmitted: (_) {
-                          FocusScope.of(context)
-                              .requestFocus(_addressFocusNode);
+                          FocusScope.of(context).requestFocus(_cityFocusNode);
                         },
                         validator: (value) {
                           if (value.isEmpty) {
@@ -200,21 +230,40 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         },
                       ),
                       TextFormField(
-                        decoration: InputDecoration(labelText: 'Address'),
+                        decoration: InputDecoration(labelText: 'City'),
                         keyboardType: TextInputType.text,
-                        focusNode: _addressFocusNode,
+                        focusNode: _cityFocusNode,
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context)
+                              .requestFocus(_countryFocusNode);
+                        },
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'City cannot be empty!';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _profileData['city'] = value;
+                        },
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Country'),
+                        keyboardType: TextInputType.text,
+                        focusNode: _countryFocusNode,
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) {
                           FocusScope.of(context).requestFocus(_genderFocusNode);
                         },
                         validator: (value) {
                           if (value.isEmpty) {
-                            return 'Address cannot be empty!';
+                            return 'Country cannot be empty!';
                           }
                           return null;
                         },
                         onSaved: (value) {
-                          _profileData['address'] = value;
+                          _profileData['country'] = value;
                         },
                       ),
                       SizedBox(
@@ -231,15 +280,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           genderRadio('Others', Gender.others),
                         ],
                       ),
-
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children: [
-                      //     genderRadio('Male', Gender.male),
-                      //     genderRadio('Female', Gender.female),
-                      //     genderRadio('Others', Gender.others),
-                      //   ],
-                      // ),
                     ],
                   ),
                 ),

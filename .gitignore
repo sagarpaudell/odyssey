@@ -42,10 +42,8 @@ Pipfile
 **/build/
 **/odyssey/build/
 **/odyssey/ios/
-**/odyssey/android/
 **/odyssey/build
 odyssey/ios
-odyssey/android
 photos/
 odyssey/build/app/
 odyssey/build/app
@@ -59,8 +57,8 @@ app.*.symbols
 app.*.map.json
 
 # Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+**/odyssey/android/app/debug
+**/odyssey/android/app/profile
+**/odyssey/android/app/release
 
 
