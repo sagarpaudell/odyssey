@@ -144,7 +144,7 @@ something like the following as the response:
             "gender": "",
             "photo_main": null
         },
-        "message_text": "Fuck you samesh",
+        "message_text": "hey wanna go on a date??",
         "message_time": "Jun 20 2021 13:09:56:pm",
         "message_seen": false
     }
