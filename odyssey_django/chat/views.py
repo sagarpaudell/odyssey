@@ -56,5 +56,6 @@ class AllConversationsView(APIView):
                     Q(sender=friend) | Q(receiver=friend)
                 ).last()
             chat_list.append(last_message)
+        chat_list = sorted(chat_list, key=lambda x: x.message_time.isoformat())
         chat = ChatSerializer(chat_list, many=True)
         return Response(chat.data)
