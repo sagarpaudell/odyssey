@@ -152,7 +152,7 @@ something like the following as the response:
 ```
 Each element of the above json array response, corresponds to the latest 
 message in between the logged in user and all the people who has had a 
-conversation with the loggen in user. Pardon my tate fate english. Hope you
+conversation with the logged in user. Pardon my tate fate english. Hope you
 got the gist
 
 
