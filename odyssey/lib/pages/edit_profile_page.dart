@@ -142,12 +142,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Text(
-                'Let\'s create a profile for you',
-                style: TextStyle(
-                  color: Colors.amber,
+              Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: Text(
+                  'Let\'s create a profile for you',
+                  style: TextStyle(color: Color(0XFF8B8B8B), fontSize: 18),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
               Container(
                 height: deviceSize.height * 0.2,
