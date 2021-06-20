@@ -82,7 +82,7 @@ Same as getting the message but send post request instead with following as the 
 ```
 
 ## Message overview page:
-Send get request to **http://travellum.herokuapp.com/chat-api/**. You will 
+Send get request to **http://travellum.herokuapp.com/chat-api/**. You will get
 something like the following as the response:
 ```
 [
@@ -144,7 +144,7 @@ something like the following as the response:
             "gender": "",
             "photo_main": null
         },
-        "message_text": "Fuck you samesh",
+        "message_text": "hey wanna go on a date??",
         "message_time": "Jun 20 2021 13:09:56:pm",
         "message_seen": false
     }
@@ -152,7 +152,7 @@ something like the following as the response:
 ```
 Each element of the above json array response, corresponds to the latest 
 message in between the logged in user and all the people who has had a 
-conversation with the loggen in user. Pardon my tate fate english. Hope you
+conversation with the logged in user. Pardon my tate fate english. Hope you
 got the gist
 
 
