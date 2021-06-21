@@ -12,13 +12,13 @@ class Traveller {
   File profilePic;
 
   Traveller({
-    @required this.username,
+    this.username,
     @required this.firstname,
     @required this.lastname,
-    @required this.profilePic,
-    @required this.gender,
+    this.profilePic,
+    this.gender,
     @required this.country,
     @required this.city,
-    @required this.travellerId,
+    this.travellerId,
   });
 }
