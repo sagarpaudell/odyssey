@@ -1,49 +1,158 @@
-# JWT authentication
-## Requesting the token
-First send a post request to **https://travellum.herokuapp.com/accounts-api/get-auth-token/** with following json as the body of the request:
-```
-{
-    "username": "admin",
-    "password": "asdfjkl;"
-}
-```
+# CHAT
+## Chat with specific user 
+send a get request to **https://travellum.herokuapp.com/chat-api/sagar/** where **sagar** is the username
 
 You will recieve something like the following as the response. 
 ```
+[
+    {
+        "sender": {
+            "username": "biraj",
+            "id": 8,
+            "first_name": "Biraje",
+            "last_name": "Adhikari",
+            "address": "",
+            "city": "",
+            "country": "",
+            "bio": "",
+            "contact_no": "",
+            "gender": "",
+            "photo_main": "/photos/2021/06/20/hijikata_k68mcmr.png"
+        },
+        "receiver": {
+            "username": "sagar",
+            "id": 11,
+            "first_name": "Sagar",
+            "last_name": "Paudell",
+            "address": "",
+            "city": "",
+            "country": "",
+            "bio": "",
+            "contact_no": "",
+            "gender": "",
+            "photo_main": null
+        },
+        "message_text": "sankeko bhai",
+        "message_time": "Jun 20 2021 08:07:31:am",
+        "message_seen": false
+    },
+    {
+        "sender": {
+            "username": "sagar",
+            "id": 11,
+            "first_name": "Sagar",
+            "last_name": "Paudell",
+            "address": "",
+            "city": "",
+            "country": "",
+            "bio": "",
+            "contact_no": "",
+            "gender": "",
+            "photo_main": null
+        },
+        "receiver": {
+            "username": "biraj",
+            "id": 8,
+            "first_name": "Biraje",
+            "last_name": "Adhikari",
+            "address": "",
+            "city": "",
+            "country": "",
+            "bio": "",
+            "contact_no": "",
+            "gender": "",
+            "photo_main": "/photos/2021/06/20/hijikata_k68mcmr.png"
+        },
+        "message_text": "haina daju haina",
+        "message_time": "Jun 20 2021 08:07:42:am",
+        "message_seen": false
+    }
+]
+```
+Each entry in the above json list corresponds to a message sent in between 
+the authenticated user and the username in the url path
 
+## Sending message to a specific user
+Same as getting the message but send post request instead with following as the body
+```
 {
-    "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYyMzU2NDEyNywianRpIjoiZmI3MTA0YWQzYWIzNDAyZDkzNjk0YzczMjhiZGYwZWIiLCJ1c2VyX2lkIjo5fQ.Clr_d8CCKA6vq-31TcQjRlAr9Ks2TYnQdrgdTuha2mQ",
-    "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjIzNDc4MDI3LCJqdGkiOiI4YzgwNDMwZGZhNzI0OGI5OGNlMmI4YTk5NmUyNGJjZCIsInVzZXJfaWQiOjl9.MS3PTh3RgCPE9zcfXSC3F4aCU_bR4rKhDWWi_pDB8eQ"
+    "message_text": "hey wanna go on a date??"
 }
- 
-```
-## Refresh token
-When the short-lived access token expires, you can use the longer-lived refresh
-token to obtain another access token by sending following json as the body of
-the request to **http://travellum.herokuapp.com/accounts-api/refresh-auth-token/**
-```
-{
-    "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYyMzU2NDEyNywianRpIjoiZmI3MTA0YWQzYWIzNDAyZDkzNjk0YzczMjhiZGYwZWIiLCJ1c2VyX2lkIjo5fQ.Clr_d8CCKA6vq-31TcQjRlAr9Ks2TYnQdrgdTuha2mQ"
-}
+
 ```
 
-
-
-## Register :
-Send post request to **http://travellum.herokuapp.com/accounts-api/user/** with
-following in the header:\ `Authorization : Bearer <access>`      
-and  the following as body in the json
+## Message overview page:
+Send get request to **http://travellum.herokuapp.com/chat-api/**. You will get
+something like the following as the response:
 ```
-{
-    "username": "alisha231",
-    "first_name": "alisha",
-    "last_name": "shrestha",
-    "email": "alisha@shrestha.com",
-    "password": "heytheredelilah"
-}
+[
+    {
+        "sender": {
+            "username": "sagar",
+            "id": 11,
+            "first_name": "Sagar",
+            "last_name": "Paudell",
+            "address": "",
+            "city": "",
+            "country": "",
+            "bio": "",
+            "contact_no": "",
+            "gender": "",
+            "photo_main": null
+        },
+        "receiver": {
+            "username": "biraj",
+            "id": 8,
+            "first_name": "Biraje",
+            "last_name": "Adhikari",
+            "address": "",
+            "city": "",
+            "country": "",
+            "bio": "",
+            "contact_no": "",
+            "gender": "",
+            "photo_main": "/photos/2021/06/20/hijikata_k68mcmr.png"
+        },
+        "message_text": "haina daju haina",
+        "message_time": "Jun 20 2021 08:07:42:am",
+        "message_seen": false
+    },
+    {
+        "sender": {
+            "username": "biraj",
+            "id": 8,
+            "first_name": "Biraje",
+            "last_name": "Adhikari",
+            "address": "",
+            "city": "",
+            "country": "",
+            "bio": "",
+            "contact_no": "",
+            "gender": "",
+            "photo_main": "/photos/2021/06/20/hijikata_k68mcmr.png"
+        },
+        "receiver": {
+            "username": "samesh",
+            "id": 9,
+            "first_name": "Samesh",
+            "last_name": "Bazracharya",
+            "address": "",
+            "city": "",
+            "country": "",
+            "bio": "",
+            "contact_no": "",
+            "gender": "",
+            "photo_main": null
+        },
+        "message_text": "hey wanna go on a date??",
+        "message_time": "Jun 20 2021 13:09:56:pm",
+        "message_seen": false
+    }
+]
 ```
-##  Login:
+Each element of the above json array response, corresponds to the latest 
+message in between the logged in user and all the people who has had a 
+conversation with the logged in user. Pardon my tate fate english. Hope you
+got the gist
 
-if you send a get request to **http://travellum.herokuapp.com/accounts-api/user/** with
-authorization header with the users access token, you will receive the
-information of the user from the database
+

@@ -17,8 +17,10 @@ class UserRecordView(APIView):
 
     def post(self, request):
         """make post request with user info to register"""
+        request.data["username"] = request.data["username"].lower()
+        request.data["first_name"] = request.data["first_name"].title()
+        request.data["last_name"] = request.data["last_name"].title()
         serializer = UserSerializer(data = request.data)
-        print(serializer)
         if serializer.is_valid(raise_exception=ValueError):
             serializer.create(validated_data=request.data)
             return Response(
@@ -36,6 +38,9 @@ class UserRecordView(APIView):
     def put(self, request):
         """make post request with user info to register"""
         user = self.request.user
+        request.data["username"] = request.data["username"].lower()
+        request.data["first_name"] = request.data["first_name"].title()
+        request.data["last_name"] = request.data["last_name"].title()
         serializer = UserSerializer(user, data = request.data)
         if serializer.is_valid(raise_exception=ValueError):
             serializer.save(validated_data=request.data)
