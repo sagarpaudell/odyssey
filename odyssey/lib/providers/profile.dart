@@ -28,10 +28,14 @@ class Profile with ChangeNotifier {
       request.fields['country'] = profile.country;
       request.fields['city'] = profile.city;
       request.fields['first_name'] = profile.firstname;
+      request.files.add(await http.MultipartFile.fromPath(
+        'photo_main',
+        profile.profilePicPath,
+      ));
       request.headers.addAll(headers);
 
       var response = await request.send();
-      //print(response.statusCode);
+      print(response.statusCode);
       notifyListeners();
     } catch (error) {
       print(error);

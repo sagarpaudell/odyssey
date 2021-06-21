@@ -17,7 +17,7 @@ class DpInput extends StatefulWidget {
 }
 
 class _DpInputState extends State<DpInput> {
-  File _storedImage;
+  PickedFile _storedImage;
 
   Future<void> _takePicture() async {
     final imageFile = await ImagePicker().getImage(
@@ -27,10 +27,9 @@ class _DpInputState extends State<DpInput> {
     if (imageFile == null) {
       return;
     }
-    _storedImage = File(imageFile.path);
 
     setState(() {
-      _storedImage = File(imageFile.path);
+      _storedImage = imageFile;
     });
     // await Provider.of<Profile>(context, listen: false)
     //     .tempProfile(_storedImage);
@@ -52,7 +51,7 @@ class _DpInputState extends State<DpInput> {
           CircleAvatar(
             backgroundImage: _storedImage != null
                 ? FileImage(
-                    _storedImage,
+                    File(_storedImage.path),
                   )
                 : null,
             child: _storedImage == null

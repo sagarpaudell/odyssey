@@ -9,13 +9,13 @@ class Traveller {
   String gender;
   String country;
   String city;
-  File profilePic;
+  String profilePicPath;
 
   Traveller({
     this.username,
     @required this.firstname,
     @required this.lastname,
-    this.profilePic,
+    this.profilePicPath,
     this.gender,
     @required this.country,
     @required this.city,

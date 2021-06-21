@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'package:odyssey/pages/feeds_page.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
@@ -23,7 +25,7 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  File _pickedImage;
+  PickedFile _pickedImage;
   final GlobalKey<FormState> _form = GlobalKey();
   final _lastNameFocusNode = FocusNode();
   final _cityFocusNode = FocusNode();
@@ -35,7 +37,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     username: '',
     firstname: '',
     lastname: '',
-    profilePic: null,
+    profilePicPath: null,
     gender: '',
     country: '',
     city: '',
@@ -66,7 +68,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  void _selectImage(File pickedImg) {
+  void _selectImage(PickedFile pickedImg) {
     _pickedImage = pickedImg;
   }
 
@@ -158,7 +160,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       username: '',
       firstname: _profileData['firstname'],
       lastname: _profileData['lastname'],
-      profilePic: _pickedImage,
+      profilePicPath: _pickedImage.path,
       gender: genderText,
       country: _profileData['country'],
       city: _profileData['city'],
