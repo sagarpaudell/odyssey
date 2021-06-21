@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:odyssey/providers/auth.dart';
+import 'package:odyssey/providers/profile.dart';
 import 'package:odyssey/screens/screens.dart';
 
 import 'package:provider/provider.dart';
