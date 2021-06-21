@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import '../providers/profile.dart';
 
 class DpInput extends StatefulWidget {
   Function onSelectImg;
@@ -15,7 +17,7 @@ class DpInput extends StatefulWidget {
 }
 
 class _DpInputState extends State<DpInput> {
-  File _storedImage;
+  PickedFile _storedImage;
 
   Future<void> _takePicture() async {
     final imageFile = await ImagePicker().getImage(
@@ -25,13 +27,16 @@ class _DpInputState extends State<DpInput> {
     if (imageFile == null) {
       return;
     }
+
     setState(() {
-      _storedImage = File(imageFile.path);
+      _storedImage = imageFile;
     });
-    final appDir = await syspaths.getApplicationDocumentsDirectory();
-    final fileName = path.basename(imageFile.path);
-    final savedImage = await _storedImage.copy('${appDir.path}/$fileName');
-    widget.onSelectImg(savedImage);
+    // await Provider.of<Profile>(context, listen: false)
+    //     .tempProfile(_storedImage);
+    // final appDir = await syspaths.getApplicationDocumentsDirectory();
+    // final fileName = path.basename(imageFile.path);
+    // final savedImage = await _storedImage.copy('${appDir.path}/$fileName');
+    widget.onSelectImg(_storedImage);
   }
 
   @override
@@ -46,7 +51,7 @@ class _DpInputState extends State<DpInput> {
           CircleAvatar(
             backgroundImage: _storedImage != null
                 ? FileImage(
-                    _storedImage,
+                    File(_storedImage.path),
                   )
                 : null,
             child: _storedImage == null

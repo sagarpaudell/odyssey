@@ -44,11 +44,15 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(
           create: (ctx) => Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, Profile>(
+          create: (ctx) => Profile(),
+          update: (ctx, auth, traveller) => Profile(auth.userName, auth.userId,
+              auth.token, traveller == null ? null : traveller.travellerUser),
         )
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
-          debugShowCheckedModeBanner: false,
           title: 'Odyssey',
           theme: ThemeData(
             primarySwatch: colorCustom,

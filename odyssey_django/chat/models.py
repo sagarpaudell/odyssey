@@ -10,3 +10,7 @@ class Chat(models.Model):
     message_time = models.DateTimeField(auto_now_add = True)
     message_seen = models.BooleanField(default=False)
     message_seen_time = models.DateTimeField(auto_now_add = True)
+
+    def get_time(self):
+        return self.message_time.strftime("%b %d %Y %H:%M:%S:%P")
+    

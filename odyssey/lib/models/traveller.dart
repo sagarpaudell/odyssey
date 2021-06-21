@@ -9,16 +9,16 @@ class Traveller {
   String gender;
   String country;
   String city;
-  File profilePic;
+  String profilePicPath;
 
   Traveller({
-    @required this.username,
+    this.username,
     @required this.firstname,
     @required this.lastname,
-    @required this.profilePic,
-    @required this.gender,
+    this.profilePicPath,
+    this.gender,
     @required this.country,
     @required this.city,
-    @required this.travellerId,
+    this.travellerId,
   });
 }
