@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:odyssey/pages/feeds_page.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
@@ -94,23 +95,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  // @override
-  // void initState() {
-  //   getUserProfile();
-  //   super.initState();
-  // }
+  Future fbuilder;
+  @override
+  void initState() {
+    fbuilder = getUserProfile();
+    super.initState();
+  }
 
   Future<void> getUserProfile() async {
-    _profileTraveller =
-        await Provider.of<Profile>(context, listen: false).getProfile();
-    _profileData = {
-      'firstname': _profileTraveller.firstname,
-      'lastname': _profileTraveller.lastname,
-      'country': _profileTraveller.country,
-      'city': _profileTraveller.city,
-      'username': _profileTraveller.username,
-    };
-    print(_profileData['firstname']);
+    try {
+      _profileTraveller =
+          await Provider.of<Profile>(context, listen: false).getProfile();
+      _profileData = {
+        'firstname': _profileTraveller.firstname,
+        'lastname': _profileTraveller.lastname,
+        'country': _profileTraveller.country,
+        'city': _profileTraveller.city,
+        'username': _profileTraveller.username,
+      };
+      print(_profileData['firstname']);
+    } catch (error) {
+      print(error);
+    }
   }
 
   @override
@@ -182,9 +188,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     //final authData = Provider.of<Auth>(context, listen: false);
     Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
+      //body:
       body: FutureBuilder<void>(
-        future:
-            getUserProfile(), // a previously-obtained Future<String> or null
+        future: fbuilder, // a previously-obtained Future<String> or null
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
                 ? Center(

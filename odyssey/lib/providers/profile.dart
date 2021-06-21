@@ -84,6 +84,7 @@ class Profile with ChangeNotifier {
       );
 
       print(userDataResponse.statusCode);
+      notifyListeners();
       return userProfile;
     } catch (error) {
       print(json.decode(error));

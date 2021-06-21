@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> {
                       fontFamily: 'Mulish'),
                 ),
           ),
-          home: auth.isAuth ? FeedsPage() : EditProfilePage(),
+          home: auth.isAuth ? EditProfilePage() : AuthPage(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsPage.routeName: (ctx) => FeedsPage(),
