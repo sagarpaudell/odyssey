@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:odyssey/pages/message.dart';
+import 'package:odyssey/widgets/message.dart';
 
 class ChatList extends StatelessWidget {
   
