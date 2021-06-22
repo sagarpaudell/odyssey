@@ -5,7 +5,9 @@ from django.db.models.signals import post_save
 class Traveller(models.Model):
     first_name = models.CharField(max_length=200,blank=True)
     last_name = models.CharField(max_length=200,blank=True)
-    username = models.OneToOneField(User, on_delete= models.CASCADE, blank=True)
+    username = models.OneToOneField(User, on_delete= models.CASCADE)
+    followers = models.ManyToManyField('self', related_name="following", blank=True)
+    following = models.ManyToManyField('self', related_name="followers", blank=True)
     address = models.CharField(max_length=200,blank=True)
     city = models.CharField(max_length=100,blank=True)
     country = models.CharField(max_length=100,blank=True)
@@ -17,7 +19,8 @@ class Traveller(models.Model):
 
 
     def __str__(self):
-        return self.first_name
+        id = self.id
+        return f"{id=}, {self.first_name} {self.last_name}"
 
 
 
@@ -26,11 +29,10 @@ def edit_or_create_traveller(sender, instance, **kwargs):
     if traveller.exists():
         traveller = traveller.first()
         traveller.first_name = instance.first_name
-        print(f"first_name={traveller.first_name}")
         traveller.last_name = instance.last_name
         traveller.save()
     else:
-        Traveller.objects.create(username=instance, 
+        Traveller.objects.create(username=instance,
             first_name=instance.first_name,
             last_name=instance.last_name
             )

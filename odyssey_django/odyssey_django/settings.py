@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'channels',
     'accounts_api',
     'traveller_api',
     'places_api',
@@ -118,8 +119,16 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'odyssey_django.wsgi.application'
-
+# WSGI_APPLICATION = 'odyssey_django.wsgi.application'
+ASGI_APPLICATION = 'odyssey_django.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

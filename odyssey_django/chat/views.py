@@ -35,6 +35,7 @@ class ChatView(APIView):
         chat = Chat.objects.create(sender = login_user, receiver = friend_user,
                 message_text = message_text)
         return Response(ChatSerializer(chat).data)
+    
 
 
 class AllConversationsView(APIView):
