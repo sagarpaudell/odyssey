@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:odyssey/pages/feeds_page.dart';
+import 'package:odyssey/screens/feeds_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
 import '../providers/profile.dart';
@@ -18,13 +18,13 @@ enum Gender {
 }
 Gender gender;
 
-class EditProfilePage extends StatefulWidget {
+class EditProfileScreen extends StatefulWidget {
   static const routeName = '/edit-profile';
   @override
-  _EditProfilePageState createState() => _EditProfilePageState();
+  _EditProfileScreenState createState() => _EditProfileScreenState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class _EditProfileScreenState extends State<EditProfileScreen> {
   PickedFile _pickedImage;
   final GlobalKey<FormState> _form = GlobalKey();
   final _lastNameFocusNode = FocusNode();
@@ -173,7 +173,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     try {
       await Provider.of<Profile>(context, listen: false)
           .editProfile(_profileTraveller);
-      Navigator.of(context).pushReplacementNamed(FeedsPage.routeName);
+      Navigator.of(context).pushReplacementNamed(FeedsScreen.routeName);
     } catch (e) {
       const errorMessage =
           'Could not authenticate you. Please try again later.';
