@@ -12,7 +12,7 @@ class Traveller(models.Model):
     bio = models.TextField(blank=True)
     contact_no = models.CharField(max_length=20,blank=True)
     gender = models.CharField(max_length=10,blank=True)
-    photo_main = models.ImageField(upload_to='photos/%Y/%m/%d/',blank=True)
+    photo_main = models.ImageField(upload_to='profile_photos/%Y/%m/%d/',blank=True)
     reg_date = models.DateTimeField(auto_now_add=True)
 
 

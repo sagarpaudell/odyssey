@@ -16,11 +16,11 @@ class Profile with ChangeNotifier {
   Profile([this.username, this.userId, this.authToken, this.travellerUser]);
 
   Future<void> editProfile(Traveller profile) async {
-    const url = 'https://travellum.herokuapp.com/traveller-api/';
+    const url = 'http://10.0.2.2:8000/traveller-api/';
     final token = 'Bearer ' + authToken;
 
     Map<String, String> headers = {"Authorization": token};
-
+    //final bytes = await profile.profilePic.readAsBytes();
     try {
       final request = new http.MultipartRequest('PUT', Uri.parse(url));
       request.fields['first_name'] = profile.firstname;
@@ -28,10 +28,13 @@ class Profile with ChangeNotifier {
       request.fields['country'] = profile.country;
       request.fields['city'] = profile.city;
       request.fields['first_name'] = profile.firstname;
-      request.files.add(await http.MultipartFile.fromPath(
-        'photo_main',
-        profile.profilePicPath,
-      ));
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'photo_main',
+          File(profile.profilePic.path).readAsBytesSync(),
+          filename: '$userId.jpg',
+        ),
+      );
       request.headers.addAll(headers);
 
       var response = await request.send();
@@ -70,7 +73,7 @@ class Profile with ChangeNotifier {
 
   Future<Traveller> getProfile() async {
     print('getprofile');
-    const url = 'https://travellum.herokuapp.com/traveller-api/';
+    const url = 'http://10.0.2.2:8000/traveller-api/';
     final token = 'Bearer ' + authToken;
     try {
       final userDataResponse = await http.get(

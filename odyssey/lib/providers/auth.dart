@@ -17,9 +17,11 @@ class Auth with ChangeNotifier {
 
   Future<void> getToken(
       {String username = 'postgres', String password = 'postgres'}) async {
-    const url =
-        'https://travellum.herokuapp.com/accounts-api/get-auth-token/'; //...
+    const url = 'http://10.0.2.2:8000/accounts-api/get-auth-token/';
+    // const url =
+    //     'https://travellum.herokuapp.com/accounts-api/get-auth-token/'; //...
     try {
+      print('try block');
       final response = await http.post(
         Uri.parse(url),
         headers: {
@@ -39,7 +41,7 @@ class Auth with ChangeNotifier {
       } else {
         token = json.decode(response.body)['access'];
         _userRefreshToken = json.decode(response.body)['refresh'];
-        const url = 'https://travellum.herokuapp.com/accounts-api/user/'; //...
+        const url = 'http://10.0.2.2:8000/accounts-api/user/'; //...
 
         final tokenHeader = 'Bearer ' + token;
         print(tokenHeader);
@@ -79,7 +81,7 @@ class Auth with ChangeNotifier {
 
   Future<void> signup(
       String email, String phone, String userName, String password) async {
-    const _url = 'https://travellum.herokuapp.com/accounts-api/user/';
+    const _url = 'http://10.0.2.2:8000/accounts-api/user/';
     getToken();
     final authToken = 'Bearer ' + _rootToken;
     print(authToken);
