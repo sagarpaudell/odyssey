@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:odyssey/screens/screens.dart';
 
-import 'package:odyssey/screens/feeds_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
 import '../providers/profile.dart';
@@ -18,13 +18,13 @@ enum Gender {
 }
 Gender gender;
 
-class EditProfileScreen extends StatefulWidget {
+class EditProfilePage extends StatefulWidget {
   static const routeName = '/edit-profile';
   @override
-  _EditProfileScreenState createState() => _EditProfileScreenState();
+  _EditProfilePageState createState() => _EditProfilePageState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _EditProfilePageState extends State<EditProfilePage> {
   PickedFile _pickedImage;
   final GlobalKey<FormState> _form = GlobalKey();
   final _lastNameFocusNode = FocusNode();
