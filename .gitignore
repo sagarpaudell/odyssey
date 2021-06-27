@@ -10,7 +10,6 @@ odyssey_django/lib64/
 # Miscellaneous
 *.class
 *.log
-*.pyc
 *.swp
 .DS_Store
 .atom/
