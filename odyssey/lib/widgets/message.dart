@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import '../providers/chat.dart';
 
 class Message extends StatefulWidget {
   @override
@@ -8,7 +10,18 @@ class Message extends StatefulWidget {
 class _MessageState extends State<Message> {
   // Size deviceSize = MediaQuery.of(context).size;
   Color bgColor = Color(0xffe8edea);
+  final _channel = WebSocketChannel.connect(
+    Uri.parse('wss://echo.websocket.org'),
+  );
 
+  @override
+  void dispose() {
+    _channel.sink.close();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  final _controller = TextEditingController();
   _messageBuilder() {
     return Container(
       margin: EdgeInsets.only(top: 8),
@@ -35,12 +48,30 @@ class _MessageState extends State<Message> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "hello..ihihihihihi. Ma Guptaji. Chineu?",
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 15),
+                      Container(
+                        height: 40,
+                        width: 40,
+                        child: StreamBuilder(
+                          stream: _channel.stream,
+                          builder: (context, snapshot) {
+                            return snapshot.connectionState ==
+                                    ConnectionState.waiting
+                                ? CircularProgressIndicator()
+                                : Text(
+                                    snapshot.hasData ? '${snapshot.data}' : '',
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 15),
+                                  );
+                          },
+                        ),
                       ),
+                      // Text(
+                      //   "hello..ihihihihihi",
+                      //   style: TextStyle(
+                      //       color: Theme.of(context).primaryColor,
+                      //       fontSize: 15),
+                      // ),
                       SizedBox(
                         height: 8,
                       ),
@@ -101,11 +132,14 @@ class _MessageState extends State<Message> {
         child: Container(
           width: MediaQuery.of(context).size.width * 0.8,
           child: TextField(
+            controller: _controller,
             decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,
-              suffixIcon:
-                  Icon(Icons.send, color: Theme.of(context).primaryColor),
+              suffixIcon: IconButton(
+                icon: Icon(Icons.send, color: Theme.of(context).primaryColor),
+                onPressed: _sendMessageFun,
+              ),
               contentPadding: EdgeInsets.only(
                 left: 30,
                 right: 50,
@@ -121,7 +155,13 @@ class _MessageState extends State<Message> {
       ),
     );
   }
+
   //end of _sendMessage
+  void _sendMessageFun() {
+    if (_controller.text.isNotEmpty) {
+      _channel.sink.add(_controller.text);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -257,8 +297,8 @@ class _MessageState extends State<Message> {
               ),
               child: ListView.builder(
                   reverse: true, //displays messages from bottom
-                  itemCount: 4,
-                  itemBuilder: (BuildContext contect, int nothing) {
+                  itemCount: 1,
+                  itemBuilder: (BuildContext context, int nothing) {
                     return _messageBuilder();
                   }),
             ),

@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'dart:convert';
-import 'package:dio/dio.dart';
 
 import '../models/traveller.dart';
 import 'package:http/http.dart' as http;
