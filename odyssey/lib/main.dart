@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:odyssey/providers/auth.dart';
 import 'package:odyssey/providers/profile.dart';
+import 'package:odyssey/screens/profile_self.dart';
 import 'package:odyssey/screens/screens.dart';
 
 import 'package:provider/provider.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -70,7 +72,8 @@ class _MyAppState extends State<MyApp> {
           ),
 
           // home: auth.isAuth ? MainScreen() : EditProfileScreen(),
-          home: ChatScreen(),
+          // home: FeedsScreen(),
+          home: SelfProfile(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsScreen.routeName: (ctx) => FeedsScreen(),
