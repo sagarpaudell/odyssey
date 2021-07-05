@@ -56,6 +56,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Odyssey',
           theme: ThemeData(
             primarySwatch: colorCustom,
@@ -86,6 +87,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class MyHomePage extends StatelessWidget {
+  
   Widget build(BuildContext context) {
     // Provider.of<Auth>(context, listen: false)
     //     .getToken(username: 'dhgrfwhe', password: 'password');
