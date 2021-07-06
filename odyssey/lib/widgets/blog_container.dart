@@ -130,13 +130,13 @@ class _BlogInfo extends StatelessWidget {
                       color: Colors.grey,
                     ),
                   ),
-                   GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => BlogScreen(),
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => BlogScreen(),
+                      ),
                     ),
-                  ),
                     child: Container(
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
