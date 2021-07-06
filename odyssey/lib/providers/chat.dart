@@ -3,6 +3,7 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class Chat with ChangeNotifier {
   final String userId;
@@ -29,13 +30,13 @@ class Chat with ChangeNotifier {
   }
 
   Future<void> getMessageHistory() async {
-    final _url = 'https://travellum.herokuapp.com/chat-api/buddha/';
+    final _url = 'https://travellum.herokuapp.com/chat-api/buddha';
     try {
       final response = await http.get(
         Uri.parse(_url),
         headers: <String, String>{'Authorization': 'Bearer $authToken'},
       );
-      print(response.body);
+      print(DateFormat.yMMMd(json.decode(response.body)[1]['message_time']));
       //final responseData = json.decode(response.body);
       print(response.statusCode);
       print('yahoo');

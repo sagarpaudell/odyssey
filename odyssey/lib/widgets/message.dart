@@ -153,8 +153,36 @@ class _MessageState extends State<Message> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Container(
+                  //   height: 40,
+                  //   width: 40,
+                  //   child: StreamBuilder(
+                  //     stream: _channel.stream,
+                  //     builder: (context, snapshot) {
+                  //       return snapshot.hasError
+                  //           ? Text(
+                  //               snapshot.error.toString(),
+                  //               style: TextStyle(
+                  //                   color: Theme.of(context).primaryColor,
+                  //                   fontSize: 8),
+                  //             )
+                  //           : Text(
+                  //               snapshot.hasData
+                  //                   ? json.decode(snapshot.data)['sender'] ==
+                  //                           "ketone"
+                  //                       ? json.decode(snapshot.data)['message']
+                  //                       : 'Text'
+                  //                   : '',
+                  //               style: TextStyle(
+                  //                   color: Theme.of(context).primaryColor,
+                  //                   fontSize: 15),
+                  //             );
+                  //     },
+                  //   ),
+                  // ),
                   Text(
-                    "Hello! How are you doing? hehehehehe",
+                    // "Hello! How are you doing? hehehehehe",
+                    _controller.text,
                     style: TextStyle(color: Colors.white, fontSize: 15),
                   ),
                   SizedBox(
@@ -213,10 +241,10 @@ class _MessageState extends State<Message> {
 
   //end of _sendMessage
   void _sendMessageFun() {
-    //Provider.of<Chat>(context, listen: false).getMessageHistory();
-    if (_controller.text.isNotEmpty) {
-      _channel.sink.add(json.encode({'message': _controller.text}));
-    }
+    Provider.of<Chat>(context, listen: false).getMessageHistory();
+    // if (_controller.text.isNotEmpty) {
+    //   _channel.sink.add(json.encode({'message': _controller.text}));
+    // }
   }
 
   @override
