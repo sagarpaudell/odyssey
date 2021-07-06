@@ -32,7 +32,7 @@ class _ChatScreenState extends State<ChatScreen> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-             Icon(Icons.arrow_back_ios),
+            //  Icon(Icons.arrow_back_ios),
             Text('Messages',
             style:        
             TextStyle(

@@ -54,6 +54,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Odyssey',
           theme: ThemeData(
             primarySwatch: colorCustom,
@@ -70,7 +71,7 @@ class _MyAppState extends State<MyApp> {
           ),
 
           // home: auth.isAuth ? MainScreen() : EditProfileScreen(),
-          home: ChatScreen(),
+          home: MainScreen(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsScreen.routeName: (ctx) => FeedsScreen(),
