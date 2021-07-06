@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:odyssey/pages/chat_page.dart';
-import './pages/auth_page.dart';
-import 'package:provider/provider.dart';
-import './providers/auth.dart';
-import './pages/feeds_page.dart';
-import './pages/edit_profile_page.dart';
 import 'package:flutter/services.dart';
+
+import 'package:odyssey/providers/auth.dart';
+import 'package:odyssey/providers/profile.dart';
+import 'package:odyssey/screens/screens.dart';
+
+import 'package:provider/provider.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -45,11 +45,15 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(
           create: (ctx) => Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, Profile>(
+          create: (ctx) => Profile(),
+          update: (ctx, auth, traveller) => Profile(auth.userName, auth.userId,
+              auth.token, traveller == null ? null : traveller.travellerUser),
         )
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
-          debugShowCheckedModeBanner: false,
           title: 'Odyssey',
           theme: ThemeData(
             primarySwatch: colorCustom,
@@ -61,14 +65,16 @@ class _MyAppState extends State<MyApp> {
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Mulish'),
                 ),
+            // scaffoldBackgroundColor: Color(0xfff0f2f5),
+            scaffoldBackgroundColor: Colors.white,
           ),
-          
-          // home: auth.isAuth ? FeedsPage() : EditProfilePage(),
-          home: ChatPage(),
+
+          // home: auth.isAuth ? MainScreen() : EditProfileScreen(),
+          home: ChatScreen(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
-            FeedsPage.routeName: (ctx) => FeedsPage(),
-            EditProfilePage.routeName: (ctx) => EditProfilePage(),
+            FeedsScreen.routeName: (ctx) => FeedsScreen(),
+            EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
           },
         ),
       ),

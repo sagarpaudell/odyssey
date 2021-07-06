@@ -34,3 +34,15 @@ class TravellerView(APIView):
         traveller = self.get_object(request)
         traveller.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class FollowView(APIView):
+    def get(self, request, username):
+        try:
+            new_following = Traveller.objects.get(username__username=username)
+            user = Traveller.objects.get(username = request.user)
+            user.following.add(new_following)
+            user.save()
+            return Response(status=status.HTTP_202_ACCEPTED)
+        except Traveller.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)

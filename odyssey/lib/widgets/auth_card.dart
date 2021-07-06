@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:odyssey/pages/auth_page.dart';
+// import 'package:odyssey/pages/auth_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../pages/feeds_page.dart';
+// import '../pages/feeds_page.dart';
 import '../providers/auth.dart';
 import 'package:provider/provider.dart';
 import '../models/http_exception.dart';

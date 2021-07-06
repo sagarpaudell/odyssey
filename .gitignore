@@ -2,14 +2,14 @@
 odyssey_django/bin/
 odyssey_django/include/
 pip-selfcheck.json
-
+odyssey_django/lib/
+odyssey_django/lib64/
 
 
 
 # Miscellaneous
 *.class
 *.log
-*.pyc
 *.swp
 .DS_Store
 .atom/

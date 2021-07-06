@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'dart:io';
+import 'Package:image_picker/image_picker.dart';
 
 class Traveller {
   String username;
@@ -9,16 +9,16 @@ class Traveller {
   String gender;
   String country;
   String city;
-  File profilePic;
+  PickedFile profilePic;
 
   Traveller({
-    @required this.username,
+    this.username,
     @required this.firstname,
     @required this.lastname,
-    @required this.profilePic,
-    @required this.gender,
+    this.profilePic,
+    this.gender,
     @required this.country,
     @required this.city,
-    @required this.travellerId,
+    this.travellerId,
   });
 }
