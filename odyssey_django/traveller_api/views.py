@@ -6,13 +6,15 @@ from .serializers import TravellerSerializer
 from .models import Traveller
 from django.contrib.auth.models import User
 from rest_framework.parsers import MultiPartParser
+from django.shortcuts import get_object_or_404
 
 class TravellerView(APIView):
     parser_classes = [MultiPartParser]
     def get_object(self, request):
         try:
             user = request.user
-            return Traveller.objects.get(username=user)
+            return get_object_or_404(Traveller, username=user)
+            #return Traveller.objects.get(username=user)
         except Traveller.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:provider/provider.dart';
 import '../providers/chat.dart';
+import 'dart:convert';
 
 class Message extends StatefulWidget {
   @override
@@ -10,16 +13,57 @@ class Message extends StatefulWidget {
 class _MessageState extends State<Message> {
   // Size deviceSize = MediaQuery.of(context).size;
   Color bgColor = Color(0xffe8edea);
-  final _channel = WebSocketChannel.connect(
-    Uri.parse('wss://echo.websocket.org'),
-  );
+  // final _channel = WebSocketChannel.connect(
+  //   Uri.parse('wss://echo.websocket.org'),
+  // );
+  // static const friend = "buddha";
+  // static const token =
+  //     //"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjI0ODc2MjEyLCJqdGkiOiIwNmNhMjM3ZGNhMjc0NGVmOTdiYTZjYTljZTNkMTlmNSIsInVzZXJfaWQiOjV9.vNA_E42HrrUDpETXysim0BYVx39qsmovqvD0RSlIilE";
+  //     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjI0ODcyMjY0LCJqdGkiOiIzZTBiMjM4ZWE5NTA0MjJmYWM2NjYxMzg5MjM1YjFiYSIsInVzZXJfaWQiOjN9.Z9TwDwEIUAhefhBQk01cmALCBjimtT11CIheOy9QQ3k";
+  // final _channel = WebSocketChannel.connect(
+  //     Uri.parse("ws://travellum.herokuapp.com/ws/chat/$friend/?token=$token"));
+  WebSocketChannel _channel;
+  //OWebSocketChannel channel;
 
   @override
-  void dispose() {
-    _channel.sink.close();
-    _controller.dispose();
-    super.dispose();
+  // Future<void> initState() async {
+  //   _channel = Provider.of<Chat>(context).sendMessage();
+  //   super.initState();
+  // }
+  void didChangeDependencies() {
+    _channel = Provider.of<Chat>(context, listen: false).sendMessage();
+    super.didChangeDependencies();
   }
+  // @override
+  // initState() {
+  //   super.initState();
+  //   _channel.stream.listen(this.onData, onError: onError, onDone: onDone);
+
+  //   (() async {
+  //     setState(() {});
+  //   });
+  // }
+
+  // onDone() {
+  //   debugPrint("Socket is closed");
+  // }
+
+  // onError(err) {
+  //   debugPrint(err.runtimeType.toString());
+  //   WebSocketChannelException ex = err;
+  //   debugPrint(ex.message);
+  // }
+
+  // onData(event) {
+  //   debugPrint(event);
+  // }
+
+  // @override
+  // void dispose() {
+  //   _channel.sink.close();
+  //   _controller.dispose();
+  //   super.dispose();
+  // }
 
   final _controller = TextEditingController();
   _messageBuilder() {
@@ -54,11 +98,22 @@ class _MessageState extends State<Message> {
                         child: StreamBuilder(
                           stream: _channel.stream,
                           builder: (context, snapshot) {
-                            return snapshot.connectionState ==
-                                    ConnectionState.waiting
-                                ? CircularProgressIndicator()
+                            return snapshot.hasError
+                                ? Text(
+                                    snapshot.error.toString(),
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 8),
+                                  )
                                 : Text(
-                                    snapshot.hasData ? '${snapshot.data}' : '',
+                                    snapshot.hasData
+                                        ? json.decode(
+                                                    snapshot.data)['sender'] !=
+                                                "ketone"
+                                            ? json.decode(
+                                                snapshot.data)['message']
+                                            : 'Text'
+                                        : '',
                                     style: TextStyle(
                                         color: Theme.of(context).primaryColor,
                                         fontSize: 15),
@@ -158,8 +213,9 @@ class _MessageState extends State<Message> {
 
   //end of _sendMessage
   void _sendMessageFun() {
+    //Provider.of<Chat>(context, listen: false).getMessageHistory();
     if (_controller.text.isNotEmpty) {
-      _channel.sink.add(_controller.text);
+      _channel.sink.add(json.encode({'message': _controller.text}));
     }
   }
 
