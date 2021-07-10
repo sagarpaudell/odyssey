@@ -65,13 +65,13 @@ class _SelfProfileState extends State<SelfProfile> {
                       child: Row(
                         children: [
                           Icon(
-                            Icons.logout,
+                            Icons.settings,
                             color: Theme.of(context).primaryColor,
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "Log out",
+                              "Open Settings",
                               style: TextStyle(
                                   color: Theme.of(context).primaryColor,
                                   fontWeight: FontWeight.w600),
@@ -90,14 +90,14 @@ class _SelfProfileState extends State<SelfProfile> {
                           Row(
                             children: [
                               Icon(
-                                Icons.delete,
+                                Icons.logout,
                                 color: Theme.of(context).primaryColor,
                               ),
                               
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  "Delete account",
+                                  "Log out",
                                   style: TextStyle(
                                       color: Theme.of(context).primaryColor,
                                       fontWeight: FontWeight.w600),
@@ -151,7 +151,7 @@ class _SelfProfileState extends State<SelfProfile> {
                   OutlinedButton(onPressed: (){
 
                   },
-                  child: Text("Edit Profile"),
+                  child: Text("View messages  "),
                   style: OutlinedButton.styleFrom(
                     primary:Theme.of(context).primaryColor,
                     
@@ -178,20 +178,34 @@ class _SelfProfileState extends State<SelfProfile> {
             borderRadius: BorderRadius.all(Radius.circular(10))),
           width: MediaQuery.of(context).size.width-20,
           margin: EdgeInsets.fromLTRB(10, 16, 10, 16),
-          child: Wrap(
+          child:Wrap(
             direction: Axis.horizontal,
             alignment: WrapAlignment.spaceEvenly,
             children: [
-              Column(children: [
-                Text("120", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
-                Text('Places Visited', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
-              ],
+              Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                color:Color(0xFFEBEDEF),            
+                
+                ),
+                    child: Column(children: [
+                        Text("120", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+                        Text('Places Visited', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+                      ],
+                      ),
               ),
               
-              Column(children: [
-                Text("12.1k", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
-                Text('Followers', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
-              ],
+              Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                color:Color(0xFFEBEDEF),            
+                
+                ),
+                    child: Column(children: [
+                      Text("12.1k", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+                      Text('Followers', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+                    ],
+                    ),
               ),
               Container(
                 padding: EdgeInsets.all(4),
@@ -225,8 +239,6 @@ class _SelfProfileState extends State<SelfProfile> {
                   ],
                   ),
               ),
-              
-              
                             
             ],
           ),

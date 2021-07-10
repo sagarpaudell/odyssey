@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:odyssey/providers/auth.dart';
 import 'package:odyssey/providers/profile.dart';
 import 'package:odyssey/screens/profile_self.dart';
+import 'package:odyssey/screens/profile_user.dart';
 import 'package:odyssey/screens/screens.dart';
 
 import 'package:provider/provider.dart';
@@ -74,7 +75,7 @@ class _MyAppState extends State<MyApp> {
 
           // home: auth.isAuth ? MainScreen() : EditProfileScreen(),
           // home: FeedsScreen(),
-          home: SelfProfile(),
+          home: UserProfile(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsScreen.routeName: (ctx) => FeedsScreen(),

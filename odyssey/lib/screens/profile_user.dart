@@ -23,17 +23,18 @@ class _UserProfileState extends State<UserProfile> {
                 ),
               ),
               itemBuilder: (BuildContext context) => [
+                    
                     PopupMenuItem(
                       child: Row(
                         children: [
                           Icon(
-                            Icons.mode_edit,
+                            Icons.block_flipped,
                             color: Theme.of(context).primaryColor,
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.only(left: 8),
                             child: Text(
-                              "Edit Profile",
+                              "Block this user",
                               style: TextStyle(
                                   color: Theme.of(context).primaryColor,
                                   fontWeight: FontWeight.w600),
@@ -42,44 +43,7 @@ class _UserProfileState extends State<UserProfile> {
                         ],
                       ),
                     ),
-                    // PopupMenuItem(
-                    //   child: Row(
-                    //     children: [
-                    //       Icon(
-                    //         Icons.block_flipped,
-                    //         color: Theme.of(context).primaryColor,
-                    //       ),
-                    //       Padding(
-                    //         padding: const EdgeInsets.only(left: 8),
-                    //         child: Text(
-                    //           "Block this user",
-                    //           style: TextStyle(
-                    //               color: Theme.of(context).primaryColor,
-                    //               fontWeight: FontWeight.w600),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                    PopupMenuItem(
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.logout,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Log out",
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    
                     PopupMenuItem(
                       child: Column(
                         children: [
@@ -90,14 +54,14 @@ class _UserProfileState extends State<UserProfile> {
                           Row(
                             children: [
                               Icon(
-                                Icons.delete,
-                                color: Theme.of(context).primaryColor,
-                              ),
+                            Icons.logout,
+                            color: Theme.of(context).primaryColor,
+                          ),
                               
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  "Delete account",
+                                  "Log out",
                                   style: TextStyle(
                                       color: Theme.of(context).primaryColor,
                                       fontWeight: FontWeight.w600),
@@ -148,16 +112,32 @@ class _UserProfileState extends State<UserProfile> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400 ),),
-                  OutlinedButton(onPressed: (){
-
-                  },
-                  child: Text("Edit Profile"),
-                  style: OutlinedButton.styleFrom(
-                    primary:Theme.of(context).primaryColor,
+                  Row(
                     
-                  ),
-                  )
-                  
+                    children: [
+                      Container(
+                        height: 28,
+                        margin: EdgeInsets.only(top:6),
+                        child: ElevatedButton(onPressed: (){
+                        },
+                        style:ElevatedButton.styleFrom(
+                          primary: Theme.of(context).primaryColor,
+                          onPrimary: Colors.white,
+                        ),
+                        child: Text("Follow"),
+                        ),
+                      ),
+                    Container(
+                      margin: EdgeInsets.only(right: 10, top:6),
+                      child: IconButton(onPressed: (){
+
+                      },
+                      icon: Icon(Icons.message),
+                      iconSize: 20,        
+                      ),
+                    ),                 
+                    ],
+                  ),                 
                 ],
                 ),
               )
@@ -182,16 +162,30 @@ class _UserProfileState extends State<UserProfile> {
             direction: Axis.horizontal,
             alignment: WrapAlignment.spaceEvenly,
             children: [
-              Column(children: [
-                Text("120", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
-                Text('Places Visited', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
-              ],
+              Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                color:Color(0xFFEBEDEF),            
+                
+                ),
+                    child: Column(children: [
+                        Text("120", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+                        Text('Places Visited', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+                      ],
+                      ),
               ),
               
-              Column(children: [
-                Text("12.1k", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
-                Text('Followers', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
-              ],
+              Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                color:Color(0xFFEBEDEF),            
+                
+                ),
+                    child: Column(children: [
+                      Text("12.1k", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+                      Text('Followers', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+                    ],
+                    ),
               ),
               Container(
                 padding: EdgeInsets.all(4),
@@ -225,8 +219,6 @@ class _UserProfileState extends State<UserProfile> {
                   ],
                   ),
               ),
-              
-              
                             
             ],
           ),
@@ -240,7 +232,7 @@ class _UserProfileState extends State<UserProfile> {
                           color: Colors.black,
                         )),
                   ),
-                  Text("MY POSTS", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),),
+                  Text("POSTS", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),),
                   Expanded(
                     child: new Container(
                         margin: const EdgeInsets.only(left: 20.0, right: 10.0),
