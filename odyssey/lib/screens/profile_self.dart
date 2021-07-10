@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:odyssey/models/models.dart';
+import 'package:odyssey/data/data.dart';
+import 'package:odyssey/widgets/post_container.dart';
+
 
 class SelfProfile extends StatefulWidget {
   @override
@@ -91,7 +95,7 @@ class _SelfProfileState extends State<SelfProfile> {
                             children: [
                               Icon(
                                 Icons.delete,
-                                color: Colors.red[400],
+                                color: Theme.of(context).primaryColor,
                               ),
                               
                               Padding(
@@ -99,7 +103,7 @@ class _SelfProfileState extends State<SelfProfile> {
                                 child: Text(
                                   "Delete account",
                                   style: TextStyle(
-                                      color: Colors.red[400],
+                                      color: Theme.of(context).primaryColor,
                                       fontWeight: FontWeight.w600),
                                 ),
                               ),
@@ -115,7 +119,6 @@ class _SelfProfileState extends State<SelfProfile> {
       ),
       body: Column(children: [
         Container(
-
           child: Row(
             children: [
               Container(
@@ -167,10 +170,19 @@ class _SelfProfileState extends State<SelfProfile> {
           ),
         ),
         Container(
+          padding: EdgeInsets.only(top: 16, bottom: 16),
+          decoration: BoxDecoration(
+            boxShadow:[BoxShadow(
+                color:Color(0xFFEBEDEF),
+              blurRadius: 30,
+              spreadRadius: 2,
+              ),
+              ],
+            color:Color(0xFFEBEDEF),            
+            borderRadius: BorderRadius.all(Radius.circular(10))),
           width: MediaQuery.of(context).size.width-20,
-          margin: EdgeInsets.fromLTRB(10, 22, 10, 22),
+          margin: EdgeInsets.fromLTRB(10, 16, 10, 16),
           child: Wrap(
-            
             direction: Axis.horizontal,
             alignment: WrapAlignment.spaceEvenly,
             children: [
@@ -179,26 +191,77 @@ class _SelfProfileState extends State<SelfProfile> {
                 Text('Places Visited', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
               ],
               ),
-              Column(children: [
-                Text("12", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
-                Text('Posts', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
-              ],
-              ),
-              Column(children: [
-                Text("10", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
-                Text('Blogs', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
-              ],
-              ),
+              
               Column(children: [
                 Text("12.1k", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
                 Text('Followers', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
               ],
               ),
+              Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                color:Color(0xFFAEB6BF ),            
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Column(children: [
+                      Text("12", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+                      Text('Posts', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+                    ],
+                    ),
+              ),
+              Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                color:Color(0xFFAEB6BF ),            
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Column(children: [
+                    Text("10", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+                    Text('Blogs', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+                  ],
+                  ),
+              ),
+              
               
                             
             ],
           ),
-        )
+        ),
+
+        Row(children:[
+                  Expanded(
+                    child: new Container(
+                        margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                        child: Divider(
+                          color: Colors.black,
+                        )),
+                  ),
+                  Text("MY POSTS", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),),
+                  Expanded(
+                    child: new Container(
+                        margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                        child: Divider(
+                          color: Colors.black,
+                        )),
+                  ),
+                ]),
+        //Own Feed
+      //   CustomScrollView(
+      //   slivers: [
+      //     SliverList(
+      //       delegate: SliverChildBuilderDelegate(
+      //       (context, index) {
+      //         final Post post = posts[index];
+      //         return PostContainer(post: post);
+      //       },
+      //       childCount: posts.length,
+      //     ),
+      //     )
+      //   ],
+      // ),
+      
+
+
+      //End of feed section
+
       ],
       ),
 
