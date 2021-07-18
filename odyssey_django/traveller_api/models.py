@@ -9,7 +9,7 @@ class Traveller(models.Model):
 
     # followers = models.ManyToManyField('self', related_name="following", blank=True)
     # following = models.ManyToManyField('self', related_name="followers", blank=True)
-    address = models.CharField(max_length=200,blank=True)
+    # address = models.CharField(max_length=200,blank=True)
     city = models.CharField(max_length=100,blank=True)
     country = models.CharField(max_length=100,blank=True)
     bio = models.TextField(blank=True)
