@@ -245,3 +245,41 @@ final List<Post> posts = [
     comments: 301,
   ),
 ];
+final List<Blog> blogs = [
+  Blog(
+    user: currentUser,
+    title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ',
+    timeAgo: '58m',
+    imageUrl: 'https://images.unsplash.com/photo-1525253086316-d0c936c814f8',
+    // likes: 1202,
+    comments: 184,
+    shares: 96,
+  ),
+  Blog(
+    user: currentUser,
+    title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ',
+    timeAgo: '58m',
+    imageUrl: 'https://images.unsplash.com/photo-1525253086316-d0c936c814f8',
+    // likes: 1202,
+    comments: 184,
+    shares: 96,
+  ),
+  Blog(
+    user: currentUser,
+    title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ',
+    timeAgo: '58m',
+    imageUrl: 'https://images.unsplash.com/photo-1525253086316-d0c936c814f8',
+    // likes: 1202,
+    comments: 184,
+    shares: 96,
+  ),
+  Blog(
+    user: currentUser,
+    title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ',
+    timeAgo: '58m',
+    imageUrl: 'https://images.unsplash.com/photo-1525253086316-d0c936c814f8',
+    // likes: 1202,
+    comments: 184,
+    shares: 96,
+  ),
+];

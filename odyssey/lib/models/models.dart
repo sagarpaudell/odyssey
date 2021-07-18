@@ -21,6 +21,26 @@ class Post {
   });
 }
 
+class Blog {
+  final User user;
+  final String title;
+  final String timeAgo;
+  final String imageUrl;
+  // final int likes;
+  final int comments;
+  final int shares;
+
+  const Blog({
+    @required this.user,
+    @required this.title,
+    @required this.timeAgo,
+    @required this.imageUrl,
+    // @required this.likes,
+    @required this.comments,
+    @required this.shares,
+  });
+}
+
 class User {
   final String name;
   final String imageUrl;
