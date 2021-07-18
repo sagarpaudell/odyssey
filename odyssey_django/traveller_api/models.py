@@ -6,6 +6,7 @@ class Traveller(models.Model):
     first_name = models.CharField(max_length=200,blank=True)
     last_name = models.CharField(max_length=200,blank=True)
     username = models.OneToOneField(User, on_delete= models.CASCADE)
+
     followers = models.ManyToManyField('self', related_name="following", blank=True)
     following = models.ManyToManyField('self', related_name="followers", blank=True)
     address = models.CharField(max_length=200,blank=True)
