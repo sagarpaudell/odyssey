@@ -165,77 +165,110 @@ class _MessageState extends State<Message> {
 
   @override
   Widget build(BuildContext context) {
+    const choices=['viewprofile', 'blockuser','deleteconversation'];
+      
+    showAlertDialog(BuildContext context) {     
+      AlertDialog alert = AlertDialog(
+        content: Text("Are you sure you want to delete this conversation?"),
+        actions: [
+          TextButton(
+          child: Text("Cancel"),
+          onPressed:  () {},
+          ),
+          TextButton(
+          child: Text("Yes, Delete", style: TextStyle(
+          color: Colors.red[400],
+          ),),
+          onPressed:  () {},
+          ),
+        ],
+      );
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+    //end of confirmatin box
+
+  void choiceAction(String choice){
+    if(choice =='viewprofile'){
+     print('View profile');
+    }
+    else if(choice == 'blockuser'){
+    print("blocked user");
+    }
+    else if(choice == 'deleteconversation'){
+    showAlertDialog(context);
+    }
+  }
+
+  iconValue(choice){
+    if(choice =='viewprofile'){
+     return Icons.account_circle;
+    }
+    else if(choice == 'blockuser'){
+    return Icons.block_flipped;
+    }
+    else if(choice == 'deleteconversation'){
+    return Icons.delete;
+    }
+  }
+
+  textValue(choice){
+     if(choice =='viewprofile'){
+     return "View Profile";
+    }
+    else if(choice == 'blockuser'){
+    return "Block this user";
+    }
+    else if(choice == 'deleteconversation'){
+      return "Delete Conversation";
+    
+    }
+  }
+
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        actions: [
+        actions:[
           PopupMenuButton(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+            child: Padding(
+                padding: const EdgeInsets.all(14.0),
                 child: Icon(
                   Icons.more_vert,
+                  color:Colors.white,
                   size: 28,
                 ),
               ),
-              itemBuilder: (BuildContext context) => [
-                    PopupMenuItem(
-                      child: Row(
+            onSelected: choiceAction,
+            itemBuilder: (BuildContext context){
+              return choices.map((String choice){
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Row(
                         children: [
                           Icon(
-                            Icons.account_circle,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "View Profile",
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.block_flipped,
-                            color: Theme.of(context).primaryColor,
+                            iconValue(choice),
+                            color:  choice=='deleteconversation'?Colors.red[400]: Theme.of(context).primaryColor,
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 8),
                             child: Text(
-                              "Block this user",
+                              textValue(choice),
                               style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
+                                  color: choice=='deleteconversation'?Colors.red[400]: Theme.of(context).primaryColor,
                                   fontWeight: FontWeight.w600),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    PopupMenuItem(
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.delete,
-                            color: Colors.red[400],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Delete conversation",
-                              style: TextStyle(
-                                  color: Colors.red[400],
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ]),
+                );
+              }).toList();
+            },
+          )
         ],
         automaticallyImplyLeading: false,
         title: Row(

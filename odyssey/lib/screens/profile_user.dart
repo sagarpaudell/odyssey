@@ -1,20 +1,76 @@
 import 'package:flutter/material.dart';
-
 class UserProfile extends StatefulWidget {
   @override
   _UserProfileState createState() => _UserProfileState();
 }
 
 class _UserProfileState extends State<UserProfile> {
+  
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
+    const choices=['blockuser', 'logout'];
+      
+    showAlertDialog(BuildContext context) {     
+      AlertDialog alert = AlertDialog(
+        content: Text("Are you sure you want to log out?"),
+        actions: [
+          TextButton(
+          child: Text("Cancel"),
+          onPressed:  () {},
+          ),
+          TextButton(
+          child: Text("Log Out", style: TextStyle(
+          color: Colors.red[400],
+          ),),
+          onPressed:  () {},
+          ),
+        ],
+      );
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+    //end of confirmatin box
+
+  void choiceAction(String choice){
+    if(choice =='blockuser'){
+     print('Block');
+    }
+    else if(choice == 'logout'){
+    showAlertDialog(context);
+    }
+  }
+
+  iconValue(choice){
+     if(choice=='blockuser'){
+       return Icons.block_flipped;
+     }
+     else if (choice=='logout'){
+       return Icons.logout;
+     }
+  }
+
+  textValue(choice){
+     if(choice=='blockuser'){
+       return 'Block this user';
+     }
+     else if (choice=='logout'){
+       return 'Log Out';
+     }
+  }
+
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         backgroundColor:Colors.white,
-        actions: [
+        actions:[
           PopupMenuButton(
-              child: Padding(
+            child: Padding(
                 padding: const EdgeInsets.all(14.0),
                 child: Icon(
                   Icons.menu_rounded,
@@ -22,57 +78,32 @@ class _UserProfileState extends State<UserProfile> {
                   size: 28,
                 ),
               ),
-              itemBuilder: (BuildContext context) => [
-                    
-                    PopupMenuItem(
-                      child: Row(
+            onSelected: choiceAction,
+            itemBuilder: (BuildContext context){
+              return choices.map((String choice){
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Row(
                         children: [
                           Icon(
-                            Icons.block_flipped,
-                            color: Theme.of(context).primaryColor,
+                            iconValue(choice),
+                            color:  choice=='logout'?Colors.red[400]: Theme.of(context).primaryColor,
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 8),
                             child: Text(
-                              "Block this user",
+                              textValue(choice),
                               style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
+                                  color: choice=='logout'?Colors.red[400]: Theme.of(context).primaryColor,
                                   fontWeight: FontWeight.w600),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    
-                    PopupMenuItem(
-                      child: Column(
-                        children: [
-                          Divider(
-                            thickness: 0.3,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          Row(
-                            children: [
-                              Icon(
-                            Icons.logout,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                              
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  "Log out",
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ]),
+                );
+              }).toList();
+            },
+          )
         ],
         title:Icon(Icons.arrow_back_ios, color:Theme.of(context).primaryColor,),
         
@@ -119,6 +150,7 @@ class _UserProfileState extends State<UserProfile> {
                         height: 28,
                         margin: EdgeInsets.only(top:6),
                         child: ElevatedButton(onPressed: (){
+                          
                         },
                         style:ElevatedButton.styleFrom(
                           primary: Theme.of(context).primaryColor,
