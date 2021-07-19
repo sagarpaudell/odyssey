@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:odyssey/providers/auth.dart';
-import 'package:odyssey/providers/profile.dart';
-import 'package:odyssey/screens/screens.dart';
+import './providers/auth.dart';
+import './providers/chat.dart';
+
+import './providers/profile.dart';
+import './screens/screens.dart';
 
 import 'package:provider/provider.dart';
 
@@ -50,10 +52,19 @@ class _MyAppState extends State<MyApp> {
           create: (ctx) => Profile(),
           update: (ctx, auth, traveller) => Profile(auth.userName, auth.userId,
               auth.token, traveller == null ? null : traveller.travellerUser),
+        ),
+        ChangeNotifierProxyProvider<Auth, Chat>(
+          create: (ctx) => Chat(),
+          update: (ctx, auth, _) => Chat(
+            auth.userName,
+            auth.userId,
+            auth.token,
+          ),
         )
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Odyssey',
           theme: ThemeData(
             primarySwatch: colorCustom,
@@ -69,12 +80,13 @@ class _MyAppState extends State<MyApp> {
             scaffoldBackgroundColor: Colors.white,
           ),
 
-          // home: auth.isAuth ? MainScreen() : EditProfileScreen(),
-          home: ChatScreen(),
+          home: auth.isAuth ? ChatScreen() : AuthPage(),
+          //home: AuthPage(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsScreen.routeName: (ctx) => FeedsScreen(),
             EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
+            ChatScreen.routeName: (ctx) => ChatScreen(),
           },
         ),
       ),

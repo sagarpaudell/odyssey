@@ -4,6 +4,8 @@ odyssey_django/include/
 pip-selfcheck.json
 odyssey_django/lib/
 odyssey_django/lib64/
+__pycache__/
+
 
 
 
