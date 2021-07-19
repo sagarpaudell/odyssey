@@ -10,4 +10,5 @@ urlpatterns = [
     path('traveller-api/', include('traveller_api.urls')),
     path('places-api/', include('places_api.urls')),
     path('chat-api/', include('chat.urls')),
+    path('blogs-api/',include('blogs.urls')),
 ]+ static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

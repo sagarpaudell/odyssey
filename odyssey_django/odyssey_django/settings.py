@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'traveller_api',
     'places_api',
     'chat',
+    'blogs',
 ]
 
 REST_FRAMEWORK = {

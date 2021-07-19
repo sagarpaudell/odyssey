@@ -6,7 +6,7 @@ from places_api.models import Place
 
 class Blog(models.Model):
     title = models.CharField(max_length=200)
-    author = models.OneToOneField(Traveller, on_delete= models.CASCADE, blank=True)
+    author = models.ForeignKey(Traveller, on_delete= models.CASCADE, blank=True)
     place = models.ForeignKey(Place, on_delete=models.DO_NOTHING, blank=True)
     description = models.TextField(blank=True)
     photo1 = models.ImageField(upload_to='photos/%Y/%m/%d/',blank=True)
@@ -21,8 +21,8 @@ class Blog(models.Model):
         return self.title
 
 class BlogComment(models.Model):
-    blog = models.ForeignKey(Traveller, on_delete = models.CASCADE, related_name='comments')
-    user = models.ForeignKey(Traveller, on_delete = models.CASCADE, related_name='comments')
+    blog = models.ForeignKey(Blog, on_delete = models.CASCADE, related_name='blog_comments')
+    user = models.ForeignKey(Traveller, on_delete = models.CASCADE, related_name='comment')
     comment = models.TextField()
     liked_users = models.ManyToManyField(Traveller, related_name='likedcomments')
     disliked_users = models.ManyToManyField(Traveller, related_name='dislikedcomments')
