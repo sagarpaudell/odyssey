@@ -274,19 +274,11 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                 ]),
         //Own Feed
-      //   CustomScrollView(
-      //   slivers: [
-      //     SliverList(
-      //       delegate: SliverChildBuilderDelegate(
-      //       (context, index) {
-      //         final Post post = posts[index];
-      //         return PostContainer(post: post);
-      //       },
-      //       childCount: posts.length,
-      //     ),
-      //     )
-      //   ],
-      // ),
+      //   
+
+
+
+
       
 
 

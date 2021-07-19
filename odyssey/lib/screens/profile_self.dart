@@ -266,20 +266,13 @@ class _SelfProfileState extends State<SelfProfile> {
                   ),
                 ]),
         //Own Feed
-      //   CustomScrollView(
-      //   slivers: [
-      //     SliverList(
-      //       delegate: SliverChildBuilderDelegate(
-      //       (context, index) {
-      //         final Post post = posts[index];
-      //         return PostContainer(post: post);
-      //       },
-      //       childCount: posts.length,
-      //     ),
-      //     )
-      //   ],
-      // ),
-      
+     
+
+
+
+
+
+     
 
 
       //End of feed section

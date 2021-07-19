@@ -81,8 +81,8 @@ class _MyAppState extends State<MyApp> {
             scaffoldBackgroundColor: Colors.white,
           ),
 
-          home: auth.isAuth ? ChatScreen() : AuthPage(),
-          //home: AuthPage(),
+          // home: auth.isAuth ? ChatScreen() : AuthPage(),
+          home: UserProfile(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsScreen.routeName: (ctx) => FeedsScreen(),
