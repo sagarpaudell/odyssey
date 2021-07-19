@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:odyssey/providers/chat.dart';
 import 'package:odyssey/providers/auth.dart';
 import 'package:odyssey/providers/profile.dart';
 import 'package:odyssey/screens/profile_self.dart';
@@ -53,6 +53,14 @@ class _MyAppState extends State<MyApp> {
           create: (ctx) => Profile(),
           update: (ctx, auth, traveller) => Profile(auth.userName, auth.userId,
               auth.token, traveller == null ? null : traveller.travellerUser),
+        ),
+        ChangeNotifierProxyProvider<Auth, Chat>(
+          create: (ctx) => Chat(),
+          update: (ctx, auth, _) => Chat(
+            auth.userName,
+            auth.userId,
+            auth.token,
+          ),
         )
       ],
       child: Consumer<Auth>(
@@ -73,13 +81,13 @@ class _MyAppState extends State<MyApp> {
             scaffoldBackgroundColor: Colors.white,
           ),
 
-          // home: auth.isAuth ? MainScreen() : EditProfileScreen(),
-          // home: FeedsScreen(),
-          home: UserProfile(),
+          home: auth.isAuth ? ChatScreen() : AuthPage(),
+          //home: AuthPage(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsScreen.routeName: (ctx) => FeedsScreen(),
             EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
+            ChatScreen.routeName: (ctx) => ChatScreen(),
           },
         ),
       ),

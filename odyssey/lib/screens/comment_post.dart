@@ -6,17 +6,8 @@ class Comment extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.arrow_back_ios),
-            ),
-            Expanded(
-              child: Center(child: Text('Comments')),
-            ),
-          ],
-        ),
+        title: Text('Comments'),
+        centerTitle: true,
       ),
       body: Column(
         children: [
