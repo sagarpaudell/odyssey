@@ -6,6 +6,7 @@ import 'package:odyssey/providers/profile.dart';
 import 'package:odyssey/screens/profile_self.dart';
 import 'package:odyssey/screens/profile_user.dart';
 import 'package:odyssey/screens/screens.dart';
+import 'package:odyssey/screens/single_blog_screen.dart';
 
 import 'package:provider/provider.dart';
 
@@ -82,7 +83,7 @@ class _MyAppState extends State<MyApp> {
           ),
 
           // home: auth.isAuth ? ChatScreen() : AuthPage(),
-          home: UserProfile(),
+          home: MainScreen(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsScreen.routeName: (ctx) => FeedsScreen(),
