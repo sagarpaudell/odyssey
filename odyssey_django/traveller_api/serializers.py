@@ -10,7 +10,7 @@ class TravellerSerializer(serializers.ModelSerializer):
                 'city', 'country', 'bio', 'contact_no', 'gender', 'photo_main']
 
 
-class PublicTravellerSerializer(serializers.ModelSerializer):
+class TravellerSerializerPublic(serializers.ModelSerializer):
     username = serializers.SlugRelatedField(slug_field='username', read_only=True)
     class Meta:
         model = Traveller

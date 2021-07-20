@@ -11,4 +11,5 @@ urlpatterns = [
     path('places-api/', include('places_api.urls')),
     path('chat-api/', include('chat.urls')),
     path('post-api/', include('post.urls')),
+    path('blogs-api/',include('blogs.urls')),
 ]+ static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

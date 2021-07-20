@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import './providers/auth.dart';
-import './providers/chat.dart';
-
-import './providers/profile.dart';
-import './screens/screens.dart';
+import 'package:odyssey/providers/chat.dart';
+import 'package:odyssey/providers/auth.dart';
+import 'package:odyssey/providers/profile.dart';
+import 'package:odyssey/screens/profile_self.dart';
+import 'package:odyssey/screens/profile_user.dart';
+import 'package:odyssey/screens/screens.dart';
+import 'package:odyssey/screens/single_blog_screen.dart';
 
 import 'package:provider/provider.dart';
 
@@ -41,6 +42,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -80,8 +82,8 @@ class _MyAppState extends State<MyApp> {
             scaffoldBackgroundColor: Colors.white,
           ),
 
-          home: auth.isAuth ? ChatScreen() : AuthPage(),
-          //home: AuthPage(),
+          // home: auth.isAuth ? ChatScreen() : AuthPage(),
+          home: MainScreen(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsScreen.routeName: (ctx) => FeedsScreen(),
@@ -95,6 +97,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class MyHomePage extends StatelessWidget {
+  
   Widget build(BuildContext context) {
     // Provider.of<Auth>(context, listen: false)
     //     .getToken(username: 'dhgrfwhe', password: 'password');
