@@ -34,19 +34,19 @@ class Traveller(models.Model):
         return self.username.username
 
 
-# class TravellerFollowing(models.Model):
-    # traveller_id = models.ForeignKey(
-            # "Traveller",
-            # on_delete=models.CASCADE,
-            # related_name="following"
-        # ) 
-    # following_traveller_id = models.ForeignKey(
-            # "Traveller",
-            # on_delete=models.CASCADE,
-            # related_name="followers"
-        # )
-    # class Meta:
-        # unique_together = ('traveller_id', 'following_traveller_id',)
+class TravellerFollowing(models.Model):
+    traveller_id = models.ForeignKey(
+            "Traveller",
+            on_delete=models.CASCADE,
+            related_name="following"
+        )
+    following_traveller_id = models.ForeignKey(
+            "Traveller",
+            on_delete=models.CASCADE,
+            related_name="followers"
+        )
+    class Meta:
+        unique_together = ('traveller_id', 'following_traveller_id',)
 
 
 
