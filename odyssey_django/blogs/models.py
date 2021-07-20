@@ -24,6 +24,6 @@ class BlogComment(models.Model):
     blog = models.ForeignKey(Blog, on_delete = models.CASCADE, related_name='blog_comments')
     user = models.ForeignKey(Traveller, on_delete = models.CASCADE, related_name='comment')
     comment = models.TextField()
-    liked_users = models.ManyToManyField(Traveller, related_name='likedcomments')
-    disliked_users = models.ManyToManyField(Traveller, related_name='dislikedcomments')
+    liked_users = models.ManyToManyField(Traveller, related_name='likedcomments', blank=True)
+    disliked_users = models.ManyToManyField(Traveller, related_name='dislikedcomments', blank=True)
     comment_time = models.DateTimeField(auto_now_add=True)

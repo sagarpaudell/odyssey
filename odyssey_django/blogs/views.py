@@ -20,7 +20,7 @@ class BlogDetail(APIView):
         try:
             return Blog.objects.get(id=id)
         except Blog.DoesNotExist:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def get(self, request, id):
         blog = self.get_object(id)
@@ -29,6 +29,9 @@ class BlogDetail(APIView):
 
     def put(self, request , id):
         blog = self.get_object(id)
+        place = Place.objects.get(id = request.data["place"])
+        blog.place = place
+        blog.save()
         serializer = BlogSerializer(blog, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -43,7 +46,7 @@ class BlogDetail(APIView):
 class AddBlog(APIView):
     def post(self, request):
         user = Traveller.objects.get(username = self.request.user)
-        place = Place.objects.get(id = request.data["place"])
+        place = Place.objects.get(id = request.data["place"])      #send place id in API request
         title = request.data["title"]
         description = request.data["description"]
         photo1 = request.data["photo1"]
@@ -52,3 +55,10 @@ class AddBlog(APIView):
         photo4 = request.data["photo4"]
         blog = Blog.objects.create(title=title , author=user, place=place, description=description, photo1=photo1, photo2=photo2, photo3=photo3, photo4=photo4)
         return Response(BlogSerializer(blog).data)
+
+class ViewBlogComment(APIView):
+    def get(self, request, id):
+        blog = Blog.objects.get(id = id)
+        blog_comments = BlogComment.objects.filter(blog = blog)
+        serializer = BlogCommentSerializer(blog_comments, many = True)
+        return Response(serializer.data)
