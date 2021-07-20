@@ -6,8 +6,8 @@ class Traveller(models.Model):
     first_name = models.CharField(max_length=200,blank=True)
     last_name = models.CharField(max_length=200,blank=True)
     username = models.OneToOneField(User, on_delete= models.CASCADE)
-    # followers = models.ManyToManyField('self', related_name="following", blank=True)
-    # following = models.ManyToManyField('self', related_name="followers", blank=True)
+    followers = models.ManyToManyField('self', related_name="following", blank=True)
+    following = models.ManyToManyField('self', related_name="followers", blank=True)
     address = models.CharField(max_length=200,blank=True)
     city = models.CharField(max_length=100,blank=True)
     country = models.CharField(max_length=100,blank=True)
@@ -34,19 +34,19 @@ class Traveller(models.Model):
         return self.username.username
 
 
-class TravellerFollowing(models.Model):
-    traveller_id = models.ForeignKey(
-            "Traveller",
-            on_delete=models.CASCADE,
-            related_name="following"
-        ) 
-    following_traveller_id = models.ForeignKey(
-            "Traveller",
-            on_delete=models.CASCADE,
-            related_name="followers"
-        )
-    class Meta:
-        unique_together = ('traveller_id', 'following_traveller_id',)
+# class TravellerFollowing(models.Model):
+    # traveller_id = models.ForeignKey(
+            # "Traveller",
+            # on_delete=models.CASCADE,
+            # related_name="following"
+        # ) 
+    # following_traveller_id = models.ForeignKey(
+            # "Traveller",
+            # on_delete=models.CASCADE,
+            # related_name="followers"
+        # )
+    # class Meta:
+        # unique_together = ('traveller_id', 'following_traveller_id',)
 
 
 

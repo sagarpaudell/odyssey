@@ -7,7 +7,7 @@ from rest_framework.parsers import MultiPartParser
 from django.shortcuts import get_object_or_404
 
 from .serializers import TravellerSerializer
-from .models import Traveller, TravellerFollowing
+from .models import Traveller#, TravellerFollowing
 
 
 class TravellerView(APIView):
