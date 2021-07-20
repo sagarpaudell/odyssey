@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'traveller_api',
     'places_api',
     'chat',
+    'post'
 ]
 
 REST_FRAMEWORK = {
@@ -187,5 +188,8 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 django_heroku.settings(locals())

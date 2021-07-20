@@ -8,3 +8,11 @@ class TravellerSerializer(serializers.ModelSerializer):
         model = Traveller
         fields = ['username', 'id', 'first_name', 'last_name', 'address', 
                 'city', 'country', 'bio', 'contact_no', 'gender', 'photo_main']
+
+
+class PublicTravellerSerializer(serializers.ModelSerializer):
+    username = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    class Meta:
+        model = Traveller
+        fields = ['username', 'id', 'first_name', 'last_name', 'photo_main']
+                
