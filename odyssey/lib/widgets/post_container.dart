@@ -100,7 +100,7 @@ class _PostHeader extends StatelessWidget {
           ],
           child: IconButton(
             icon: const Icon(Icons.more_horiz),
-            // onPressed: () => print('More'),
+            onPressed: () => print('More'),
           ),
         ),
       ],
