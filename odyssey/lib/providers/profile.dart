@@ -71,8 +71,7 @@ class Profile with ChangeNotifier {
   // }
 
   Future<Traveller> getProfile() async {
-    print('getprofile');
-    const url = 'http://10.0.2.2:8000/traveller-api/';
+    const url = 'https://travellum.herokuapp.com/traveller-api/';
     final token = 'Bearer ' + authToken;
     try {
       final userDataResponse = await http.get(
@@ -89,7 +88,6 @@ class Profile with ChangeNotifier {
         city: userData['city'],
       );
 
-      print(userDataResponse.statusCode);
       notifyListeners();
       return userProfile;
     } catch (error) {
