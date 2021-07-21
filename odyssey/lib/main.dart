@@ -42,7 +42,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -82,8 +81,8 @@ class _MyAppState extends State<MyApp> {
             scaffoldBackgroundColor: Colors.white,
           ),
 
-          // home: auth.isAuth ? ChatScreen() : AuthPage(),
-          home: MainScreen(),
+          home: auth.isAuth ? ChatScreen() : AuthPage(),
+          //home: MainScreen(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsScreen.routeName: (ctx) => FeedsScreen(),
@@ -97,7 +96,6 @@ class _MyAppState extends State<MyApp> {
 }
 
 class MyHomePage extends StatelessWidget {
-  
   Widget build(BuildContext context) {
     // Provider.of<Auth>(context, listen: false)
     //     .getToken(username: 'dhgrfwhe', password: 'password');

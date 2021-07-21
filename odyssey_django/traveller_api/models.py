@@ -27,7 +27,7 @@ class Traveller(models.Model):
         return following
 
     def get_followers(self):
-        follower = [x.traveller_id for x in self.following.all()]
+        follower = [x.traveller_id for x in self.followers.all()]
         return follower
 
     def get_username(self):
@@ -47,7 +47,6 @@ class TravellerFollowing(models.Model):
         )
     class Meta:
         unique_together = ('traveller_id', 'following_traveller_id',)
-
 
 
 def edit_or_create_traveller(sender, instance, **kwargs):

@@ -10,6 +10,7 @@ class Traveller {
   String country;
   String city;
   PickedFile profilePic;
+  String profilePicUrl;
 
   Traveller({
     this.username,
@@ -20,5 +21,6 @@ class Traveller {
     @required this.country,
     @required this.city,
     this.travellerId,
+    this.profilePicUrl,
   });
 }
