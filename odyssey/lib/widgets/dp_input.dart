@@ -2,11 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart' as syspaths;
+
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-import '../providers/profile.dart';
 
 class DpInput extends StatefulWidget {
   Function onSelectImg;

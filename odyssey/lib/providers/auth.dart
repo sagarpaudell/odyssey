@@ -21,7 +21,6 @@ class Auth with ChangeNotifier {
     const url =
         'https://travellum.herokuapp.com/accounts-api/get-auth-token/'; //...
     try {
-      print('try block');
       final response = await http.post(
         Uri.parse(url),
         headers: {
@@ -44,10 +43,11 @@ class Auth with ChangeNotifier {
         // const url = 'http://10.0.2.2:8000/accounts-api/user/'; //...
 
         final tokenHeader = 'Bearer ' + token;
-        print(tokenHeader);
+        const profurl = 'https://travellum.herokuapp.com/traveller-api/';
+
         try {
           final userDataResponse = await http.get(
-            Uri.parse(url),
+            Uri.parse(profurl),
             headers: {
               'Content-Type': 'application/json',
               'Authorization': tokenHeader
@@ -55,26 +55,24 @@ class Auth with ChangeNotifier {
           );
           final userData = json.decode(userDataResponse.body);
           userName = userData['username'];
-          print(isAuth);
+          print('This is $userName');
           userId = userData['id'].toString();
+          print('This is $userId');
         } catch (error) {
-          print('cscsd');
-          print(json.decode(error));
           throw error;
         }
+        userName = username;
       }
 
       notifyListeners();
       final responseData = json.decode(response.body);
-      print(responseData);
+
       if (responseData['non_field_errors'] != null) {
         //print(responseData);
         //print('csdvs');
         throw HttpException('Invalid Username or Password');
       }
     } catch (e) {
-      print('object');
-      print(e);
       throw (e);
     }
   }
