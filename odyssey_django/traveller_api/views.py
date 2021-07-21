@@ -19,7 +19,7 @@ class TravellerView(APIView):
         return Response(serializer.data)
 
     def put(self, request):
-        traveller = self.get_object(request)
+        traveller = get_object(request)
         serializer = TravellerSerializer(traveller, data=request.data)
         print(serializer)
         if serializer.is_valid():

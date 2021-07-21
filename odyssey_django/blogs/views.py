@@ -77,7 +77,7 @@ class BlogCommentDetail(APIView):
 
     def put(self, request , id):
         blog_comment = self.get_object(id)
-        serializer = BlogSerializer(blog_comment, data=request.data)
+        serializer = BlogCommentSerializer(blog_comment, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
@@ -89,9 +89,9 @@ class BlogCommentDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class AddBlogComment(APIView):
-    def post(self, request):
+    def post(self, request, id):
         user = Traveller.objects.get(username = self.request.user)
-        blog = Blog.objects.get(id = request.data["blog"])     #send blog id in API request
+        blog = Blog.objects.get(id = id)     #send blog id in API request
         comment = request.data["comment"]
         blog_comment = BlogComment.objects.create(blog=blog, user=user, comment=comment)
         return Response(BlogCommentSerializer(blog_comment).data)
