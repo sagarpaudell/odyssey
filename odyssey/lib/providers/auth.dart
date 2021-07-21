@@ -43,25 +43,25 @@ class Auth with ChangeNotifier {
         // const url = 'http://10.0.2.2:8000/accounts-api/user/'; //...
 
         final tokenHeader = 'Bearer ' + token;
+        const profurl = 'https://travellum.herokuapp.com/traveller-api/';
 
         try {
           final userDataResponse = await http.get(
-            Uri.parse(url),
+            Uri.parse(profurl),
             headers: {
               'Content-Type': 'application/json',
               'Authorization': tokenHeader
             },
           );
           final userData = json.decode(userDataResponse.body);
-
-          print(userData);
-          //userName = userData['username'];
-          userName = username;
+          userName = userData['username'];
           print('This is $userName');
           userId = userData['id'].toString();
+          print('This is $userId');
         } catch (error) {
           throw error;
         }
+        userName = username;
       }
 
       notifyListeners();

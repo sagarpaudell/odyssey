@@ -86,6 +86,7 @@ class Profile with ChangeNotifier {
         lastname: userData['last_name'],
         country: userData['country'],
         city: userData['city'],
+        profilePicUrl: userData['photo_main'],
       );
 
       notifyListeners();
