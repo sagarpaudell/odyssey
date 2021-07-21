@@ -24,8 +24,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   backgroundImage: AssetImage('./assets/images/samesh.jpg'),
                 ),
               ),
-            )
-          ],
+            ),
+        ],
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'traveller_api',
     'places_api',
     'chat',
+    'post',
+    'blogs',
 ]
 
 REST_FRAMEWORK = {
@@ -130,8 +132,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
-print(os.environ.get('REDIS_URL', 'redis://localhost:6379'))
-print(os.environ.get('REDIS_URL'))
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -191,5 +191,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 django_heroku.settings(locals())
