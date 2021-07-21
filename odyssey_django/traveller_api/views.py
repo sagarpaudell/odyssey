@@ -36,6 +36,7 @@ class TravellerGetView(APIView):
     def get(self, request, id):
         try:
             traveller = Traveller.objects.get(id=id)
+            current_user = Traveller.objects.get(username = request.user)
             serializer = TravellerSerializer(traveller)
             return Response(serializer.data)
         except Traveller.DoesNotExist:
