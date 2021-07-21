@@ -11,11 +11,11 @@ from chat.models import Chat
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.traveller = await get_traveller(self.scope["user"].username)
-        print(f"{self.traveller=}")
+        # print(f"{self.traveller=}")
         self.friend_traveller = await get_traveller(
                 self.scope["url_route"]["kwargs"]["friend"]
             )
-        print(f"{self.friend_traveller.id=}")
+        # print(f"{self.friend_traveller.id=}")
 
         if self.friend_traveller.id > self.traveller.id:
             self.room_group_name = f'{self.friend_traveller.id}-{self.traveller.id}'
