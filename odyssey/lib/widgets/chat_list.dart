@@ -42,6 +42,7 @@ class _ChatListState extends State<ChatList> {
   bool isMe = false;
   String selectedFriendName;
   String selectedFriendUserName;
+  String selectedFriendId;
   ImageProvider friendImage;
   bool checkIsMe(String userName, String checkName) {
     return userName == checkName;
@@ -61,6 +62,13 @@ class _ChatListState extends State<ChatList> {
         ? selectedFriendUserName = '${chatOverview['receiver']['username']}'
         : selectedFriendUserName = '${chatOverview['sender']['username']}';
     return selectedFriendUserName;
+  }
+
+  String getFriendId(Map<String, dynamic> chatOverview) {
+    isMe
+        ? selectedFriendId = '${chatOverview['receiver']['id']}'
+        : selectedFriendId = '${chatOverview['sender']['id']}';
+    return selectedFriendId;
   }
 
   ImageProvider getFriendImage(Map<String, dynamic> chatOverview) {
@@ -95,16 +103,21 @@ class _ChatListState extends State<ChatList> {
                 itemBuilder: (BuildContext context, int index) {
                   isMe = checkIsMe(
                       userName, chatOverview[index]['sender']['username']);
+
                   return InkWell(
                     onTap: () {
+                      isMe = checkIsMe(
+                          userName, chatOverview[index]['sender']['username']);
+                      print(getFriendName(chatOverview[index]));
+                      getFriendImage(chatOverview[index]);
                       Provider.of<Chat>(context, listen: false).friendUserName =
                           getFriendUserName(chatOverview[index]);
 
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) =>
-                                Message(selectedFriendName, friendImage)),
+                            builder: (_) => Message(selectedFriendName,
+                                getFriendId(chatOverview[index]), friendImage)),
                       );
                     },
                     child: Column(

@@ -6,13 +6,14 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:provider/provider.dart';
 import '../providers/chat.dart';
 import 'dart:convert';
-import 'package:intl/intl.dart';
-import 'messageContainer.dart';
+import './messageContainer.dart';
+import '../screens/profile_user.dart';
 
 class Message extends StatefulWidget {
   final String friendName;
+  final String friendId;
   final ImageProvider friendImage;
-  Message(this.friendName, this.friendImage);
+  Message(this.friendName, this.friendId, this.friendImage);
   @override
   _MessageState createState() => _MessageState();
 }
@@ -185,21 +186,24 @@ class _MessageState extends State<Message> {
 
   @override
   Widget build(BuildContext context) {
-    const choices=['viewprofile', 'blockuser','deleteconversation'];
-      
-    showAlertDialog(BuildContext context) {     
+    const choices = ['viewprofile', 'blockuser', 'deleteconversation'];
+
+    showAlertDialog(BuildContext context) {
       AlertDialog alert = AlertDialog(
         content: Text("Are you sure you want to delete this conversation?"),
         actions: [
           TextButton(
-          child: Text("Cancel"),
-          onPressed:  () {},
+            child: Text("Cancel"),
+            onPressed: () {},
           ),
           TextButton(
-          child: Text("Yes, Delete", style: TextStyle(
-          color: Colors.red[400],
-          ),),
-          onPressed:  () {},
+            child: Text(
+              "Yes, Delete",
+              style: TextStyle(
+                color: Colors.red[400],
+              ),
+            ),
+            onPressed: () {},
           ),
         ],
       );
@@ -213,78 +217,75 @@ class _MessageState extends State<Message> {
     }
     //end of confirmatin box
 
-  void choiceAction(String choice){
-    if(choice =='viewprofile'){
-     print('View profile');
+    void choiceAction(String choice) {
+      if (choice == 'viewprofile') {
+        print('View profile');
+      } else if (choice == 'blockuser') {
+        print("blocked user");
+      } else if (choice == 'deleteconversation') {
+        showAlertDialog(context);
+      }
     }
-    else if(choice == 'blockuser'){
-    print("blocked user");
-    }
-    else if(choice == 'deleteconversation'){
-    showAlertDialog(context);
-    }
-  }
 
-  iconValue(choice){
-    if(choice =='viewprofile'){
-     return Icons.account_circle;
+    iconValue(choice) {
+      if (choice == 'viewprofile') {
+        return Icons.account_circle;
+      } else if (choice == 'blockuser') {
+        return Icons.block_flipped;
+      } else if (choice == 'deleteconversation') {
+        return Icons.delete;
+      }
     }
-    else if(choice == 'blockuser'){
-    return Icons.block_flipped;
-    }
-    else if(choice == 'deleteconversation'){
-    return Icons.delete;
-    }
-  }
 
-  textValue(choice){
-     if(choice =='viewprofile'){
-     return "View Profile";
+    textValue(choice) {
+      if (choice == 'viewprofile') {
+        return "View Profile";
+      } else if (choice == 'blockuser') {
+        return "Block this user";
+      } else if (choice == 'deleteconversation') {
+        return "Delete Conversation";
+      }
     }
-    else if(choice == 'blockuser'){
-    return "Block this user";
-    }
-    else if(choice == 'deleteconversation'){
-      return "Delete Conversation";
-    
-    }
-  }
 
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        actions:[
+        actions: [
           PopupMenuButton(
             child: Padding(
-                padding: const EdgeInsets.all(14.0),
-                child: Icon(
-                  Icons.more_vert,
-                  color:Colors.white,
-                  size: 28,
-                ),
+              padding: const EdgeInsets.all(14.0),
+              child: Icon(
+                Icons.more_vert,
+                color: Colors.white,
+                size: 28,
               ),
+            ),
             onSelected: choiceAction,
-            itemBuilder: (BuildContext context){
-              return choices.map((String choice){
+            itemBuilder: (BuildContext context) {
+              return choices.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Row(
-                        children: [
-                          Icon(
-                            iconValue(choice),
-                            color:  choice=='deleteconversation'?Colors.red[400]: Theme.of(context).primaryColor,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: Text(
-                              textValue(choice),
-                              style: TextStyle(
-                                  color: choice=='deleteconversation'?Colors.red[400]: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                        ],
+                    children: [
+                      Icon(
+                        iconValue(choice),
+                        color: choice == 'deleteconversation'
+                            ? Colors.red[400]
+                            : Theme.of(context).primaryColor,
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Text(
+                          textValue(choice),
+                          style: TextStyle(
+                              color: choice == 'deleteconversation'
+                                  ? Colors.red[400]
+                                  : Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               }).toList();
             },
@@ -330,11 +331,19 @@ class _MessageState extends State<Message> {
                 ),
               ),
             ),
-            Text(
-              widget.friendName,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
+            IconButton(
+              icon: Text(
+                widget.friendName,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => UserProfile(widget.friendId),
+                ),
               ),
             ),
           ],

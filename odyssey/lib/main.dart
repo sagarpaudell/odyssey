@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:odyssey/providers/chat.dart';
 import 'package:odyssey/providers/auth.dart';
 import 'package:odyssey/providers/profile.dart';
-import 'package:odyssey/screens/profile_self.dart';
-import 'package:odyssey/screens/profile_user.dart';
-import 'package:odyssey/screens/screens.dart';
-import 'package:odyssey/screens/single_blog_screen.dart';
+import './screens/profile_self.dart';
+import './screens/profile_user.dart';
+import './screens/screens.dart';
+import './screens/single_blog_screen.dart';
 
 import 'package:provider/provider.dart';
 

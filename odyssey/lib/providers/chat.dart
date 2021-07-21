@@ -30,8 +30,6 @@ class Chat with ChangeNotifier {
   }
 
   Future<List<dynamic>> getMessageHistory() async {
-    print(friendUserName);
-    print(username);
     final _url = 'https://travellum.herokuapp.com/chat-api/$friendUserName';
     try {
       final response = await http.get(
