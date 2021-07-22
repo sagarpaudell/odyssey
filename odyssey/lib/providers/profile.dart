@@ -71,8 +71,7 @@ class Profile with ChangeNotifier {
   // }
 
   Future<Traveller> getProfile() async {
-    print('getprofile');
-    const url = 'http://10.0.2.2:8000/traveller-api/';
+    const url = 'https://travellum.herokuapp.com/traveller-api/';
     final token = 'Bearer ' + authToken;
     try {
       final userDataResponse = await http.get(
@@ -87,11 +86,30 @@ class Profile with ChangeNotifier {
         lastname: userData['last_name'],
         country: userData['country'],
         city: userData['city'],
+        profilePicUrl: userData['photo_main'],
       );
 
-      print(userDataResponse.statusCode);
       notifyListeners();
       return userProfile;
+    } catch (error) {
+      print(json.decode(error));
+      throw error;
+    }
+  }
+
+  Future<Map<String, dynamic>> getFriendProfile(String friendId) async {
+    final url = 'https://travellum.herokuapp.com/traveller-api/$friendId';
+    final token = 'Bearer ' + authToken;
+    try {
+      final userDataResponse = await http.get(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+      final friendData = json.decode(userDataResponse.body);
+
+      print('This gives as result $friendData');
+      return friendData;
+      notifyListeners();
     } catch (error) {
       print(json.decode(error));
       throw error;

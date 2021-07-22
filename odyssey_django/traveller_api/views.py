@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from rest_framework.parsers import MultiPartParser
 from django.shortcuts import get_object_or_404
 
-from .serializers import TravellerSerializer
+from .serializers import TravellerSerializer, TravellerSerializerProfileView, TravellerSerializerPublic
 from .models import Traveller, TravellerFollowing
 
 
@@ -19,7 +19,7 @@ class TravellerView(APIView):
         return Response(serializer.data)
 
     def put(self, request):
-        traveller = self.get_object(request)
+        traveller = get_object(request)
         serializer = TravellerSerializer(traveller, data=request.data)
         print(serializer)
         if serializer.is_valid():
@@ -36,7 +36,13 @@ class TravellerGetView(APIView):
     def get(self, request, id):
         try:
             traveller = Traveller.objects.get(id=id)
-            serializer = TravellerSerializer(traveller)
+            current_user = Traveller.objects.get(username = request.user)
+            traveller_followers = traveller.get_followers()
+            current_user_followers = current_user.get_followers()
+            if (traveller in current_user_followers and current_user in traveller_followers):
+                serializer = TravellerSerializerProfileView(traveller)
+            else:
+                serializer = TravellerSerializerPublic(traveller)
             return Response(serializer.data)
         except Traveller.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)

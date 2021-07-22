@@ -89,8 +89,8 @@ class _MyAppState extends State<MyApp> {
             scaffoldBackgroundColor: Colors.white,
           ),
 
-          home: auth.isAuth ? MainScreen() : AuthPage(),
-          // home: FbLoading(),
+          home: auth.isAuth ? ChatScreen() : AuthPage(),
+          //home: MainScreen(),
           routes: {
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsScreen.routeName: (ctx) => FeedsScreen(),

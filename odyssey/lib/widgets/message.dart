@@ -1,11 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:provider/provider.dart';
 import '../providers/chat.dart';
 import 'dart:convert';
+import './messageContainer.dart';
+import '../screens/profile_user.dart';
 
 class Message extends StatefulWidget {
+  final String friendName;
+  final String friendId;
+  final ImageProvider friendImage;
+  Message(this.friendName, this.friendId, this.friendImage);
   @override
   _MessageState createState() => _MessageState();
 }
@@ -13,31 +21,66 @@ class Message extends StatefulWidget {
 class _MessageState extends State<Message> {
   // Size deviceSize = MediaQuery.of(context).size;
   Color bgColor = Color(0xffe8edea);
-  // final _channel = WebSocketChannel.connect(
+  // final channel = WebSocketChannel.connect(
   //   Uri.parse('wss://echo.websocket.org'),
   // );
   // static const friend = "buddha";
   // static const token =
   //     //"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjI0ODc2MjEyLCJqdGkiOiIwNmNhMjM3ZGNhMjc0NGVmOTdiYTZjYTljZTNkMTlmNSIsInVzZXJfaWQiOjV9.vNA_E42HrrUDpETXysim0BYVx39qsmovqvD0RSlIilE";
   //     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjI0ODcyMjY0LCJqdGkiOiIzZTBiMjM4ZWE5NTA0MjJmYWM2NjYxMzg5MjM1YjFiYSIsInVzZXJfaWQiOjN9.Z9TwDwEIUAhefhBQk01cmALCBjimtT11CIheOy9QQ3k";
-  // final _channel = WebSocketChannel.connect(
+  // final channel = WebSocketChannel.connect(
   //     Uri.parse("ws://travellum.herokuapp.com/ws/chat/$friend/?token=$token"));
-  WebSocketChannel _channel;
-  //OWebSocketChannel channel;
+  WebSocketChannel channel;
+  List<Map<String, dynamic>> _chatMessages = [];
+  List<dynamic> messageData;
+  bool isInit = false;
+  Future fbuilder;
+  @override
+  void initState() {
+    fbuilder = getMessageData();
+    isInit = true;
+    super.initState();
+  }
+
+  Future<void> getMessageData() async {
+    try {
+      messageData =
+          await Provider.of<Chat>(context, listen: false).getMessageHistory();
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  addImmediateMsg() {
+    channel.stream.listen((message) {
+      setState(() {
+        _chatMessages.add({
+          'sender': {'username': json.decode(message)['sender']},
+          'message_text': json.decode(message)['message'],
+          'message_time': json.decode(message)['time']
+        });
+      });
+    });
+  }
 
   @override
   // Future<void> initState() async {
-  //   _channel = Provider.of<Chat>(context).sendMessage();
+  //   channel = Provider.of<Chat>(context).sendMessage();
   //   super.initState();
   // }
   void didChangeDependencies() {
-    _channel = Provider.of<Chat>(context, listen: false).sendMessage();
+    channel = Provider.of<Chat>(context, listen: false).sendMessage();
+    if (isInit) {
+      addImmediateMsg();
+    }
+    isInit = false;
     super.didChangeDependencies();
   }
-  // @override
+  // channel.stream.listen((message) { print(message); })
+// @override
   // initState() {
   //   super.initState();
-  //   _channel.stream.listen(this.onData, onError: onError, onDone: onDone);
+  //   channel.stream.listen(this.onData, onError: onError, onDone: onDone);
 
   //   (() async {
   //     setState(() {});
@@ -60,144 +103,12 @@ class _MessageState extends State<Message> {
 
   // @override
   // void dispose() {
-  //   _channel.sink.close();
+  //   channel.sink.close();
   //   _controller.dispose();
   //   super.dispose();
   // }
 
   final _controller = TextEditingController();
-  _messageBuilder() {
-    return Container(
-      margin: EdgeInsets.only(top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          //Others message
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 8, right: 8),
-                child: CircleAvatar(
-                  radius: 12,
-                  backgroundImage: AssetImage('./assets/images/guptaji.jpg'),
-                ),
-              ),
-              Container(
-                  width: MediaQuery.of(context).size.width * 0.55,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                      color: Colors.white70,
-                      borderRadius: BorderRadius.circular(30)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 40,
-                        width: 40,
-                        child: StreamBuilder(
-                          stream: _channel.stream,
-                          builder: (context, snapshot) {
-                            return snapshot.hasError
-                                ? Text(
-                                    snapshot.error.toString(),
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        fontSize: 8),
-                                  )
-                                : Text(
-                                    snapshot.hasData
-                                        ? json.decode(
-                                                    snapshot.data)['sender'] !=
-                                                "ketone"
-                                            ? json.decode(
-                                                snapshot.data)['message']
-                                            : 'Text'
-                                        : '',
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        fontSize: 15),
-                                  );
-                          },
-                        ),
-                      ),
-                      // Text(
-                      //   "hello..ihihihihihi",
-                      //   style: TextStyle(
-                      //       color: Theme.of(context).primaryColor,
-                      //       fontSize: 15),
-                      // ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        '2021/12/20',
-                        style: TextStyle(color: Colors.black54, fontSize: 11),
-                      )
-                    ],
-                  )),
-            ],
-          ),
-
-          //User's  sent message
-          Container(
-              margin: EdgeInsets.only(
-                top: 8,
-                right: 8,
-              ),
-              width: MediaQuery.of(context).size.width * 0.55,
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(30)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Container(
-                  //   height: 40,
-                  //   width: 40,
-                  //   child: StreamBuilder(
-                  //     stream: _channel.stream,
-                  //     builder: (context, snapshot) {
-                  //       return snapshot.hasError
-                  //           ? Text(
-                  //               snapshot.error.toString(),
-                  //               style: TextStyle(
-                  //                   color: Theme.of(context).primaryColor,
-                  //                   fontSize: 8),
-                  //             )
-                  //           : Text(
-                  //               snapshot.hasData
-                  //                   ? json.decode(snapshot.data)['sender'] ==
-                  //                           "ketone"
-                  //                       ? json.decode(snapshot.data)['message']
-                  //                       : 'Text'
-                  //                   : '',
-                  //               style: TextStyle(
-                  //                   color: Theme.of(context).primaryColor,
-                  //                   fontSize: 15),
-                  //             );
-                  //     },
-                  //   ),
-                  // ),
-                  Text(
-                    // "Hello! How are you doing? hehehehehe",
-                    _controller.text,
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    '2021/12/20',
-                    style: TextStyle(color: Colors.white70, fontSize: 11),
-                  )
-                ],
-              )),
-        ],
-      ),
-    );
-  }
 
   //end of _messageBuilder
   _sendMessage() {
@@ -220,9 +131,11 @@ class _MessageState extends State<Message> {
               fillColor: Colors.white,
               filled: true,
               suffixIcon: IconButton(
-                icon: Icon(Icons.send, color: Theme.of(context).primaryColor),
-                onPressed: _sendMessageFun,
-              ),
+                  icon: Icon(Icons.send, color: Theme.of(context).primaryColor),
+                  onPressed: () {
+                    _sendMessageFun();
+                    _controller.text = '';
+                  }),
               contentPadding: EdgeInsets.only(
                 left: 30,
                 right: 50,
@@ -241,29 +154,56 @@ class _MessageState extends State<Message> {
 
   //end of _sendMessage
   void _sendMessageFun() {
-    Provider.of<Chat>(context, listen: false).getMessageHistory();
-    // if (_controller.text.isNotEmpty) {
-    //   _channel.sink.add(json.encode({'message': _controller.text}));
-    // }
+    if (_controller.text.isNotEmpty) {
+      channel.sink.add(json.encode({'message': _controller.text}));
+    }
   }
+
+// Widget StreamBuilder(
+//                           stream: channel.stream,
+//                           builder: (context, snapshot) {
+//                             return snapshot.hasError
+//                                 ? Text(
+//                                     snapshot.error.toString(),
+//                                     style: TextStyle(
+//                                         color: Theme.of(context).primaryColor,
+//                                         fontSize: 8),
+//                                   )
+//                                 : Text(
+//                                     snapshot.hasData
+//                                         ? json.decode(snapshot.data)['sender'] ==
+//                                                 "ketone"
+//                                             ? json.decode(snapshot.data)['message']
+//                                             : 'Text'
+//                                         : '',
+//                                     style: TextStyle(
+//                                         color: Theme.of(context).primaryColor,
+//                                         fontSize: 15),
+//                                   );
+//                           },
+//                         ),
+//                       );
 
   @override
   Widget build(BuildContext context) {
-    const choices=['viewprofile', 'blockuser','deleteconversation'];
-      
-    showAlertDialog(BuildContext context) {     
+    const choices = ['viewprofile', 'blockuser', 'deleteconversation'];
+
+    showAlertDialog(BuildContext context) {
       AlertDialog alert = AlertDialog(
         content: Text("Are you sure you want to delete this conversation?"),
         actions: [
           TextButton(
-          child: Text("Cancel"),
-          onPressed:  () {},
+            child: Text("Cancel"),
+            onPressed: () {},
           ),
           TextButton(
-          child: Text("Yes, Delete", style: TextStyle(
-          color: Colors.red[400],
-          ),),
-          onPressed:  () {},
+            child: Text(
+              "Yes, Delete",
+              style: TextStyle(
+                color: Colors.red[400],
+              ),
+            ),
+            onPressed: () {},
           ),
         ],
       );
@@ -277,78 +217,75 @@ class _MessageState extends State<Message> {
     }
     //end of confirmatin box
 
-  void choiceAction(String choice){
-    if(choice =='viewprofile'){
-     print('View profile');
+    void choiceAction(String choice) {
+      if (choice == 'viewprofile') {
+        print('View profile');
+      } else if (choice == 'blockuser') {
+        print("blocked user");
+      } else if (choice == 'deleteconversation') {
+        showAlertDialog(context);
+      }
     }
-    else if(choice == 'blockuser'){
-    print("blocked user");
-    }
-    else if(choice == 'deleteconversation'){
-    showAlertDialog(context);
-    }
-  }
 
-  iconValue(choice){
-    if(choice =='viewprofile'){
-     return Icons.account_circle;
+    iconValue(choice) {
+      if (choice == 'viewprofile') {
+        return Icons.account_circle;
+      } else if (choice == 'blockuser') {
+        return Icons.block_flipped;
+      } else if (choice == 'deleteconversation') {
+        return Icons.delete;
+      }
     }
-    else if(choice == 'blockuser'){
-    return Icons.block_flipped;
-    }
-    else if(choice == 'deleteconversation'){
-    return Icons.delete;
-    }
-  }
 
-  textValue(choice){
-     if(choice =='viewprofile'){
-     return "View Profile";
+    textValue(choice) {
+      if (choice == 'viewprofile') {
+        return "View Profile";
+      } else if (choice == 'blockuser') {
+        return "Block this user";
+      } else if (choice == 'deleteconversation') {
+        return "Delete Conversation";
+      }
     }
-    else if(choice == 'blockuser'){
-    return "Block this user";
-    }
-    else if(choice == 'deleteconversation'){
-      return "Delete Conversation";
-    
-    }
-  }
 
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        actions:[
+        actions: [
           PopupMenuButton(
             child: Padding(
-                padding: const EdgeInsets.all(14.0),
-                child: Icon(
-                  Icons.more_vert,
-                  color:Colors.white,
-                  size: 28,
-                ),
+              padding: const EdgeInsets.all(14.0),
+              child: Icon(
+                Icons.more_vert,
+                color: Colors.white,
+                size: 28,
               ),
+            ),
             onSelected: choiceAction,
-            itemBuilder: (BuildContext context){
-              return choices.map((String choice){
+            itemBuilder: (BuildContext context) {
+              return choices.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Row(
-                        children: [
-                          Icon(
-                            iconValue(choice),
-                            color:  choice=='deleteconversation'?Colors.red[400]: Theme.of(context).primaryColor,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: Text(
-                              textValue(choice),
-                              style: TextStyle(
-                                  color: choice=='deleteconversation'?Colors.red[400]: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                        ],
+                    children: [
+                      Icon(
+                        iconValue(choice),
+                        color: choice == 'deleteconversation'
+                            ? Colors.red[400]
+                            : Theme.of(context).primaryColor,
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Text(
+                          textValue(choice),
+                          style: TextStyle(
+                              color: choice == 'deleteconversation'
+                                  ? Colors.red[400]
+                                  : Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               }).toList();
             },
@@ -373,8 +310,7 @@ class _MessageState extends State<Message> {
                   children: [
                     CircleAvatar(
                       radius: 16,
-                      backgroundImage:
-                          AssetImage('./assets/images/guptaji.jpg'),
+                      backgroundImage: widget.friendImage,
                     ),
                     Positioned(
                       right: 0,
@@ -395,33 +331,108 @@ class _MessageState extends State<Message> {
                 ),
               ),
             ),
-            Text(
-              'Deependra Gupta',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
+            IconButton(
+              icon: Text(
+                widget.friendName,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => UserProfile(widget.friendId),
+                ),
               ),
             ),
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: bgColor,
-              ),
-              child: ListView.builder(
-                  reverse: true, //displays messages from bottom
-                  itemCount: 1,
-                  itemBuilder: (BuildContext context, int nothing) {
-                    return _messageBuilder();
-                  }),
-            ),
-          ),
-          _sendMessage(),
-        ],
+      body: FutureBuilder<void>(
+        future: fbuilder, // a previously-obtained Future<String> or null
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: bgColor,
+                          ),
+                          child: CustomScrollView(
+                            slivers: [
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (BuildContext context, int index) {
+                                    // To convert this infinite list to a list with three items,
+                                    // uncomment the following line:
+                                    // if (index > 3) return null;
+
+                                    // return _messageBuilder(DateTime.parse(
+                                    //     messageData[index]['message_time']));
+                                    return Column(children: [
+                                      if (index < messageData.length)
+                                        MessageContainer(messageData[index]),
+                                      if (_chatMessages.isNotEmpty &&
+                                          index < _chatMessages.length)
+                                        MessageContainer(_chatMessages[index]),
+                                    ]);
+                                    //return null;
+                                  },
+                                  // Or, uncomment the following line:
+                                  // childCount: 3,
+                                ),
+                              ),
+
+                              // child: ListView(
+                              //   //reverse: true,
+                              //   shrinkWrap: true,
+                              //   children: [
+                              //     for (var msg in messageData)
+                              //       MessageContainer(msg),
+                              //     for (var immediateMsg in _chatMessages)
+                              //       if (_chatMessages.isNotEmpty)
+                              //         MessageContainer(immediateMsg),
+                              //   ],
+                              // ),
+                            ],
+                          ),
+                        ),
+                        //     child: ListView.builder(
+                        //         physics: ClampingScrollPhysics(),
+                        //         reverse: true, //displays messages from bottom
+                        //         itemCount: messageData.length,
+                        //         itemBuilder: (ctx, int index) {
+                        //           // return _messageBuilder(DateTime.parse(
+                        //           //     messageData[index]['message_time']));
+                        //           return MessageContainer(messageData[index]);
+                        //         }),
+                        //   ),
+                        // ),
+                        // _chatMessages.isEmpty
+                        //     ? SizedBox()
+                        //     : Expanded(
+                        //         child: Container(
+                        //           decoration: BoxDecoration(
+                        //             color: bgColor,
+                        //           ),
+                        //           child: ListView.builder(
+                        //               physics: ClampingScrollPhysics(),
+                        //               itemCount: _chatMessages.length,
+                        //               itemBuilder: (context, index) {
+                        //                 return MessageContainer(
+                        //                     _chatMessages[index]);
+                        //               }),
+                        //         ),
+                      ),
+                      _sendMessage(),
+                    ],
+                  ),
       ),
     );
   }
