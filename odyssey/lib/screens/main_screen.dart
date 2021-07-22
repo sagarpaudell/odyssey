@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:odyssey/screens/screens.dart';
 import 'package:odyssey/widgets/custom_tab_bar.dart';
+import './profile_self.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -13,8 +14,7 @@ class _MainScreenState extends State<MainScreen> {
     Scaffold(),
     Scaffold(),
     Scaffold(),
-    Scaffold(),
-    Scaffold(),
+    SelfProfile(),
   ];
   final List<IconData> _icons = const [
     Icons.home,

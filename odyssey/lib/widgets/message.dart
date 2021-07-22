@@ -292,15 +292,12 @@ class _MessageState extends State<Message> {
           )
         ],
         automaticallyImplyLeading: false,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context, false)),
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.arrow_back_ios),
-            ),
             Padding(
               padding: const EdgeInsets.only(right: 10),
               child: CircleAvatar(

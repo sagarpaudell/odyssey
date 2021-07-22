@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:odyssey/models/models.dart';
 import 'package:odyssey/data/data.dart';
-import 'package:odyssey/screens/bookmarks.dart';
-import 'package:odyssey/screens/chat_screen.dart';
-import 'package:odyssey/screens/comment_post.dart';
-import 'package:odyssey/widgets/fb_loading.dart';
-import 'package:odyssey/widgets/post_container.dart';
-import 'package:odyssey/widgets/blog_container.dart';
-import 'edit_profile_screen.dart';
+import './bookmarks.dart';
+import './chat_screen.dart';
+import './comment_post.dart';
+import '../widgets/fb_loading.dart';
+import '../widgets/post_container.dart';
+import '../widgets/blog_container.dart';
+import './edit_profile_screen.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth.dart';
 import '../providers/posts.dart';
+import '../providers/blog.dart' as blogss;
+
 // import '../themes/style.dart';
 // import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -23,7 +24,9 @@ class FeedsScreen extends StatefulWidget {
 
 class _FeedsScreenState extends State<FeedsScreen> {
   List<dynamic> userPosts;
+  List<dynamic> allBlogs;
 
+  bool isPosts = true;
   // final Posts = [{}];
 
   // @override
@@ -43,36 +46,22 @@ class _FeedsScreenState extends State<FeedsScreen> {
     var temp = await Provider.of<Posts>(context, listen: false).getPosts();
     setState(() {
       userPosts = temp;
-      print('userPosts: $userPosts');
     });
   }
 
-  var isPosts = true;
+  Future<void> getAllTheBlogs() async {
+    List<dynamic> tempblogs =
+        await Provider.of<blogss.Blog>(context, listen: false).getAllBlogs();
+    setState(() {
+      allBlogs = tempblogs;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final authData = Provider.of<Auth>(context);
-    // return Scaffold(
-    //   body: Container(
-    //     child: Center(
-    //       child: Column(
-    //         children: [
-    //           Text(
-    //             'Feeds ${authData.userName}',
-    //             style: TextStyle(
-    //               fontSize: 40,
-    //             ),
-    //           ),
-    //           ElevatedButton(
-    //             onPressed: () =>
-    //                 Navigator.of(context).pushNamed(EditProfilePage.routeName),
-    //             child: Text('add profile'),
-    //           )
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
+    if (!isPosts) {
+      getAllTheBlogs();
+    }
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -140,15 +129,23 @@ class _FeedsScreenState extends State<FeedsScreen> {
                         childCount: userPosts.length,
                       ),
                     )
-              : SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final Blog blog = blogs[index];
-                      return BlogContainer(blog: blog);
-                    },
-                    childCount: blogs.length,
-                  ),
-                )
+              : allBlogs == null
+                  ? SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return FbLoading();
+                        },
+                        childCount: 1,
+                      ),
+                    )
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return BlogContainer(allBlogs[index]);
+                        },
+                        childCount: allBlogs.length,
+                      ),
+                    )
         ],
       ),
     );

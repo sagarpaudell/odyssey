@@ -173,7 +173,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     try {
       await Provider.of<Profile>(context, listen: false)
           .editProfile(_profileTraveller);
-      Navigator.of(context).pushReplacementNamed(FeedsScreen.routeName);
     } catch (e) {
       const errorMessage =
           'Could not authenticate you. Please try again later.';
@@ -190,6 +189,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     //final authData = Provider.of<Auth>(context, listen: false);
     Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        leading: Icon(Icons.arrow_back),
+      ),
       //body:
       body: FutureBuilder<void>(
         future: fbuilder, // a previously-obtained Future<String> or null
