@@ -96,4 +96,23 @@ class Profile with ChangeNotifier {
       throw error;
     }
   }
+
+  Future<Map<String, dynamic>> getFriendProfile(String friendId) async {
+    final url = 'https://travellum.herokuapp.com/traveller-api/$friendId';
+    final token = 'Bearer ' + authToken;
+    try {
+      final userDataResponse = await http.get(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+      final friendData = json.decode(userDataResponse.body);
+
+      print('This gives as result $friendData');
+      return friendData;
+      notifyListeners();
+    } catch (error) {
+      print(json.decode(error));
+      throw error;
+    }
+  }
 }
