@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:odyssey/providers/chat.dart';
 import 'package:odyssey/providers/auth.dart';
 import 'package:odyssey/providers/profile.dart';
-import './screens/profile_self.dart';
-import './screens/profile_user.dart';
-import './screens/screens.dart';
-import './screens/single_blog_screen.dart';
+import 'package:odyssey/providers/posts.dart';
+import 'package:odyssey/screens/profile_self.dart';
+import 'package:odyssey/screens/profile_user.dart';
+import 'package:odyssey/screens/screens.dart';
+import 'package:odyssey/screens/single_blog_screen.dart';
+import 'package:odyssey/widgets/fb_loading.dart';
 
 import 'package:provider/provider.dart';
 
@@ -59,6 +61,12 @@ class _MyAppState extends State<MyApp> {
           update: (ctx, auth, _) => Chat(
             auth.userName,
             auth.userId,
+            auth.token,
+          ),
+        ),
+        ChangeNotifierProxyProvider<Auth, Posts>(
+          create: (ctx) => Posts(),
+          update: (ctx, auth, _) => Posts(
             auth.token,
           ),
         )

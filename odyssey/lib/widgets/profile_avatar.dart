@@ -19,7 +19,7 @@ class ProfileAvatar extends StatelessWidget {
             radius: 20.0,
             backgroundColor: Colors.grey[200],
             backgroundImage:
-              NetworkImage('https://source.unsplash.com/random/200x200'),
+                NetworkImage('https://travellum.herokuapp.com' + imageUrl),
           ),
         ),
       ],

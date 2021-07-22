@@ -15,6 +15,14 @@ class MyBlogs(APIView):
             print (serializer)
             return Response(serializer.data)
 
+class ViewBlogs(APIView):
+    def get(self,request):
+            user = Traveller.objects.get(username = self.request.user)
+            blogs = Blog.objects.all()
+            serializer = BlogSerializer(blogs, many = True)
+            print (serializer)
+            return Response(serializer.data)
+
 class BlogDetail(APIView):
     def get_object(self, id):
         try:
