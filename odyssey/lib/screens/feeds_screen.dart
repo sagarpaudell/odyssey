@@ -4,11 +4,13 @@ import 'package:odyssey/data/data.dart';
 import 'package:odyssey/screens/bookmarks.dart';
 import 'package:odyssey/screens/chat_screen.dart';
 import 'package:odyssey/screens/comment_post.dart';
+import 'package:odyssey/widgets/fb_loading.dart';
 import 'package:odyssey/widgets/post_container.dart';
 import 'package:odyssey/widgets/blog_container.dart';
 import 'edit_profile_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
+import '../providers/posts.dart';
 // import '../themes/style.dart';
 // import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -20,7 +22,30 @@ class FeedsScreen extends StatefulWidget {
 }
 
 class _FeedsScreenState extends State<FeedsScreen> {
-  final Posts = [{}];
+  List<dynamic> userPosts;
+
+  // final Posts = [{}];
+
+  // @override
+  // void initState() {
+  //   Provider.of<Posts>(context, listen: false).getPosts();
+  //   super.initState();
+  // }
+
+  Future fbuilder;
+  @override
+  void initState() {
+    fbuilder = getUserPosts();
+    super.initState();
+  }
+
+  Future<void> getUserPosts() async {
+    var temp = await Provider.of<Posts>(context, listen: false).getPosts();
+    setState(() {
+      userPosts = temp;
+      print('userPosts: $userPosts');
+    });
+  }
 
   var isPosts = true;
 
@@ -98,15 +123,23 @@ class _FeedsScreenState extends State<FeedsScreen> {
             centerTitle: true,
           ),
           isPosts
-              ? SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final Post post = posts[index];
-                      return PostContainer(post: post);
-                    },
-                    childCount: posts.length,
-                  ),
-                )
+              ? userPosts == null
+                  ? SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return FbLoading();
+                        },
+                        childCount: 1,
+                      ),
+                    )
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return PostContainer(post: userPosts[index]);
+                        },
+                        childCount: userPosts.length,
+                      ),
+                    )
               : SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
