@@ -19,7 +19,6 @@ class PostContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('post:$post');
     // final bool isDesktop = Responsive.isDesktop(context);
     return Card(
       shadowColor: Colors.white,

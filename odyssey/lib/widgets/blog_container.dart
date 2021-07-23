@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:odyssey/models/models.dart';
 import 'package:odyssey/screens/single_blog_screen.dart';
 import 'package:odyssey/widgets/profile_avatar.dart';
+import 'package:jiffy/jiffy.dart';
+import 'package:intl/intl.dart';
 
 class BlogContainer extends StatelessWidget {
-  final Blog blog;
+  final Map<String, dynamic> singleBlog;
 
-  const BlogContainer({
-    Key key,
-    @required this.blog,
-  }) : super(key: key);
+  const BlogContainer(
+    @required this.singleBlog,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -31,19 +32,20 @@ class BlogContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         child: Column(
           children: [
-            blog.imageUrl != null
+            singleBlog["photo1"] == null
                 ? Container(
                     child: Image(
                       image: NetworkImage(
                           'https://source.unsplash.com/random/400x250'),
                     ),
                   )
-                : const SizedBox(
-                    height: 10,
+                : Image(
+                    image: NetworkImage('https://travellum.herokuapp.com' +
+                        singleBlog["photo1"]),
                   ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: _BlogInfo(blog: blog),
+              child: _BlogInfo(singleBlog),
             ),
           ],
         ),
@@ -53,13 +55,8 @@ class BlogContainer extends StatelessWidget {
 }
 
 class _BlogInfo extends StatelessWidget {
-  final Blog blog;
-
-  const _BlogInfo({
-    Key key,
-    @required this.blog,
-  }) : super(key: key);
-
+  final Map<String, dynamic> singleBlog;
+  _BlogInfo(this.singleBlog);
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -68,7 +65,7 @@ class _BlogInfo extends StatelessWidget {
           height: 10,
         ),
         Text(
-          blog.title,
+          singleBlog['title'],
           style: TextStyle(
               fontFamily: 'Arial',
               fontSize: 20,
@@ -81,7 +78,7 @@ class _BlogInfo extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ProfileAvatar(imageUrl: blog.user.imageUrl),
+            //ProfileAvatar(imageUrl: singleBlog.user.imageUrl),
             SizedBox(
               width: 10,
             ),
@@ -89,19 +86,38 @@ class _BlogInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${blog.user.name}',
+                  '${singleBlog['author']['username']}',
                   style: const TextStyle(
                     // fontWeight: FontWeight.w600,
                     fontSize: 20,
                   ),
                 ),
-                Text(
-                  '${blog.timeAgo}',
-                  style: const TextStyle(
-                    // fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
+                Jiffy(DateTime.parse(singleBlog['date']))
+                        .fromNow()
+                        .toString()
+                        .contains(RegExp(r'hours|minutes|seconds'))
+                    ? Text(
+                        Jiffy(DateTime.parse(singleBlog['date'])).fromNow(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      )
+                    : Text(
+                        DateFormat('MMM dd, yyyy')
+                            .format(DateTime.parse(singleBlog['date'])),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                // Text(
+                //   '{singleBlog.timeAgo}',
+                //   style: const TextStyle(
+                //     // fontWeight: FontWeight.w600,
+                //     fontSize: 14,
+                //   ),
+                // ),
               ],
             ),
             Expanded(
@@ -134,7 +150,7 @@ class _BlogInfo extends StatelessWidget {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => BlogScreen(),
+                        builder: (_) => BlogScreen(singleBlog['id']),
                       ),
                     ),
                     child: Container(

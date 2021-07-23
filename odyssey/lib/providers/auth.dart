@@ -8,7 +8,9 @@ class Auth with ChangeNotifier {
   String token;
   String _rootToken;
   String userName;
+  String fullName;
   String userId;
+  Map<String, dynamic> userProfileInfo;
   DateTime _expiryDate;
   String _userRefreshToken;
   bool get isAuth {
@@ -54,10 +56,10 @@ class Auth with ChangeNotifier {
             },
           );
           final userData = json.decode(userDataResponse.body);
+          userProfileInfo = userData;
           userName = userData['username'];
-          print('This is $userName');
+          fullName = '${userData['first_name ']} ${userData['last_name ']}';
           userId = userData['id'].toString();
-          print('This is $userId');
         } catch (error) {
           throw error;
         }

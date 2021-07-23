@@ -27,7 +27,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
         appBar: AppBar(
           actions: [
@@ -55,10 +54,13 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ],
+          automaticallyImplyLeading: true,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.pop(context, false)),
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(Icons.arrow_back_ios),
               Text(
                 'Messages',
                 style: TextStyle(

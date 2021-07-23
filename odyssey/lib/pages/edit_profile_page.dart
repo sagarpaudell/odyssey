@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:odyssey/screens/screens.dart';
 
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
@@ -173,7 +172,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     try {
       await Provider.of<Profile>(context, listen: false)
           .editProfile(_profileTraveller);
-      Navigator.of(context).pushReplacementNamed(FeedsScreen.routeName);
+      //sNavigator.of(context).pushReplacementNamed(FeedsScreen.routeName);
     } catch (e) {
       const errorMessage =
           'Could not authenticate you. Please try again later.';
@@ -190,7 +189,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
     //final authData = Provider.of<Auth>(context, listen: false);
     Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
-      //body:
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context, false)),
+      ),
       body: FutureBuilder<void>(
         future: fbuilder, // a previously-obtained Future<String> or null
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
@@ -209,7 +213,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           Container(
                             margin: const EdgeInsets.only(bottom: 10),
                             child: Text(
-                              'Let\'s create a profile for you',
+                              _profileData['firstname'] == null
+                                  ? 'Let\'s  for you'
+                                  : 'Edit yout Profile',
                               style: TextStyle(
                                   color: Color(0XFF8B8B8B), fontSize: 18),
                               textAlign: TextAlign.center,
