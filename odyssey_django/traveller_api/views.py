@@ -1,3 +1,4 @@
+from post.serializers import PostSerializer
 from django.shortcuts import render, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -6,7 +7,8 @@ from django.contrib.auth.models import User
 from rest_framework.parsers import MultiPartParser
 from django.shortcuts import get_object_or_404
 
-from .serializers import TravellerSerializer, TravellerSerializerProfileView, TravellerSerializerPublic
+from .serializers import TravellerSerializer, TravellerSerializerPublic
+from .serializers_profile import TravellerSerializerProfileViewPrivate,TravellerSerializerProfileViewPublic
 from .models import Traveller, TravellerFollowing
 
 
@@ -40,10 +42,14 @@ class TravellerGetView(APIView):
             traveller_followers = traveller.get_followers()
             current_user_followers = current_user.get_followers()
             if (traveller in current_user_followers and current_user in traveller_followers):
-                serializer = TravellerSerializerProfileView(traveller)
+                serializer_dict = TravellerSerializerProfileViewPrivate(traveller).data
             else:
-                serializer = TravellerSerializerPublic(traveller)
-            return Response(serializer.data)
+                public_posts = traveller.get_public_posts()
+                post_serializer = PostSerializer(public_posts)
+                serializer = TravellerSerializerProfileViewPublic(traveller)
+                serializer_dict = serializer.data
+                serializer_dict.update({"posts": post_serializer.data})
+            return Response(serializer_dict)
         except Traveller.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 

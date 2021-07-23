@@ -21,8 +21,8 @@ class Blog(models.Model):
         return self.title
 
 class BlogComment(models.Model):
-    blog = models.ForeignKey(Blog, on_delete = models.CASCADE, related_name='blog_comments')
-    user = models.ForeignKey(Traveller, on_delete = models.CASCADE, related_name='comment')
+    blog = models.ForeignKey(Blog, on_delete = models.CASCADE, related_name='comments')
+    user = models.ForeignKey(Traveller, on_delete = models.CASCADE,)
     comment = models.TextField()
     liked_users = models.ManyToManyField(Traveller, related_name='likedcomments', blank=True)
     disliked_users = models.ManyToManyField(Traveller, related_name='dislikedcomments', blank=True)

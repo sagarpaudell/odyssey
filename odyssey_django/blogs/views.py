@@ -69,12 +69,12 @@ class AddBlog(APIView):
         blog = Blog.objects.create(title=title , author=user, place=place, description=description, photo1=photo1, photo2=photo2, photo3=photo3, photo4=photo4)
         return Response(BlogSerializer(blog).data)
 
-class ViewBlogComment(APIView):                 #view all the comments of a blog
-    def get(self, request, id):
-        blog = Blog.objects.get(id = id)
-        blog_comments = BlogComment.objects.filter(blog = blog)
-        serializer = BlogCommentSerializer(blog_comments, many = True)
-        return Response(serializer.data)
+# class ViewBlogComment(APIView):                 #view all the comments of a blog
+#     def get(self, request, id):
+#         blog = Blog.objects.get(id = id)
+#         blog_comments = BlogComment.objects.filter(blog = blog)
+#         serializer = BlogCommentSerializer(blog_comments, many = True)
+#         return Response(serializer.data)
 
 class BlogCommentDetail(APIView):               
     def get_object(self, id):
