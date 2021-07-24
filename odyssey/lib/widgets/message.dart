@@ -305,7 +305,6 @@ class _MessageState extends State<Message> {
               margin: EdgeInsets.all(8),
               child: CircleAvatar(
                 radius: 18,
-                backgroundColor: Colors.white24,
                 child: Stack(
                   children: [
                     CircleAvatar(

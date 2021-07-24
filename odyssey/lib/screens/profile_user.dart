@@ -13,7 +13,7 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> {
   Future fbuilder;
   Map<String, dynamic> friendProfileData;
-  final baseurl = 'https://travellum.herokuapp.com';
+
   @override
   void initState() {
     fbuilder = getUserProfile();

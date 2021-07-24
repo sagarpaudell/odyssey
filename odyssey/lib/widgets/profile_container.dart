@@ -17,7 +17,11 @@ class ProfileContainer extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 10, top: 10),
                   child: CircleAvatar(
                     radius: 52,
-                    backgroundImage: AssetImage('./assets/images/samesh.jpg'),
+                    backgroundImage: NetworkImage(profileContent['photo_main']),
+                    onBackgroundImageError:
+                        (Object exception, StackTrace stackTrace) {
+                      return Image.asset('./assets/images/guptaji.jpg');
+                    },
                   ),
                 ),
               ),

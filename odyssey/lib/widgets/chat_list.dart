@@ -14,7 +14,6 @@ class ChatList extends StatefulWidget {
 class _ChatListState extends State<ChatList> {
   List<dynamic> chatOverview;
   Future fbuilder;
-  final baseurl = 'https://travellum.herokuapp.com';
   @override
   void initState() {
     fbuilder = getMessageOverview();
@@ -30,14 +29,14 @@ class _ChatListState extends State<ChatList> {
     }
   }
 
-  String formatter(String url) {
-    return baseurl + url;
-  }
+  // String formatter(String url) {
+  //   return baseurl + url;
+  // }
 
-  NetworkImage getImage(String uploadurl) {
-    String url = formatter(uploadurl);
-    return NetworkImage(url);
-  }
+  // NetworkImage getImage(String uploadurl) {
+  //   String url = formatter(uploadurl);
+  //   return NetworkImage(url);
+  // }
 
   bool isMe = false;
   String selectedFriendName;
@@ -75,10 +74,10 @@ class _ChatListState extends State<ChatList> {
     isMe
         ? chatOverview['receiver']['photo_main'] == null
             ? friendImage = AssetImage('./assets/images/guptaji.jpg')
-            : friendImage = getImage(chatOverview['receiver']['photo_main'])
+            : friendImage = NetworkImage(chatOverview['receiver']['photo_main'])
         : chatOverview['sender']['photo_main'] == null
             ? friendImage = AssetImage('./assets/images/guptaji.jpg')
-            : friendImage = getImage(chatOverview['sender']['photo_main']);
+            : friendImage = NetworkImage(chatOverview['sender']['photo_main']);
     return friendImage;
   }
 
@@ -139,8 +138,10 @@ class _ChatListState extends State<ChatList> {
                                         getFriendImage(chatOverview[index]),
                                     onBackgroundImageError: (Object exception,
                                         StackTrace stackTrace) {
-                                      return Image.asset(
-                                          './assets/images/guptaji.jpg');
+                                      setState(() {
+                                        return Image.asset(
+                                            './assets/images/guptaji.jpg');
+                                      });
                                     },
                                   ),
                                   Positioned(
@@ -150,7 +151,6 @@ class _ChatListState extends State<ChatList> {
                                       height: 14,
                                       width: 14,
                                       decoration: BoxDecoration(
-                                          color: Colors.greenAccent[400],
                                           shape: BoxShape.circle,
                                           border: Border.all(
                                             color: Colors.white,
