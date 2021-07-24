@@ -1,6 +1,7 @@
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from rest_framework.permissions import IsAuthenticated
-from traveller_api.serializers import TravellerSerializer, TravellerSerializerPublic
+from traveller_api.serializers import TravellerSerializer, TravellerSerializerPrivate, TravellerSerializerPublic
 from places_api.serializers import PlaceSerializer
 from .models import Post, Comment
 
@@ -31,5 +32,3 @@ class PostSerializer(ModelSerializer):
         model = Post
         fields=("id", "traveller", "caption", "photo", "place", "like_users",
                 "comments", "post_time")
-
-

@@ -33,6 +33,15 @@ class Traveller(models.Model):
     def get_username(self):
         return self.username.username
 
+    def get_posts(self):
+        return self.posts.all()
+
+    def get_private_posts(self):
+        return self.posts.all().get(public_post=False)
+
+    def get_public_posts(self):
+        return self.posts.all().get(public_post=True)
+
 
 class TravellerFollowing(models.Model):
     traveller_id = models.ForeignKey(
