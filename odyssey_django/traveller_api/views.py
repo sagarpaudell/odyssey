@@ -8,7 +8,7 @@ from rest_framework.parsers import MultiPartParser
 from django.shortcuts import get_object_or_404
 
 from .serializers import TravellerSerializer, TravellerSerializerPublic
-from .serializers_profile import TravellerSerializerProfileViewPrivate,TravellerSerializerProfileViewPublic
+from .serializers_profile import TravellerSerializerProfileViewPrivate,TravellerSerializerProfileViewPublic,TravellerSerializerProfileViewSelf
 from .models import Traveller, TravellerFollowing
 
 
@@ -17,7 +17,7 @@ class TravellerView(APIView):
 
     def get(self, request):
         traveller = get_object(request)
-        serializer = TravellerSerializer(traveller)
+        serializer = TravellerSerializerProfileViewSelf(traveller)
         return Response(serializer.data)
 
     def put(self, request):
