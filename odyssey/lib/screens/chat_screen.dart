@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:odyssey/widgets/chat_list.dart';
+import './profile_self.dart';
+import '../widgets/chat_list.dart';
 import '../providers/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -23,13 +24,17 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: const EdgeInsets.only(right: 20),
               child: CircleAvatar(
                 radius: 18,
-                child: CircleAvatar(
-                    radius: 16,
-                    backgroundImage: NetworkImage(profilePicUrl),
-                    onBackgroundImageError:
-                        (Object exception, StackTrace stackTrace) {
-                      return Image.asset('./assets/images/guptaji.jpg');
-                    }),
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context)
+                      .pushReplacementNamed(SelfProfile.routeName),
+                  child: CircleAvatar(
+                      radius: 16,
+                      backgroundImage: NetworkImage(profilePicUrl),
+                      onBackgroundImageError:
+                          (Object exception, StackTrace stackTrace) {
+                        return Image.asset('./assets/images/guptaji.jpg');
+                      }),
+                ),
               ),
             ),
           ],

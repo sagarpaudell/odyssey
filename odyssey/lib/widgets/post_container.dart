@@ -8,7 +8,11 @@ import 'package:odyssey/models/models.dart';
 import 'package:odyssey/screens/comment_post.dart';
 import 'package:odyssey/widgets/profile_avatar.dart';
 import 'package:intl/intl.dart';
-import '../error_handlers/networking_error.dart';
+import '../screens/profile_self.dart';
+import '../screens/profile_user.dart';
+
+import '../providers/auth.dart';
+import 'package:provider/provider.dart';
 
 class PostContainer extends StatelessWidget {
   final Map<String, dynamic> post;
@@ -20,7 +24,7 @@ class PostContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final bool isDesktop = Responsive.isDesktop(context);
+    print('thhis isss $post');
     return Card(
       shadowColor: Colors.white,
       margin: EdgeInsets.symmetric(
@@ -80,9 +84,26 @@ class _PostHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String selfUserName = Provider.of<Auth>(context).userName;
+
     return Row(
       children: [
-        ProfileAvatar(imageUrl: post['traveller']['photo_main']),
+        GestureDetector(
+          onTap: () {
+            if (post['traveller']['username'] == selfUserName) {
+              Navigator.of(context).pushReplacementNamed(SelfProfile.routeName);
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      UserProfile(post['traveller']['id'].toString()),
+                ),
+              );
+            }
+          },
+          child: ProfileAvatar(imageUrl: post['traveller']['photo_main']),
+        ),
         const SizedBox(width: 8.0),
         Expanded(
           child: Row(

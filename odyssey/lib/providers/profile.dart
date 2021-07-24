@@ -15,33 +15,39 @@ class Profile with ChangeNotifier {
   Profile([this.username, this.userId, this.authToken, this.travellerUser]);
 
   Future<void> editProfile(Traveller profile) async {
-    const url = 'http://10.0.2.2:8000/traveller-api/';
+    const url = 'https://travellum.herokuapp.com/traveller-api/';
     final token = 'Bearer ' + authToken;
 
     Map<String, String> headers = {"Authorization": token};
-    //final bytes = await profile.profilePic.readAsBytes();
-    try {
-      final request = new http.MultipartRequest('PUT', Uri.parse(url));
-      request.fields['first_name'] = profile.firstname;
-      request.fields['last_name'] = profile.lastname;
-      request.fields['country'] = profile.country;
-      request.fields['city'] = profile.city;
-      request.fields['first_name'] = profile.firstname;
-      request.files.add(
-        http.MultipartFile.fromBytes(
-          'photo_main',
-          File(profile.profilePic.path).readAsBytesSync(),
-          filename: '$userId.jpg',
-        ),
-      );
-      request.headers.addAll(headers);
+    if (profile.profilePic == null) {
+      // try{
+      //   final response = http.put(Uri.parse(url), headers: headers,  )
+      // }catch(e){throw e;}
+    } else {
+      //final bytes = await profile.profilePic.readAsBytes();
+      try {
+        final request = new http.MultipartRequest('PUT', Uri.parse(url));
+        request.fields['first_name'] = profile.firstname;
+        request.fields['last_name'] = profile.lastname;
+        request.fields['country'] = profile.country;
+        request.fields['city'] = profile.city;
+        request.fields['first_name'] = profile.firstname;
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'photo_main',
+            File(profile.profilePic.path).readAsBytesSync(),
+            filename: '$userId.jpg',
+          ),
+        );
+        request.headers.addAll(headers);
 
-      var response = await request.send();
-      print(response.statusCode);
-      notifyListeners();
-    } catch (error) {
-      print(error);
-      throw error;
+        var response = await request.send();
+        print(response.statusCode);
+        notifyListeners();
+      } catch (error) {
+        print(error);
+        throw error;
+      }
     }
   }
 
@@ -101,6 +107,7 @@ class Profile with ChangeNotifier {
     final url = 'https://travellum.herokuapp.com/traveller-api/$friendId';
     final token = 'Bearer ' + authToken;
     try {
+      print('control is here');
       final userDataResponse = await http.get(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json', 'Authorization': token},

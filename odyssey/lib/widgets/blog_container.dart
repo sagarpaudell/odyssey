@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:odyssey/models/models.dart';
-import 'package:odyssey/screens/single_blog_screen.dart';
+import '../providers/auth.dart';
+import 'package:provider/provider.dart';
+import '../screens/single_blog_screen.dart';
+import '../screens/profile_self.dart';
+import '../screens/profile_user.dart';
+
 import 'package:odyssey/widgets/profile_avatar.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:intl/intl.dart';
 
 class BlogContainer extends StatelessWidget {
   final Map<String, dynamic> singleBlog;
-
-  const BlogContainer(
-    @required this.singleBlog,
-  );
+  const BlogContainer(this.singleBlog);
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +54,12 @@ class BlogContainer extends StatelessWidget {
 class _BlogInfo extends StatelessWidget {
   final Map<String, dynamic> singleBlog;
   _BlogInfo(this.singleBlog);
+  String selfUserName;
+
   @override
   Widget build(BuildContext context) {
+    selfUserName = Provider.of<Auth>(context).userName;
+
     return Column(
       children: [
         SizedBox(
@@ -74,7 +79,23 @@ class _BlogInfo extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ProfileAvatar(imageUrl: singleBlog['author']['photo_main']),
+            GestureDetector(
+                onTap: () {
+                  if (singleBlog['author']['username'] == selfUserName) {
+                    Navigator.of(context)
+                        .pushReplacementNamed(SelfProfile.routeName);
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            UserProfile(singleBlog['author']['id'].toString()),
+                      ),
+                    );
+                  }
+                },
+                child: ProfileAvatar(
+                    imageUrl: singleBlog['author']['photo_main'])),
             SizedBox(
               width: 10,
             ),

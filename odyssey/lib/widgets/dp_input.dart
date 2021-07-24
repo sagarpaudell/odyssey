@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import '../providers/auth.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class DpInput extends StatefulWidget {
@@ -15,6 +16,7 @@ class DpInput extends StatefulWidget {
 
 class _DpInputState extends State<DpInput> {
   PickedFile _storedImage;
+  String profilePicUrl;
 
   Future<void> _takePicture() async {
     final imageFile = await ImagePicker().getImage(
@@ -38,6 +40,8 @@ class _DpInputState extends State<DpInput> {
 
   @override
   Widget build(BuildContext context) {
+    profilePicUrl =
+        Provider.of<Auth>(context, listen: false).userProfileInfo['photo_main'];
     Size deviceSize = MediaQuery.of(context).size;
     return SizedBox(
       height: deviceSize.width * 0.45,
@@ -50,8 +54,8 @@ class _DpInputState extends State<DpInput> {
                 ? FileImage(
                     File(_storedImage.path),
                   )
-                : null,
-            child: _storedImage == null
+                : NetworkImage(profilePicUrl),
+            child: profilePicUrl == null
                 ? SvgPicture.asset("assets/icons/man.svg")
                 : null,
           ),

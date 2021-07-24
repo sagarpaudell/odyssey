@@ -11,6 +11,7 @@ import './edit_profile_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/posts.dart';
 import '../providers/blog.dart' as blogss;
+import '../providers/auth.dart';
 
 // import '../themes/style.dart';
 // import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -25,7 +26,6 @@ class FeedsScreen extends StatefulWidget {
 class _FeedsScreenState extends State<FeedsScreen> {
   List<dynamic> userPosts;
   List<dynamic> allBlogs;
-
   bool isPosts = true;
   // final Posts = [{}];
 
@@ -141,7 +141,9 @@ class _FeedsScreenState extends State<FeedsScreen> {
                   : SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
-                          return BlogContainer(allBlogs[index]);
+                          return BlogContainer(
+                            allBlogs[index],
+                          );
                         },
                         childCount: allBlogs.length,
                       ),

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../providers/auth.dart';
 
 class SelfProfile extends StatefulWidget {
+  static const routeName = 'selfprofile';
   @override
   _SelfProfileState createState() => _SelfProfileState();
 }
@@ -77,7 +78,7 @@ class _SelfProfileState extends State<SelfProfile> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
