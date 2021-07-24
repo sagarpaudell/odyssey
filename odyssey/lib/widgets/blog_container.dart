@@ -33,8 +33,7 @@ class BlogContainer extends StatelessWidget {
         child: Column(
           children: [
             Image(
-              image: NetworkImage(
-                  'https://travellum.herokuapp.com' + singleBlog["photo1"]),
+              image: NetworkImage(singleBlog["photo1"]),
               errorBuilder: (BuildContext context, Object exception,
                   StackTrace stackTrace) {
                 return Image.asset('./assets/images/mana.jpg');

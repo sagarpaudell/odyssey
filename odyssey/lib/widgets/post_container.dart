@@ -50,7 +50,7 @@ class PostContainer extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Image(
                       image: NetworkImage(
-                        'https://travellum.herokuapp.com' + post["photo"],
+                        post["photo"],
                       ),
                       errorBuilder: (BuildContext context, Object exception,
                           StackTrace stackTrace) {

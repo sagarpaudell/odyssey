@@ -77,6 +77,12 @@ class _SelfProfileState extends State<SelfProfile> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
         actions: [
           PopupMenuButton(
             child: Padding(
@@ -118,10 +124,6 @@ class _SelfProfileState extends State<SelfProfile> {
             },
           )
         ],
-        title: Icon(
-          Icons.arrow_back_ios,
-          color: Theme.of(context).primaryColor,
-        ),
       ),
       body: ProfileContainer(selfProfileInfo),
       // body: Column(
