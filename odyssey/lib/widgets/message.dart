@@ -27,7 +27,7 @@ class Message extends StatefulWidget {
 class _MessageState extends State<Message> {
   // Size deviceSize = MediaQuery.of(context).size;
   Color bgColor = Colors.white;
-  
+
   // final channel = WebSocketChannel.connect(
   //   Uri.parse('wss://echo.websocket.org'),
   // );
@@ -140,7 +140,6 @@ class _MessageState extends State<Message> {
                   .jumpTo(_scrollController.position.maxScrollExtent),
             ),
             decoration: InputDecoration(
-              
               suffixIcon: IconButton(
                   icon: Icon(Icons.send, color: Theme.of(context).primaryColor),
                   onPressed: () {
@@ -300,60 +299,57 @@ class _MessageState extends State<Message> {
           )
         ],
         automaticallyImplyLeading: false,
-        leading:
-            Container(             
-              margin: EdgeInsets.all(8),
-              child: CircleAvatar(
-                radius: 18,
-                child: Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 16,
-                      backgroundImage: widget.friendImage,
-                    ),
-                    Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        height: 10,
-                        width: 10,
-                        decoration: BoxDecoration(
-                            color: Colors.greenAccent[400],
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 2,
-                            )),
-                      ),
-                    )
-                  ],
+        leading: Container(
+          margin: EdgeInsets.all(8),
+          child: CircleAvatar(
+            radius: 18,
+            child: Stack(
+              children: [
+                CircleAvatar(
+                  radius: 16,
+                  backgroundImage: widget.friendImage,
                 ),
-              ),
-            ),       
-        title:Container(
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    height: 10,
+                    width: 10,
+                    decoration: BoxDecoration(
+                        color: Colors.greenAccent[400],
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 2,
+                        )),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+        title: Container(
           padding: EdgeInsets.only(right: 20),
-          width:MediaQuery.of(context).size.width*0.6,
+          width: MediaQuery.of(context).size.width * 0.6,
           alignment: Alignment.centerLeft,
           child: IconButton(
-                        icon: Text(
-                          widget.friendName,
-                          overflow: TextOverflow.visible,   //temporary fix
-                          maxLines: 1,
-                          style: TextStyle(
-                            
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            color:Theme.of(context).primaryColor,
-                            
-                          ),
-                        ),
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => UserProfile(widget.friendId),
-                          ),
-                        ),
-                      ),
+            icon: Text(
+              widget.friendName,
+              overflow: TextOverflow.visible, //temporary fix
+              maxLines: 1,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => UserProfile(widget.friendUserName),
+              ),
+            ),
+          ),
         ),
       ),
       body: FutureBuilder<void>(

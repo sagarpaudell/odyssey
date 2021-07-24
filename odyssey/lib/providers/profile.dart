@@ -103,8 +103,8 @@ class Profile with ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> getFriendProfile(String friendId) async {
-    final url = 'https://travellum.herokuapp.com/traveller-api/$friendId';
+  Future<Map<String, dynamic>> getFriendProfile(String friendUserName) async {
+    final url = 'https://travellum.herokuapp.com/traveller-api/$friendUserName';
     final token = 'Bearer ' + authToken;
     try {
       print('control is here');

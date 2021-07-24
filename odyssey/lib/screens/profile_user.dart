@@ -4,8 +4,8 @@ import '../providers/profile.dart';
 import '../widgets/profile_container.dart';
 
 class UserProfile extends StatefulWidget {
-  String friendUserId;
-  UserProfile(this.friendUserId);
+  String friendUserName;
+  UserProfile(this.friendUserName);
   @override
   _UserProfileState createState() => _UserProfileState();
 }
@@ -24,7 +24,7 @@ class _UserProfileState extends State<UserProfile> {
     try {
       print('getting friend profiel');
       friendProfileData = await Provider.of<Profile>(context, listen: false)
-          .getFriendProfile(widget.friendUserId);
+          .getFriendProfile(widget.friendUserName);
       print('this is $friendProfileData');
     } catch (error) {
       print(error);

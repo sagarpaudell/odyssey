@@ -96,8 +96,7 @@ class _PostHeader extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) =>
-                      UserProfile(post['traveller']['id'].toString()),
+                  builder: (_) => UserProfile(post['traveller']['username']),
                 ),
               );
             }

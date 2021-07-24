@@ -89,7 +89,7 @@ class _BlogInfo extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (_) =>
-                            UserProfile(singleBlog['author']['id'].toString()),
+                            UserProfile(singleBlog['author']['username']),
                       ),
                     );
                   }
