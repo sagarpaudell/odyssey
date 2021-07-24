@@ -28,6 +28,8 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 1,
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20),
@@ -55,7 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ],
           automaticallyImplyLeading: true,
           leading: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColor,),
               onPressed: () => Navigator.pop(context, false)),
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -64,6 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 'Messages',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
+                  color:  Theme.of(context).primaryColor,
                 ),
               ),
             ],

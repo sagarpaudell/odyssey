@@ -14,7 +14,7 @@ class MessageContainer extends StatefulWidget {
 
 class _MessageContainerState extends State<MessageContainer> {
   @override
-  Color senderColor= Color(0xffe5e4e2);
+  Color senderColor= Color(0xffF0F0F0);
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 8),
@@ -37,7 +37,6 @@ class _MessageContainerState extends State<MessageContainer> {
                     ),
                     Container(
                       margin: EdgeInsets.only(bottom: 4),
-                      // width: MediaQuery.of(context).size.width * 0.55,
                       padding:
                           EdgeInsets.symmetric(horizontal: 22, vertical: 12),
                       decoration: BoxDecoration(
