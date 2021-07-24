@@ -146,26 +146,39 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
       return;
     }
-    if (_pickedImage == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please pick an image'),
-          backgroundColor: Theme.of(context).errorColor,
-        ),
-      );
-      return;
-    }
+    // if (_pickedImage == null) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Text('Please pick an image'),
+    //       backgroundColor: Theme.of(context).errorColor,
+    //     ),
+    //   );
+    //   return;
+    // }
     _form.currentState.save();
-    _profileTraveller = Traveller(
-      username: '',
-      firstname: _profileData['firstname'],
-      lastname: _profileData['lastname'],
-      profilePic: _pickedImage,
-      gender: genderText,
-      country: _profileData['country'],
-      city: _profileData['city'],
-      travellerId: null,
-    );
+    if (_pickedImage != null) {
+      _profileTraveller = Traveller(
+        username: '',
+        firstname: _profileData['firstname'],
+        lastname: _profileData['lastname'],
+        profilePic: _pickedImage,
+        gender: genderText,
+        country: _profileData['country'],
+        city: _profileData['city'],
+        travellerId: null,
+      );
+    }
+    if (_pickedImage == null) {
+      _profileTraveller = Traveller(
+        username: '',
+        firstname: _profileData['firstname'],
+        lastname: _profileData['lastname'],
+        gender: genderText,
+        country: _profileData['country'],
+        city: _profileData['city'],
+        travellerId: null,
+      );
+    }
     setState(() {
       _isLoading = true;
       //print('$_isLoading form saved');
@@ -174,8 +187,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       await Provider.of<Profile>(context, listen: false)
           .editProfile(_profileTraveller);
     } catch (e) {
-      const errorMessage =
-          'Could not authenticate you. Please try again later.';
+      const errorMessage = 'Uhoh an error occured! Please try again later.';
       showErrorDialog(errorMessage, context);
       print(e);
     }
@@ -191,7 +203,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        leading: Icon(Icons.arrow_back),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       //body:
       body: FutureBuilder<void>(

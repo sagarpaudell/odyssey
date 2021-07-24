@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:odyssey/widgets/chat_list.dart';
-import '../providers/profile.dart';
+import './profile_self.dart';
+import '../widgets/chat_list.dart';
+import '../providers/auth.dart';
 import 'package:provider/provider.dart';
-import '../models/traveller.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -11,52 +11,38 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  Future fbuilder;
-  Traveller prof;
-  @override
-  void initState() {
-    fbuilder = getProf();
-
-    super.initState();
-  }
-
-  Color bgColor = Color(0xffe8edea);
-  Future<void> getProf() async {
-    prof = await Provider.of<Profile>(context, listen: false).getProfile();
-  }
+  String profilePicUrl;
 
   @override
   Widget build(BuildContext context) {
+    profilePicUrl =
+        Provider.of<Auth>(context, listen: false).userProfileInfo['photo_main'];
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 1,
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20),
-              child: FutureBuilder<void>(
-                future:
-                    fbuilder, // a previously-obtained Future<String> or null
-                builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
-                    snapshot.connectionState == ConnectionState.waiting
-                        ? Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : CircleAvatar(
-                            radius: 18,
-                            backgroundColor: Colors.greenAccent[400],
-                            child: CircleAvatar(
-                              radius: 16,
-                              backgroundImage: prof == null
-                                  ? AssetImage('./assets/images/guptaji.jpg')
-                                  : NetworkImage(
-                                      'https://travellum.herokuapp.com${prof.profilePicUrl}'),
-                            ),
-                          ),
+              child: CircleAvatar(
+                radius: 18,
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context)
+                      .pushReplacementNamed(SelfProfile.routeName),
+                  child: CircleAvatar(
+                      radius: 16,
+                      backgroundImage: NetworkImage(profilePicUrl),
+                      onBackgroundImageError:
+                          (Object exception, StackTrace stackTrace) {
+                        return Image.asset('./assets/images/guptaji.jpg');
+                      }),
+                ),
               ),
             ),
           ],
           automaticallyImplyLeading: true,
           leading: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColor,),
               onPressed: () => Navigator.pop(context, false)),
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -65,39 +51,17 @@ class _ChatScreenState extends State<ChatScreen> {
                 'Messages',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
+                  color:  Theme.of(context).primaryColor,
                 ),
               ),
             ],
           ),
         ),
         body: Container(
-          color: bgColor,
+          color: Colors.white,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child: Column(children: [
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Container(
-                  height: 40,
-                  child: TextField(
-                    cursorHeight: 20,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      prefixIcon: Icon(Icons.search,
-                          color: Theme.of(context).primaryColor),
-                      contentPadding: EdgeInsets.only(bottom: 20),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(width: 0.8),
-                      ),
-                      hintText: "Search people/messages",
-                    ),
-                  ),
-                ),
-              ),
-              ChatList(),
-            ]),
+            child: ChatList(),
           ),
         ));
   }

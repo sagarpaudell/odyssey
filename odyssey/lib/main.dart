@@ -101,6 +101,7 @@ class _MyAppState extends State<MyApp> {
             FeedsScreen.routeName: (ctx) => FeedsScreen(),
             EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
             ChatScreen.routeName: (ctx) => ChatScreen(),
+            SelfProfile.routeName: (ctx) => SelfProfile(),
           },
         ),
       ),

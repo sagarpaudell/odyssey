@@ -35,9 +35,10 @@ class TravellerView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class TravellerGetView(APIView):
-    def get(self, request, id):
+    def get(self, request, username):
         try:
-            traveller = Traveller.objects.get(id=id)
+            friend_user = User.objects.filter(username=username).first()
+            traveller = Traveller.objects.get(username=friend_user)
             current_user = Traveller.objects.get(username = request.user)
             traveller_followers = traveller.get_followers()
             current_user_followers = current_user.get_followers()

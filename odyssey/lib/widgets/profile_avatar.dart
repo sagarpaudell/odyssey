@@ -16,11 +16,13 @@ class ProfileAvatar extends StatelessWidget {
           radius: 20.0,
           backgroundColor: Colors.blue,
           child: CircleAvatar(
-            radius: 20.0,
-            backgroundColor: Colors.grey[200],
-            backgroundImage:
-                NetworkImage('https://travellum.herokuapp.com' + imageUrl),
-          ),
+              radius: 20.0,
+              backgroundColor: Colors.grey[200],
+              backgroundImage: NetworkImage(imageUrl),
+              onBackgroundImageError:
+                  (Object exception, StackTrace stackTrace) {
+                return Image.asset('./assets/images/guptaji.jpg');
+              }),
         ),
       ],
     );

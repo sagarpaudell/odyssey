@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth.dart';
 
 class MessageContainer extends StatefulWidget {
   @override
   final Map<String, dynamic> msg;
-  MessageContainer(this.msg);
+  final String selfUserName;
+  const MessageContainer(this.selfUserName, this.msg, key) : super(key: key);
+  //MessageContainer(this.selfUserName, this.msg);
   _MessageContainerState createState() => _MessageContainerState();
 }
 
 class _MessageContainerState extends State<MessageContainer> {
   @override
+  Color senderColor= Color(0xffF0F0F0);
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          widget.msg['sender']['username'] != "ketone"
+          widget.msg['sender']['username'] != widget.selfUserName
               ?
               //Others message
               Row(
@@ -31,18 +36,18 @@ class _MessageContainerState extends State<MessageContainer> {
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.55,
+                      margin: EdgeInsets.only(bottom: 4),
                       padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          EdgeInsets.symmetric(horizontal: 22, vertical: 12),
                       decoration: BoxDecoration(
-                          color: Colors.white70,
+                          color: senderColor,
                           borderRadius: BorderRadius.circular(30)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            height: 40,
-                            width: 40,
+                            // height: 40,
+                            // width: 40,
                             // child: StreamBuilder(
                             //   stream: channel.stream,
                             //   builder: (context, snapshot) {
@@ -69,11 +74,14 @@ class _MessageContainerState extends State<MessageContainer> {
                             //   },
                             // ),
                           ),
-                          Text(
-                            widget.msg['message_text'],
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontSize: 15),
+                          Container(
+                            constraints: BoxConstraints(maxWidth:MediaQuery.of(context).size.width*0.55),
+                            child: Text(
+                              widget.msg['message_text'],
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 15),
+                            ),
                           ),
                           SizedBox(
                             height: 8,
@@ -95,11 +103,11 @@ class _MessageContainerState extends State<MessageContainer> {
               //User's  sent message
               Container(
                   margin: EdgeInsets.only(
-                    top: 8,
+                    bottom: 4,
                     right: 8,
                   ),
-                  width: MediaQuery.of(context).size.width * 0.55,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  // width: MediaQuery.of(context).size.width * 0.55,
+                  padding: EdgeInsets.symmetric(horizontal: 22, vertical: 12),
                   decoration: BoxDecoration(
                       color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(30)),
@@ -136,10 +144,13 @@ class _MessageContainerState extends State<MessageContainer> {
                       //   },
                       // ),
                       // ),
-                      Text(
-                        // "Hello! How are you doing? hehehehehe",
-                        widget.msg['message_text'],
-                        style: TextStyle(color: Colors.white, fontSize: 15),
+                      Container(
+                        constraints: BoxConstraints(maxWidth:MediaQuery.of(context).size.width*0.55),
+                        child: Text(
+                          // "Hello! How are you doing? hehehehehe",
+                          widget.msg['message_text'],
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                        ),
                       ),
                       SizedBox(
                         height: 8,

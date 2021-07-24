@@ -41,8 +41,7 @@ class _BlogScreenState extends State<BlogScreen> {
                     child: Column(
                       children: [
                         Image(
-                          image: NetworkImage(
-                              'https://source.unsplash.com/random/400x250'),
+                          image: NetworkImage(singleBlogData['photo1']),
                         ),
                         SizedBox(height: 6),
                         Container(

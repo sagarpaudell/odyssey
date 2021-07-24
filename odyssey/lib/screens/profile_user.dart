@@ -4,8 +4,8 @@ import '../providers/profile.dart';
 import '../widgets/profile_container.dart';
 
 class UserProfile extends StatefulWidget {
-  String friendUserId;
-  UserProfile(this.friendUserId);
+  String friendUserName;
+  UserProfile(this.friendUserName);
   @override
   _UserProfileState createState() => _UserProfileState();
 }
@@ -13,7 +13,7 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> {
   Future fbuilder;
   Map<String, dynamic> friendProfileData;
-  final baseurl = 'https://travellum.herokuapp.com';
+
   @override
   void initState() {
     fbuilder = getUserProfile();
@@ -22,8 +22,10 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> getUserProfile() async {
     try {
+      print('getting friend profiel');
       friendProfileData = await Provider.of<Profile>(context, listen: false)
-          .getFriendProfile(widget.friendUserId);
+          .getFriendProfile(widget.friendUserName);
+      print('this is $friendProfileData');
     } catch (error) {
       print(error);
     }
@@ -131,8 +133,9 @@ class _UserProfileState extends State<UserProfile> {
             },
           )
         ],
-        title: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
           color: Theme.of(context).primaryColor,
         ),
