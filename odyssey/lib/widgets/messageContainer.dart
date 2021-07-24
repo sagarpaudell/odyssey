@@ -14,6 +14,7 @@ class MessageContainer extends StatefulWidget {
 
 class _MessageContainerState extends State<MessageContainer> {
   @override
+  Color senderColor= Color(0xffe5e4e2);
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 8),
@@ -35,18 +36,19 @@ class _MessageContainerState extends State<MessageContainer> {
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.55,
+                      margin: EdgeInsets.only(bottom: 4),
+                      // width: MediaQuery.of(context).size.width * 0.55,
                       padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          EdgeInsets.symmetric(horizontal: 22, vertical: 12),
                       decoration: BoxDecoration(
-                          color: Colors.white70,
+                          color: senderColor,
                           borderRadius: BorderRadius.circular(30)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            height: 40,
-                            width: 40,
+                            // height: 40,
+                            // width: 40,
                             // child: StreamBuilder(
                             //   stream: channel.stream,
                             //   builder: (context, snapshot) {
@@ -73,11 +75,14 @@ class _MessageContainerState extends State<MessageContainer> {
                             //   },
                             // ),
                           ),
-                          Text(
-                            widget.msg['message_text'],
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontSize: 15),
+                          Container(
+                            constraints: BoxConstraints(maxWidth:MediaQuery.of(context).size.width*0.55),
+                            child: Text(
+                              widget.msg['message_text'],
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 15),
+                            ),
                           ),
                           SizedBox(
                             height: 8,
@@ -99,11 +104,11 @@ class _MessageContainerState extends State<MessageContainer> {
               //User's  sent message
               Container(
                   margin: EdgeInsets.only(
-                    top: 8,
+                    bottom: 4,
                     right: 8,
                   ),
-                  width: MediaQuery.of(context).size.width * 0.55,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  // width: MediaQuery.of(context).size.width * 0.55,
+                  padding: EdgeInsets.symmetric(horizontal: 22, vertical: 12),
                   decoration: BoxDecoration(
                       color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(30)),
@@ -140,10 +145,13 @@ class _MessageContainerState extends State<MessageContainer> {
                       //   },
                       // ),
                       // ),
-                      Text(
-                        // "Hello! How are you doing? hehehehehe",
-                        widget.msg['message_text'],
-                        style: TextStyle(color: Colors.white, fontSize: 15),
+                      Container(
+                        constraints: BoxConstraints(maxWidth:MediaQuery.of(context).size.width*0.55),
+                        child: Text(
+                          // "Hello! How are you doing? hehehehehe",
+                          widget.msg['message_text'],
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                        ),
                       ),
                       SizedBox(
                         height: 8,

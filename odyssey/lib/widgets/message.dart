@@ -25,7 +25,8 @@ class Message extends StatefulWidget {
 
 class _MessageState extends State<Message> {
   // Size deviceSize = MediaQuery.of(context).size;
-  Color bgColor = Color(0xffe8edea);
+  Color bgColor = Colors.white;
+  
   // final channel = WebSocketChannel.connect(
   //   Uri.parse('wss://echo.websocket.org'),
   // );
@@ -125,7 +126,7 @@ class _MessageState extends State<Message> {
   //end of _messageBuilder
   _sendMessage() {
     return Container(
-      padding: EdgeInsets.only(left: 30, right: 30, bottom: 8, top: 8),
+      padding: EdgeInsets.only(left: 10, right: 10, bottom: 8, top: 2),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(color: bgColor, boxShadow: [
         BoxShadow(
@@ -136,7 +137,7 @@ class _MessageState extends State<Message> {
       child: Container(
         alignment: Alignment.center,
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
+          width: double.infinity,
           child: TextField(
             controller: _controller,
             onTap: () => Timer(
@@ -145,7 +146,7 @@ class _MessageState extends State<Message> {
                   .jumpTo(_scrollController.position.maxScrollExtent),
             ),
             decoration: InputDecoration(
-              fillColor: Colors.white,
+              fillColor: Colors.white70,    
               filled: true,
               suffixIcon: IconButton(
                   icon: Icon(Icons.send, color: Theme.of(context).primaryColor),

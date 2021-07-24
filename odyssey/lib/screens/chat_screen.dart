@@ -20,7 +20,6 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
   }
 
-  Color bgColor = Color(0xffe8edea);
   Future<void> getProf() async {
     prof = await Provider.of<Profile>(context, listen: false).getProfile();
   }
@@ -71,7 +70,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ),
         body: Container(
-          color: bgColor,
+          color: Colors.white,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(children: [
