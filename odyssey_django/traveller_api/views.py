@@ -37,8 +37,8 @@ class TravellerView(APIView):
 class TravellerGetView(APIView):
     def get(self, request, username):
         try:
-            user = User.objects.get(username=username)
-            traveller = Traveller.objects.get(username=user)
+            friend_user = User.objects.filter(username=username).first()
+            traveller = Traveller.objects.get(username=friend_user)
             current_user = Traveller.objects.get(username = request.user)
             traveller_followers = traveller.get_followers()
             current_user_followers = current_user.get_followers()
