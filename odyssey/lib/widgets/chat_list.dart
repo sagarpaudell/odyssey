@@ -110,14 +110,17 @@ class _ChatListState extends State<ChatList> {
                           userName, chatOverview[index]['sender']['username']);
                       print(getFriendName(chatOverview[index]));
                       getFriendImage(chatOverview[index]);
-                      Provider.of<Chat>(context, listen: false).friendUserName =
-                          getFriendUserName(chatOverview[index]);
+                      // Provider.of<Chat>(context, listen: false).friendUserName =
+                      //     getFriendUserName(chatOverview[index]);
 
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => Message(selectedFriendName,
-                                getFriendId(chatOverview[index]), friendImage)),
+                            builder: (_) => Message(
+                                selectedFriendName,
+                                getFriendUserName(chatOverview[index]),
+                                getFriendId(chatOverview[index]),
+                                friendImage)),
                       );
                     },
                     child: Column(
@@ -131,9 +134,15 @@ class _ChatListState extends State<ChatList> {
                               Stack(
                                 children: [
                                   CircleAvatar(
-                                      radius: 26,
-                                      backgroundImage:
-                                          getFriendImage(chatOverview[index])),
+                                    radius: 26,
+                                    backgroundImage:
+                                        getFriendImage(chatOverview[index]),
+                                    onBackgroundImageError: (Object exception,
+                                        StackTrace stackTrace) {
+                                      return Image.asset(
+                                          './assets/images/guptaji.jpg');
+                                    },
+                                  ),
                                   Positioned(
                                     right: 0,
                                     bottom: 0,

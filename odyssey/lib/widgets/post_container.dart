@@ -8,6 +8,7 @@ import 'package:odyssey/models/models.dart';
 import 'package:odyssey/screens/comment_post.dart';
 import 'package:odyssey/widgets/profile_avatar.dart';
 import 'package:intl/intl.dart';
+import '../error_handlers/networking_error.dart';
 
 class PostContainer extends StatelessWidget {
   final Map<String, dynamic> post;
@@ -49,7 +50,12 @@ class PostContainer extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Image(
                       image: NetworkImage(
-                          'https://travellum.herokuapp.com' + post["photo"]),
+                        'https://travellum.herokuapp.com' + post["photo"],
+                      ),
+                      errorBuilder: (BuildContext context, Object exception,
+                          StackTrace stackTrace) {
+                        return Image.asset('./assets/images/mana.jpg');
+                      },
                     ),
                   )
                 : const SizedBox.shrink(),

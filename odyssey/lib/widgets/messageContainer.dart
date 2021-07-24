@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth.dart';
 
 class MessageContainer extends StatefulWidget {
   @override
   final Map<String, dynamic> msg;
-  MessageContainer(this.msg);
+  final String selfUserName;
+  const MessageContainer(this.selfUserName, this.msg, key) : super(key: key);
+  //MessageContainer(this.selfUserName, this.msg);
   _MessageContainerState createState() => _MessageContainerState();
 }
 
@@ -16,7 +20,7 @@ class _MessageContainerState extends State<MessageContainer> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          widget.msg['sender']['username'] != "ketone"
+          widget.msg['sender']['username'] != widget.selfUserName
               ?
               //Others message
               Row(

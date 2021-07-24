@@ -32,17 +32,14 @@ class BlogContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         child: Column(
           children: [
-            singleBlog["photo1"] == null
-                ? Container(
-                    child: Image(
-                      image: NetworkImage(
-                          'https://source.unsplash.com/random/400x250'),
-                    ),
-                  )
-                : Image(
-                    image: NetworkImage('https://travellum.herokuapp.com' +
-                        singleBlog["photo1"]),
-                  ),
+            Image(
+              image: NetworkImage(
+                  'https://travellum.herokuapp.com' + singleBlog["photo1"]),
+              errorBuilder: (BuildContext context, Object exception,
+                  StackTrace stackTrace) {
+                return Image.asset('./assets/images/mana.jpg');
+              },
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: _BlogInfo(singleBlog),
@@ -78,7 +75,7 @@ class _BlogInfo extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //ProfileAvatar(imageUrl: singleBlog.user.imageUrl),
+            ProfileAvatar(imageUrl: singleBlog['author']['photo_main']),
             SizedBox(
               width: 10,
             ),

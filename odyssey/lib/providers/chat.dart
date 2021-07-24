@@ -8,29 +8,47 @@ import 'package:intl/intl.dart';
 class Chat with ChangeNotifier {
   final String userId;
   final String username;
-  String friendUserName;
   final String authToken;
+  WebSocketChannel channel;
+  List<Map<String, dynamic>> chatMessages = [];
+
   List<dynamic> messageData;
+
   Chat([this.username, this.userId, this.authToken]);
-  WebSocketChannel sendMessage() {
-    WebSocketChannel channel;
+  WebSocketChannel sendMessage(String friendUserName) {
     try {
       channel = new WebSocketChannel.connect(Uri.parse(
           "ws://travellum.herokuapp.com/ws/chat/$friendUserName/?token=$authToken"));
+
       // channel.sink.add(json.encode({'message': 'Tuna'}));
     } catch (e) {
       ///
       /// An error occurred
       ///
     }
+    notifyListeners();
     return channel;
     //https://travellum.herokuapp.com/chat-api/sagar/
     // return WebSocketChannel.connect(Uri.parse(
     //     "ws://travellum.herokuapp.com/ws/chat/buddha/?token=$authToken"));
   }
 
-  Future<List<dynamic>> getMessageHistory() async {
+  addImmediateMsg() {
+    channel.stream.listen((message) {
+      chatMessages.add({
+        'sender': {'username': json.decode(message)['sender']},
+        'message_text': json.decode(message)['message'],
+        'message_time': json.decode(message)['time']
+      });
+      print(chatMessages);
+
+      notifyListeners();
+    });
+  }
+
+  Future<List<dynamic>> getMessageHistory(String friendUserName) async {
     final _url = 'https://travellum.herokuapp.com/chat-api/$friendUserName';
+    print('this is $_url');
     try {
       final response = await http.get(
         Uri.parse(_url),
@@ -42,7 +60,7 @@ class Chat with ChangeNotifier {
       // });
       // print(DateFormat.yMMMd(json.decode(response.body)[1]['message_time']));
       //final responseData = json.decode(response.body);
-
+      //notifyListeners();
       return messageData;
       // if (responseData['email']) {
       //   throw HttpException('email');

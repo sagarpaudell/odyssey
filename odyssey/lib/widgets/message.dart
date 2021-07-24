@@ -5,15 +5,20 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:provider/provider.dart';
 import '../providers/chat.dart';
+import '../providers/auth.dart';
+import 'dart:async';
+
 import 'dart:convert';
 import './messageContainer.dart';
 import '../screens/profile_user.dart';
 
 class Message extends StatefulWidget {
+  final String friendUserName;
   final String friendName;
   final String friendId;
   final ImageProvider friendImage;
-  Message(this.friendName, this.friendId, this.friendImage);
+  Message(
+      this.friendName, this.friendUserName, this.friendId, this.friendImage);
   @override
   _MessageState createState() => _MessageState();
 }
@@ -31,37 +36,42 @@ class _MessageState extends State<Message> {
   // final channel = WebSocketChannel.connect(
   //     Uri.parse("ws://travellum.herokuapp.com/ws/chat/$friend/?token=$token"));
   WebSocketChannel channel;
-  List<Map<String, dynamic>> _chatMessages = [];
+  //List<Map<String, dynamic>> _chatMessages = [];
   List<dynamic> messageData;
   bool isInit = false;
   Future fbuilder;
+
+  String selfUserName;
   @override
   void initState() {
     fbuilder = getMessageData();
+
     isInit = true;
     super.initState();
   }
 
   Future<void> getMessageData() async {
     try {
-      messageData =
-          await Provider.of<Chat>(context, listen: false).getMessageHistory();
+      messageData = await Provider.of<Chat>(context, listen: false)
+          .getMessageHistory(widget.friendUserName);
     } catch (error) {
       print(error);
     }
   }
 
-  addImmediateMsg() {
-    channel.stream.listen((message) {
-      setState(() {
-        _chatMessages.add({
-          'sender': {'username': json.decode(message)['sender']},
-          'message_text': json.decode(message)['message'],
-          'message_time': json.decode(message)['time']
-        });
-      });
-    });
-  }
+  // addImmediateMsg() {
+  //   channel.stream.listen((message) {
+  //     print(message);
+  //     setState(() {
+  //       _chatMessages.add({
+  //         'sender': {'username': json.decode(message)['sender']},
+  //         'message_text': json.decode(message)['message'],
+  //         'message_time': json.decode(message)['time']
+  //       });
+  //     });
+  //   });
+  //   print(_chatMessages);
+  // }
 
   @override
   // Future<void> initState() async {
@@ -69,11 +79,12 @@ class _MessageState extends State<Message> {
   //   super.initState();
   // }
   void didChangeDependencies() {
-    channel = Provider.of<Chat>(context, listen: false).sendMessage();
     if (isInit) {
-      addImmediateMsg();
+      channel = Provider.of<Chat>(context).sendMessage(widget.friendUserName);
+      Provider.of<Chat>(context).addImmediateMsg();
     }
     isInit = false;
+
     super.didChangeDependencies();
   }
   // channel.stream.listen((message) { print(message); })
@@ -101,14 +112,15 @@ class _MessageState extends State<Message> {
   //   debugPrint(event);
   // }
 
-  // @override
-  // void dispose() {
-  //   channel.sink.close();
-  //   _controller.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    channel.sink.close();
+    _controller.dispose();
+    super.dispose();
+  }
 
   final _controller = TextEditingController();
+  ScrollController _scrollController = ScrollController();
 
   //end of _messageBuilder
   _sendMessage() {
@@ -127,6 +139,11 @@ class _MessageState extends State<Message> {
           width: MediaQuery.of(context).size.width * 0.8,
           child: TextField(
             controller: _controller,
+            onTap: () => Timer(
+              Duration(milliseconds: 300),
+              () => _scrollController
+                  .jumpTo(_scrollController.position.maxScrollExtent),
+            ),
             decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,
@@ -134,7 +151,6 @@ class _MessageState extends State<Message> {
                   icon: Icon(Icons.send, color: Theme.of(context).primaryColor),
                   onPressed: () {
                     _sendMessageFun();
-                    _controller.text = '';
                   }),
               contentPadding: EdgeInsets.only(
                 left: 30,
@@ -153,11 +169,6 @@ class _MessageState extends State<Message> {
   }
 
   //end of _sendMessage
-  void _sendMessageFun() {
-    if (_controller.text.isNotEmpty) {
-      channel.sink.add(json.encode({'message': _controller.text}));
-    }
-  }
 
 // Widget StreamBuilder(
 //                           stream: channel.stream,
@@ -186,6 +197,7 @@ class _MessageState extends State<Message> {
 
   @override
   Widget build(BuildContext context) {
+    selfUserName = Provider.of<Auth>(context).userName;
     const choices = ['viewprofile', 'blockuser', 'deleteconversation'];
 
     showAlertDialog(BuildContext context) {
@@ -294,7 +306,9 @@ class _MessageState extends State<Message> {
         automaticallyImplyLeading: false,
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context, false)),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -351,7 +365,7 @@ class _MessageState extends State<Message> {
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
                 ? Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator.adaptive(),
                   )
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -361,76 +375,100 @@ class _MessageState extends State<Message> {
                           decoration: BoxDecoration(
                             color: bgColor,
                           ),
-                          child: CustomScrollView(
-                            slivers: [
-                              SliverList(
-                                delegate: SliverChildBuilderDelegate(
+                          child: Consumer<Chat>(
+                            builder: (context, chat, child) {
+                              return CustomScrollView(
+                                  controller: _scrollController,
+                                  slivers: [
+                                    child,
+                                    SliverList(
+                                      delegate: SliverChildBuilderDelegate(
+                                          (BuildContext context, int index) {
+                                        // if (_chatMessages.isNotEmpty &&
+                                        //     index < _chatMessages.length)
+                                        return MessageContainer(
+                                            selfUserName,
+                                            chat.chatMessages[index],
+                                            UniqueKey());
+                                      }, childCount: chat.chatMessages.length),
+                                    ),
+                                  ]);
+                            },
+                            child: SliverList(
+                              delegate: SliverChildBuilderDelegate(
                                   (BuildContext context, int index) {
-                                    // To convert this infinite list to a list with three items,
-                                    // uncomment the following line:
-                                    // if (index > 3) return null;
+                                // To convert this infinite list to a list with three items,
+                                // uncomment the following line:
+                                // if (index > 3) return null;
 
-                                    // return _messageBuilder(DateTime.parse(
-                                    //     messageData[index]['message_time']));
-                                    return Column(children: [
-                                      if (index < messageData.length)
-                                        MessageContainer(messageData[index]),
-                                      if (_chatMessages.isNotEmpty &&
-                                          index < _chatMessages.length)
-                                        MessageContainer(_chatMessages[index]),
-                                    ]);
-                                    //return null;
-                                  },
-                                  // Or, uncomment the following line:
-                                  // childCount: 3,
-                                ),
-                              ),
+                                // return _messageBuilder(DateTime.parse(
+                                //     messageData[index]['message_time']));
 
-                              // child: ListView(
-                              //   //reverse: true,
-                              //   shrinkWrap: true,
-                              //   children: [
-                              //     for (var msg in messageData)
-                              //       MessageContainer(msg),
-                              //     for (var immediateMsg in _chatMessages)
-                              //       if (_chatMessages.isNotEmpty)
-                              //         MessageContainer(immediateMsg),
-                              //   ],
-                              // ),
-                            ],
+                                return MessageContainer(selfUserName,
+                                    messageData[index], UniqueKey());
+                              }, childCount: messageData.length),
+                            ),
                           ),
+                          //return null;
                         ),
-                        //     child: ListView.builder(
-                        //         physics: ClampingScrollPhysics(),
-                        //         reverse: true, //displays messages from bottom
-                        //         itemCount: messageData.length,
-                        //         itemBuilder: (ctx, int index) {
-                        //           // return _messageBuilder(DateTime.parse(
-                        //           //     messageData[index]['message_time']));
-                        //           return MessageContainer(messageData[index]);
-                        //         }),
-                        //   ),
-                        // ),
-                        // _chatMessages.isEmpty
-                        //     ? SizedBox()
-                        //     : Expanded(
-                        //         child: Container(
-                        //           decoration: BoxDecoration(
-                        //             color: bgColor,
-                        //           ),
-                        //           child: ListView.builder(
-                        //               physics: ClampingScrollPhysics(),
-                        //               itemCount: _chatMessages.length,
-                        //               itemBuilder: (context, index) {
-                        //                 return MessageContainer(
-                        //                     _chatMessages[index]);
-                        //               }),
-                        //         ),
+                        // Or, uncomment the following line:
+                        // childCount: 3,
                       ),
+
+                      // child: ListView(
+                      //   //reverse: true,
+                      //   shrinkWrap: true,
+                      //   children: [
+                      //     for (var msg in messageData)
+                      //       MessageContainer(msg),
+                      //     for (var immediateMsg in _chatMessages)
+                      //       if (_chatMessages.isNotEmpty)
+                      //         MessageContainer(immediateMsg),
+                      //   ],
+                      // ),
+
+                      //     child: ListView.builder(
+                      //         physics: ClampingScrollPhysics(),
+                      //         reverse: true, //displays messages from bottom
+                      //         itemCount: messageData.length,
+                      //         itemBuilder: (ctx, int index) {
+                      //           // return _messageBuilder(DateTime.parse(
+                      //           //     messageData[index]['message_time']));
+                      //           return MessageContainer(messageData[index]);
+                      //         }),
+                      //   ),
+                      // ),
+                      // _chatMessages.isEmpty
+                      //     ? SizedBox()
+                      //     : Expanded(
+                      //         child: Container(
+                      //           decoration: BoxDecoration(
+                      //             color: bgColor,
+                      //           ),
+                      //           child: ListView.builder(
+                      //               physics: ClampingScrollPhysics(),
+                      //               itemCount: _chatMessages.length,
+                      //               itemBuilder: (context, index) {
+                      //                 return MessageContainer(
+                      //                     _chatMessages[index]);
+                      //               }),
+                      //         ),
+
                       _sendMessage(),
                     ],
                   ),
       ),
     );
+  }
+
+  void _sendMessageFun() {
+    if (_controller.text.isNotEmpty) {
+      channel.sink.add(json.encode({'message': _controller.text}));
+      _controller.text = '';
+      Timer(
+          Duration(milliseconds: 500),
+          () => _scrollController
+              .jumpTo(_scrollController.position.maxScrollExtent));
+    }
   }
 }

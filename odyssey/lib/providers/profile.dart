@@ -108,8 +108,9 @@ class Profile with ChangeNotifier {
       final friendData = json.decode(userDataResponse.body);
 
       print('This gives as result $friendData');
-      return friendData;
       notifyListeners();
+
+      return friendData;
     } catch (error) {
       print(json.decode(error));
       throw error;
