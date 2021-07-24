@@ -316,7 +316,6 @@ class _MessageState extends State<Message> {
               padding: const EdgeInsets.only(right: 10),
               child: CircleAvatar(
                 radius: 18,
-                backgroundColor: Colors.white24,
                 child: Stack(
                   children: [
                     CircleAvatar(

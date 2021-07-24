@@ -139,8 +139,10 @@ class _ChatListState extends State<ChatList> {
                                         getFriendImage(chatOverview[index]),
                                     onBackgroundImageError: (Object exception,
                                         StackTrace stackTrace) {
-                                      return Image.asset(
-                                          './assets/images/guptaji.jpg');
+                                      setState(() {
+                                        return Image.asset(
+                                            './assets/images/guptaji.jpg');
+                                      });
                                     },
                                   ),
                                   Positioned(
@@ -150,7 +152,6 @@ class _ChatListState extends State<ChatList> {
                                       height: 14,
                                       width: 14,
                                       decoration: BoxDecoration(
-                                          color: Colors.greenAccent[400],
                                           shape: BoxShape.circle,
                                           border: Border.all(
                                             color: Colors.white,

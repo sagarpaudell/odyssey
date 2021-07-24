@@ -42,13 +42,17 @@ class _ChatScreenState extends State<ChatScreen> {
                           )
                         : CircleAvatar(
                             radius: 18,
-                            backgroundColor: Colors.greenAccent[400],
                             child: CircleAvatar(
                               radius: 16,
-                              backgroundImage: prof == null
-                                  ? AssetImage('./assets/images/guptaji.jpg')
-                                  : NetworkImage(
-                                      'https://travellum.herokuapp.com${prof.profilePicUrl}'),
+                              backgroundImage: NetworkImage(
+                                  'https://travellum.herokuapp.com${prof.profilePicUrl}'),
+                              onBackgroundImageError:
+                                  (Object exception, StackTrace stackTrace) {
+                                setState(() {
+                                  return Image.asset(
+                                      './assets/images/guptaji.jpg');
+                                });
+                              },
                             ),
                           ),
               ),
@@ -74,30 +78,7 @@ class _ChatScreenState extends State<ChatScreen> {
           color: bgColor,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child: Column(children: [
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Container(
-                  height: 40,
-                  child: TextField(
-                    cursorHeight: 20,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      prefixIcon: Icon(Icons.search,
-                          color: Theme.of(context).primaryColor),
-                      contentPadding: EdgeInsets.only(bottom: 20),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(width: 0.8),
-                      ),
-                      hintText: "Search people/messages",
-                    ),
-                  ),
-                ),
-              ),
-              ChatList(),
-            ]),
+            child: ChatList(),
           ),
         ));
   }
