@@ -52,6 +52,7 @@ class TravellerGetView(APIView):
                     serializer_dict.update({"posts": post_serializer.data})
                 except:
                     serializer_dict = TravellerSerializerProfileViewPublic(traveller).data
+                    serializer_dict.update({"posts":{}})
             return Response(serializer_dict)
         except Traveller.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
