@@ -24,7 +24,6 @@ class PostContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('thhis isss $post');
     return Card(
       shadowColor: Colors.white,
       margin: EdgeInsets.symmetric(
@@ -149,7 +148,7 @@ class _PostHeader extends StatelessWidget {
           ],
           child: IconButton(
             icon: const Icon(Icons.more_horiz),
-            onPressed: () => print('hello'),
+            // onPressed: () => print('hello'),
           ),
         ),
       ],
