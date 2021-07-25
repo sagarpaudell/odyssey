@@ -9,26 +9,25 @@ from places_api.models import Place
 
 class MyBlogs(APIView):
     def get(self,request):
-            user = Traveller.objects.get(username = self.request.user)
-            blogs = Blog.objects.filter(author = user)
-            serializer = BlogSerializer(
-                    blogs, 
-                    context = {"traveller":user},
-                    many = True
-                )
-            return Response(serializer.data)
+        user = Traveller.objects.get(username = self.request.user)
+        blogs = Blog.objects.filter(author = user)
+        serializer = BlogSerializer(
+                blogs,
+                context = {"traveller":user},
+                many = True
+            )
+        return Response(serializer.data)
 
 class ViewBlogs(APIView):
     def get(self,request):
-            user = Traveller.objects.get(username = self.request.user)
-            blogs = Blog.objects.all()
-            serializer = BlogSerializer(
-                    blogs, 
-                    context = {"traveller":user},
-                    many = True
-                )
-            print (serializer)
-            return Response(serializer.data)
+        user = Traveller.objects.get(username = self.request.user)
+        blogs = Blog.objects.all()
+        serializer = BlogSerializer(
+                blogs,
+                context = {"traveller":user},
+                many = True
+            )
+        return Response(serializer.data)
 
 class BlogDetail(APIView):
     def get_object(self, id):
@@ -152,7 +151,9 @@ class BookMarkBlogView(APIView):
         traveller_self = Traveller.objects.get(username = request.user)
         bm_blog = traveller_self.bookmarked_blogs.all()
         print(bm_blog)
-        serializer = BlogSerializer(bm_blog, many=True)
+        serializer = BlogSerializer(bm_blog, many=True,
+                context = {"traveller":traveller_self}
+                )
         return Response(serializer.data,status=status.HTTP_200_OK)
 
 def get_blog(id):
