@@ -127,38 +127,33 @@ class _MessageState extends State<Message> {
   //end of _messageBuilder
   _sendMessage() {
     return Container(
-      child: Container(
-        alignment: Alignment.center,
-        child: Container(
-          margin: EdgeInsets.fromLTRB(10, 8, 10, 8),
-          width: MediaQuery.of(context).size.width,
-          child: TextField(
-            controller: _controller,
-            onTap: () => Timer(
-              Duration(milliseconds: 300),
-              () => _scrollController
-                  .jumpTo(_scrollController.position.maxScrollExtent),
-            ),
-            decoration: InputDecoration(
-              suffixIcon: IconButton(
-                  icon: Icon(Icons.send, color: Theme.of(context).primaryColor),
-                  onPressed: () {
-                    _sendMessageFun();
-                  }),
-              contentPadding: EdgeInsets.only(
-                left: 30,
-                right: 50,
+      padding: EdgeInsets.all(10),
+      child: TextField(
+              controller: _controller,
+              onTap: () => Timer(
+                Duration(milliseconds: 300),
+                () => _scrollController
+                    .jumpTo(_scrollController.position.maxScrollExtent),
               ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide(width: 0.1),
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                    icon: Icon(Icons.send, color: Theme.of(context).primaryColor),
+                    onPressed: () {
+                      _sendMessageFun();
+                    }),
+                contentPadding: EdgeInsets.only(
+                  left: 30,
+                  right: 50,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(width: 0.1),
+                ),
+                hintText: "Write a message",
               ),
-              hintText: "Write a message",
             ),
-          ),
-        ),
-      ),
     );
+        
   }
 
   //end of _sendMessage
