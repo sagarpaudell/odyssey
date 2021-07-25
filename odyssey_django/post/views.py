@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
+from django.db.models import Q
 
 from traveller_api.models import Traveller
 from places_api.models import Place
@@ -12,9 +13,10 @@ from .models import ( Post, Comment )
 class NewsfeedView(APIView):
     def get(self, request):
         traveller = Traveller.objects.get(username = request.user)
-        following = traveller.following.all()
-        following = [user.following_traveller_id for user in following] 
-        posts = Post.objects.filter(traveller__in = following).order_by("-post_time")
+        following = traveller.get_following()
+        posts = Post.objects.filter(
+                Q(traveller__in = following) | Q(traveller=traveller)
+            ).order_by("-post_time")
         print(posts)
         post_serialized = PostSerializer(posts, many=True)
         return Response(post_serialized.data)

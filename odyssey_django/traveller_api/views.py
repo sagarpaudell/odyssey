@@ -47,6 +47,7 @@ class TravellerGetView(APIView):
                 try:
                     public_posts = traveller.get_public_posts()
                     post_serializer = PostSerializer(public_posts)
+                    print(post_serializer)
                     serializer = TravellerSerializerProfileViewPublic(traveller)
                     serializer_dict = serializer.data
                     serializer_dict.update({"posts": post_serializer.data})
