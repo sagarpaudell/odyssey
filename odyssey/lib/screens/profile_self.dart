@@ -3,6 +3,8 @@ import 'package:odyssey/pages/edit_profile_page.dart';
 import '../widgets/profile_container.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
+import '../providers/posts.dart';
+import '../widgets/post_container.dart';
 
 class SelfProfile extends StatefulWidget {
   static const routeName = 'selfprofile';
@@ -12,6 +14,18 @@ class SelfProfile extends StatefulWidget {
 
 class _SelfProfileState extends State<SelfProfile> {
   static const choices = ['editprofile', 'opensettings', 'logout'];
+  List<dynamic> selfPosts;
+  Future fbuilder;
+  @override
+  void initState() {
+    fbuilder = getUserPosts();
+    super.initState();
+  }
+
+  Future<void> getUserPosts() async {
+    selfPosts = await Provider.of<Posts>(context, listen: false).getSelfPosts();
+  }
+
   @override
   Widget build(BuildContext context) {
     var selfProfileInfo = Provider.of<Auth>(context).userProfileInfo;
@@ -126,7 +140,20 @@ class _SelfProfileState extends State<SelfProfile> {
           )
         ],
       ),
-      body: ProfileContainer(selfProfileInfo),
+      body: Column(children: [
+        ProfileContainer(selfProfileInfo),
+        FutureBuilder(
+          builder: (context, snapshpot) =>
+              snapshpot.connectionState == ConnectionState.waiting
+                  ? CircularProgressIndicator()
+                  : ListView.builder(
+                      itemBuilder: (context, index) {
+                        return PostContainer(post: selfPosts[index]);
+                      },
+                      itemCount: selfPosts.length,
+                    ),
+        )
+      ]),
       // body: Column(
       //   children: [
       //     Container(
