@@ -9,7 +9,7 @@ class CommentSerializer(ModelSerializer):
     traveller = TravellerSerializerPublic(read_only = True)
     class Meta:
         model = Comment
-        fields=("traveller", "comment", "comment_time")
+        fields=("id","traveller", "comment", "comment_time")
 
 class PostSerializer(ModelSerializer):
     traveller = TravellerSerializerPublic(read_only = True)

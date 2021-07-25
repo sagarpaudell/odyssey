@@ -108,3 +108,67 @@ class AddBlogComment(APIView):
         comment = request.data["comment"]
         blog_comment = BlogComment.objects.create(blog=blog, user=user, comment=comment)
         return Response(BlogCommentSerializer(blog_comment).data)
+
+class BookMarkView(APIView):
+    def get(self, request, id):
+        traveller_self = Traveller.objects.get(username = request.user)
+        blog = get_blog(id)
+        if not blog:
+            return Response( {
+                    "error": True,
+                    "error_msg": "Blog not found"
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+        if blog in traveller_self.bookmarked_blogs.all():
+            return Response(
+                {
+                    "error": True,
+                    "error_msg": "This blog is already bookmarked"
+                },
+                status=status.HTTP_405_METHOD_NOT_ALLOWED
+            )
+        else:
+            blog.bookmark_users.add(traveller_self)
+            blog.save()
+        return Response(status = status.HTTP_200_OK)
+
+
+class UnBookMarkView(APIView):
+    def get(self, request, id):
+        traveller_self = Traveller.objects.get(username = request.user)
+        blog = get_blog(id)
+        if not blog:
+            return Response( {
+                    "error": True,
+                    "error_msg": "Blog not found"
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+        if blog in traveller_self.bookmarked_blogs.all():
+            blog.bookmark_users.remove(traveller_self)
+            blog.save()
+        else:
+            return Response(
+                {
+                    "error": True,
+                    "error_msg": "This blog is not bookmarked"
+                },
+                status=status.HTTP_405_METHOD_NOT_ALLOWED
+            )
+        return Response(status = status.HTTP_200_OK)
+
+class BookMarkBlogView(APIView):
+    def get(self, request):
+        traveller_self = Traveller.objects.get(username = request.user)
+        bm_blog = traveller_self.bookmarked_blogs.all()
+        print(bm_blog)
+        serializer = BlogSerializer(bm_blog, many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+def get_blog(id):
+    try:
+        blog = Blog.objects.get(id = id)
+    except Blog.DoesNotExist:
+        return False
+    return blog

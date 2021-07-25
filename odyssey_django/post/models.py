@@ -7,10 +7,11 @@ class Post(models.Model):
     traveller = models.ForeignKey(Traveller, on_delete=models.CASCADE, related_name='posts')
     caption = models.TextField(blank = True, null = False)
     photo = models.ImageField(upload_to='post/%Y/%m/%d/', blank=True)
-    place = models.ForeignKey(Place, on_delete=models.DO_NOTHING, related_name='posts')
+    place = models.ForeignKey(Place, on_delete=models.DO_NOTHING, related_name='posts', blank=True, null=True)
     like_users = models.ManyToManyField(Traveller, related_name='likedposts', blank=True)
     post_time = models.DateTimeField(auto_now_add=True , blank=False)
     public_post = models.BooleanField(default=True, blank=False)
+    bookmark_users = models.ManyToManyField(Traveller, related_name='bookmarked_posts', blank=True)
 
     # def likes_count(self):
         # return self.like_users.count()

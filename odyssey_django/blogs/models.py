@@ -15,6 +15,7 @@ class Blog(models.Model):
     photo4 = models.ImageField(upload_to='photos/%Y/%m/%d/',blank=True)
     date = models.DateTimeField(auto_now_add=True)
     like_users = models.ManyToManyField(Traveller, related_name='likedblog', blank=True)
+    bookmark_users = models.ManyToManyField(Traveller, related_name='bookmarked_blogs', blank=True)
 
     
     def __str__(self):

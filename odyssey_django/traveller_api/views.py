@@ -70,11 +70,20 @@ class FollowView(APIView):
             new_following = Traveller.objects.get(username__username=username)
             user = Traveller.objects.get(username = request.user)
             # add following to currect user
-            following =TravellerFollowing(
-                    traveller_id = user,
-                    following_traveller_id = new_following
-                )
-            following.save()
+            if new_following in user.get_following():
+                return Response(
+                    {
+                        "error": True,
+                        "error_msg": "The user is already followed"
+                    },
+                    status=status.HTTP_405_METHOD_NOT_ALLOWED
+            )
+            else:
+                following =TravellerFollowing(
+                        traveller_id = user,
+                        following_traveller_id = new_following
+                    )
+                following.save()
             return Response(status=status.HTTP_202_ACCEPTED)
         except Traveller.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -84,14 +93,24 @@ class FollowView(APIView):
 class UnfollowView(APIView):
     def get(self, request, username):
         try:
-            new_following = Traveller.objects.get(username__username=username)
+            new_unfollowing = Traveller.objects.get(username__username=username)
             user = Traveller.objects.get(username = request.user)
-            # add following to currect user
-            following =TravellerFollowing.objects.get(
-                    traveller_id = user,
-                    following_traveller_id = new_following
+            # remove following to currect user
+            print(new_unfollowing, user.get_following())
+            if new_unfollowing in user.get_following():
+                following =TravellerFollowing.objects.get(
+                        traveller_id = user,
+                        following_traveller_id = new_unfollowing
+                    )
+                following.delete()
+            else:
+                return Response(
+                    {
+                        "error": True,
+                        "error_msg": "The user is already not followed"
+                    },
+                    status=status.HTTP_405_METHOD_NOT_ALLOWED
                 )
-            following.delete()
             return Response(status=status.HTTP_202_ACCEPTED)
         except Traveller.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
