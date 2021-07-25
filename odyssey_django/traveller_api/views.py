@@ -8,7 +8,7 @@ from rest_framework.parsers import MultiPartParser
 from django.shortcuts import get_object_or_404
 
 from .serializers import TravellerSerializer, TravellerSerializerPublic
-from .serializers_profile import TravellerSerializerProfileViewPrivate,TravellerSerializerProfileViewPublic
+from .serializers_profile import TravellerSerializerProfileViewPrivate,TravellerSerializerProfileViewPublic,TravellerSerializerProfileViewSelf
 from .models import Traveller, TravellerFollowing
 
 
@@ -17,13 +17,12 @@ class TravellerView(APIView):
 
     def get(self, request):
         traveller = get_object(request)
-        serializer = TravellerSerializer(traveller)
+        serializer = TravellerSerializerProfileViewSelf(traveller)
         return Response(serializer.data)
 
     def put(self, request):
         traveller = get_object(request)
         serializer = TravellerSerializer(traveller, data=request.data)
-        print(serializer)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
@@ -45,11 +44,14 @@ class TravellerGetView(APIView):
             if (traveller in current_user_followers and current_user in traveller_followers):
                 serializer_dict = TravellerSerializerProfileViewPrivate(traveller).data
             else:
-                public_posts = traveller.get_public_posts()
-                post_serializer = PostSerializer(public_posts)
-                serializer = TravellerSerializerProfileViewPublic(traveller)
-                serializer_dict = serializer.data
-                serializer_dict.update({"posts": post_serializer.data})
+                try:
+                    public_posts = traveller.get_public_posts()
+                    post_serializer = PostSerializer(public_posts)
+                    serializer = TravellerSerializerProfileViewPublic(traveller)
+                    serializer_dict = serializer.data
+                    serializer_dict.update({"posts": post_serializer.data})
+                except:
+                    serializer_dict = TravellerSerializerProfileViewPublic(traveller).data
             return Response(serializer_dict)
         except Traveller.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)

@@ -19,3 +19,10 @@ class TravellerSerializerProfileViewPrivate(serializers.ModelSerializer):
     class Meta:
         model = Traveller
         fields = ['username', 'id', 'first_name', 'last_name','address','city','country','bio','gender', 'photo_main','posts']
+
+class TravellerSerializerProfileViewSelf(serializers.ModelSerializer):
+    username = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    posts = PostSerializer(read_only=True, many=True)
+    class Meta:
+        model = Traveller
+        fields = ['username', 'id', 'first_name', 'last_name','address','city','country','bio','contact_no', 'gender', 'photo_main','posts']
