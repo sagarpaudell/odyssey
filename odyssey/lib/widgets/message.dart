@@ -254,14 +254,11 @@ class _MessageState extends State<Message> {
         titleSpacing: 0,
         actions: [
           PopupMenuButton(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Icon(
+            child: Icon(
                 Icons.more_vert,
                 color: Colors.black,
                 size: 28,
               ),
-            ),
             onSelected: choiceAction,
             itemBuilder: (BuildContext context) {
               return choices.map((String choice) {
