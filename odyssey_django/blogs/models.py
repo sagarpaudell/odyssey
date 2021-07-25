@@ -6,7 +6,7 @@ from places_api.models import Place
 
 class Blog(models.Model):
     title = models.CharField(max_length=200)
-    author = models.ForeignKey(Traveller, on_delete= models.CASCADE, blank=True)
+    author = models.ForeignKey(Traveller, on_delete= models.CASCADE, blank=True, related_name="blogs")
     place = models.ForeignKey(Place, on_delete=models.DO_NOTHING, blank=True)
     description = models.TextField(blank=True)
     photo1 = models.ImageField(upload_to='photos/%Y/%m/%d/',blank=True)
