@@ -48,16 +48,27 @@ class TravellerGetView(APIView):
             blog_serializer = BlogSerializer(blogs, many =True)
             if (current_user in traveller_followers):
                 posts = traveller.get_posts()
-                post_serializer = PostSerializer(posts, many=True)
+                post_serializer = PostSerializer(posts, many=True, context={"traveller":"current_user"})
                 serializer_dict = TravellerSerializerProfileViewPrivate(traveller).data
                 serializer_dict.update({"number of posts":total_posts, "number of blogs":total_blogs, "posts": post_serializer.data, "blogs": blog_serializer.data})
             else:
                 public_posts = traveller.get_public_posts()
                 print(public_posts)
-                post_serializer = PostSerializer(public_posts, many=True)
+                post_serializer = PostSerializer(
+                        public_posts,
+                        many=True,
+                        context={"traveller":"current_user"}
+                    )
                 serializer = TravellerSerializerProfileViewPublic(traveller)
                 serializer_dict = serializer.data
-                serializer_dict.update({"number of posts":total_posts, "number of blogs":total_blogs, "posts": post_serializer.data, "blogs": blog_serializer.data})
+                serializer_dict.update(
+                        {
+                            "number of posts":total_posts,
+                            "number of blogs":total_blogs,
+                            "posts": post_serializer.data,
+                            "blogs": blog_serializer.data
+                        }
+                    )
             return Response(serializer_dict)
         except Traveller.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -65,56 +76,38 @@ class TravellerGetView(APIView):
 
 
 class FollowView(APIView):
-    def get(self, request, username):
+    def put(self, request, username):
         try:
             new_following = Traveller.objects.get(username__username=username)
             user = Traveller.objects.get(username = request.user)
             # add following to currect user
             if new_following in user.get_following():
-                return Response(
-                    {
-                        "error": True,
-                        "error_msg": "The user is already followed"
-                    },
-                    status=status.HTTP_405_METHOD_NOT_ALLOWED
-            )
+                following =TravellerFollowing.objects.get(
+                        traveller_id = user,
+                        following_traveller_id = new_following
+                    )
+                following.delete()
+                message = "traveller unfollowed"
             else:
                 following =TravellerFollowing(
                         traveller_id = user,
                         following_traveller_id = new_following
                     )
                 following.save()
-            return Response(status=status.HTTP_202_ACCEPTED)
-        except Traveller.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-class UnfollowView(APIView):
-    def get(self, request, username):
-        try:
-            new_unfollowing = Traveller.objects.get(username__username=username)
-            user = Traveller.objects.get(username = request.user)
-            # remove following to currect user
-            print(new_unfollowing, user.get_following())
-            if new_unfollowing in user.get_following():
-                following =TravellerFollowing.objects.get(
-                        traveller_id = user,
-                        following_traveller_id = new_unfollowing
-                    )
-                following.delete()
-            else:
-                return Response(
-                    {
-                        "error": True,
-                        "error_msg": "The user is already not followed"
-                    },
-                    status=status.HTTP_405_METHOD_NOT_ALLOWED
+                message = "traveller followed"
+            return Response(
+                    {"success":message},
+                    status=status.HTTP_202_ACCEPTED
                 )
-            return Response(status=status.HTTP_202_ACCEPTED)
         except Traveller.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response( {
+                    "error": True,
+                    "error_msg": "Traveller not found"
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 def get_object(request):

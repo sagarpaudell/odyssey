@@ -21,6 +21,9 @@ class Blog(models.Model):
     def __str__(self):
         return self.title
 
+    def is_bookmarked(self, traveller):
+        return bool(traveller in self.bookmark_users.all())
+
 class BlogComment(models.Model):
     blog = models.ForeignKey(Blog, on_delete = models.CASCADE, related_name='comments')
     user = models.ForeignKey(Traveller, on_delete = models.CASCADE,)
