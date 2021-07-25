@@ -1,4 +1,5 @@
 from post.serializers import PostSerializer
+from blogs.serializers import BlogSerializer
 from django.shortcuts import render, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -17,7 +18,7 @@ class TravellerView(APIView):
 
     def get(self, request):
         traveller = get_object(request)
-        serializer = TravellerSerializerProfileViewSelf(traveller)
+        serializer = TravellerSerializer(traveller)
         return Response(serializer.data)
 
     def put(self, request):
@@ -41,18 +42,22 @@ class TravellerGetView(APIView):
             current_user = Traveller.objects.get(username = request.user)
             traveller_followers = traveller.get_followers()
             current_user_followers = current_user.get_followers()
-            if (traveller in current_user_followers and current_user in traveller_followers):
+            total_posts = traveller.get_posts_count()
+            total_blogs = traveller.get_blogs_count()
+            blogs = traveller.get_blogs()
+            blog_serializer = BlogSerializer(blogs, many =True)
+            if (current_user in traveller_followers):
+                posts = traveller.get_posts()
+                post_serializer = PostSerializer(posts, many=True)
                 serializer_dict = TravellerSerializerProfileViewPrivate(traveller).data
+                serializer_dict.update({"number of posts":total_posts, "number of blogs":total_blogs, "posts": post_serializer.data, "blogs": blog_serializer.data})
             else:
-                try:
-                    public_posts = traveller.get_public_posts()
-                    post_serializer = PostSerializer(public_posts)
-                    print(post_serializer)
-                    serializer = TravellerSerializerProfileViewPublic(traveller)
-                    serializer_dict = serializer.data
-                    serializer_dict.update({"posts": post_serializer.data})
-                except:
-                    serializer_dict = TravellerSerializerProfileViewPublic(traveller).data
+                public_posts = traveller.get_public_posts()
+                print(public_posts)
+                post_serializer = PostSerializer(public_posts, many=True)
+                serializer = TravellerSerializerProfileViewPublic(traveller)
+                serializer_dict = serializer.data
+                serializer_dict.update({"number of posts":total_posts, "number of blogs":total_blogs, "posts": post_serializer.data, "blogs": blog_serializer.data})
             return Response(serializer_dict)
         except Traveller.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)

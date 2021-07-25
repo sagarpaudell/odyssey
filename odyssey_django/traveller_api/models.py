@@ -1,3 +1,4 @@
+from re import T
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -37,10 +38,19 @@ class Traveller(models.Model):
         return self.posts.all()
 
     def get_private_posts(self):
-        return self.posts.all().get(public_post=False)
+        return self.posts.filter(public_post = False)
 
     def get_public_posts(self):
-        return self.posts.all().get(public_post=True)
+        return self.posts.filter(public_post = True)
+
+    def get_posts_count(self):
+        return self.posts.all().count()
+    
+    def get_blogs(self):
+       return self.blogs.all()
+
+    def get_blogs_count(self):
+        return self.blogs.all().count()
 
 
 class TravellerFollowing(models.Model):
