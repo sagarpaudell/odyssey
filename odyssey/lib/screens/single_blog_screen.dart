@@ -89,7 +89,7 @@ class _BlogScreenState extends State<BlogScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (_) => UserProfile(
-                                        singleBlogData['author']['id']),
+                                        singleBlogData['author']['username']),
                                   ),
                                 ),
                                 child: Row(
