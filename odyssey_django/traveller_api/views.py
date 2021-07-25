@@ -7,7 +7,6 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from rest_framework.parsers import MultiPartParser
 from django.shortcuts import get_object_or_404
-
 from .serializers import TravellerSerializer, TravellerSerializerPublic
 from .serializers_profile import TravellerSerializerProfileViewPrivate,TravellerSerializerProfileViewPublic,TravellerSerializerProfileViewSelf
 from .models import Traveller, TravellerFollowing
