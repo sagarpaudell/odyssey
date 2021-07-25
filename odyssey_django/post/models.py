@@ -4,14 +4,18 @@ from places_api.models import Place
 
 # Create your models here.
 class Post(models.Model):
-    traveller = models.ForeignKey(Traveller, on_delete=models.CASCADE, related_name='posts')
+    traveller = models.ForeignKey(Traveller, on_delete=models.CASCADE,
+            related_name='posts')
     caption = models.TextField(blank = True, null = False)
     photo = models.ImageField(upload_to='post/%Y/%m/%d/', blank=True)
-    place = models.ForeignKey(Place, on_delete=models.DO_NOTHING, related_name='posts', blank=True, null=True)
-    like_users = models.ManyToManyField(Traveller, related_name='likedposts', blank=True)
+    place = models.ForeignKey(Place, on_delete=models.DO_NOTHING,
+            related_name='posts', blank=True, null=True)
+    like_users = models.ManyToManyField(Traveller,
+            related_name='likedposts', blank=True)
     post_time = models.DateTimeField(auto_now_add=True , blank=False)
     public_post = models.BooleanField(default=True, blank=False)
-    bookmark_users = models.ManyToManyField(Traveller, related_name='bookmarked_posts', blank=True)
+    bookmark_users = models.ManyToManyField(Traveller,
+            related_name='bookmarked_posts', blank=True)
 
     # def likes_count(self):
         # return self.like_users.count()
@@ -32,10 +36,13 @@ class Post(models.Model):
     def __str__(self):
         return f'{self.id} by {self.traveller.username.username}'
 
+    def is_bookmarked(self, traveller):
+        return bool(traveller in self.bookmark_users.all())
 
 
 class Comment(models.Model):
-    post_id=models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    post_id=models.ForeignKey(Post, on_delete=models.CASCADE, 
+            related_name='comments')
     traveller = models.ForeignKey(Traveller, on_delete=models.CASCADE,
             related_name='comments')
     comment = models.TextField(blank = False, null=False)

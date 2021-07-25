@@ -11,10 +11,17 @@ class BlogCommentSerializer(serializers.ModelSerializer):
         fields = ['id','user','comment','liked_users','disliked_users','comment_time']
 
 class BlogSerializer(serializers.ModelSerializer):
+    is_bookmarked = serializers.SerializerMethodField('check_bookmark')
     author = TravellerSerializerPublic(read_only=True)
     place = PlaceSerializer(read_only=True)
     comments = BlogCommentSerializer(read_only=True, many=True)
+    def check_bookmark(self, obj):
+        traveller = self.context.get("traveller")
+        if traveller:
+            return obj.is_bookmarked(traveller)
+        return None
     class Meta:
         model = Blog
-        fields = ['id','title','author','place','description','date','like_users','photo1','photo2','photo3','photo4','comments']
-
+        fields = ('id','title','author','place','description','date',
+                'like_users','photo1','photo2','photo3','photo4','comments',
+                'is_bookmarked')

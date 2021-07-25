@@ -2,7 +2,7 @@ from blogs.models import BlogComment
 from django.urls import path
 from .views import (
         AddBlogComment, BlogCommentDetail, MyBlogs,BlogDetail, 
-        AddBlog, ViewBlogs, BookMarkBlogView, BookMarkView, UnBookMarkView
+        AddBlog, ViewBlogs, BookMarkBlogView, BookMarkView, 
     )
 
 urlpatterns=[
@@ -14,5 +14,4 @@ urlpatterns=[
         path('addblogcomment/<int:id>', AddBlogComment.as_view()),             #id of blog
         path('bookmarked', BookMarkBlogView.as_view()),
         path('bookmark/<int:id>', BookMarkView.as_view()),
-        path('unbookmark/<int:id>', UnBookMarkView.as_view()),
 ]

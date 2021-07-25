@@ -11,15 +11,22 @@ class MyBlogs(APIView):
     def get(self,request):
             user = Traveller.objects.get(username = self.request.user)
             blogs = Blog.objects.filter(author = user)
-            serializer = BlogSerializer(blogs, many = True)
-            print (serializer)
+            serializer = BlogSerializer(
+                    blogs, 
+                    context = {"traveller":user},
+                    many = True
+                )
             return Response(serializer.data)
 
 class ViewBlogs(APIView):
     def get(self,request):
             user = Traveller.objects.get(username = self.request.user)
             blogs = Blog.objects.all()
-            serializer = BlogSerializer(blogs, many = True)
+            serializer = BlogSerializer(
+                    blogs, 
+                    context = {"traveller":user},
+                    many = True
+                )
             print (serializer)
             return Response(serializer.data)
 
@@ -32,17 +39,22 @@ class BlogDetail(APIView):
 
     def get(self, request, id):
         blog = self.get_object(id)
-        serializer = BlogSerializer(blog)
+        user = Traveller.objects.get(username=request.user)
+        serializer = BlogSerializer(blog, context = {"traveller":user})
         return Response(serializer.data)
 
     def put(self, request , id):
         blog = self.get_object(id)
         current_user = Traveller.objects.get(username = request.user)
-        if (current_user==blog.author):
+        if current_user==blog.author:
             place = Place.objects.get(id = request.data["place"])
             blog.place = place
             blog.save()
-            serializer = BlogSerializer(blog, data=request.data)
+            serializer = BlogSerializer(
+                    blog,
+                    data=request.data,
+                    context = {"traveller":current_user}
+                )
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
@@ -110,32 +122,7 @@ class AddBlogComment(APIView):
         return Response(BlogCommentSerializer(blog_comment).data)
 
 class BookMarkView(APIView):
-    def get(self, request, id):
-        traveller_self = Traveller.objects.get(username = request.user)
-        blog = get_blog(id)
-        if not blog:
-            return Response( {
-                    "error": True,
-                    "error_msg": "Blog not found"
-                },
-                status=status.HTTP_404_NOT_FOUND
-            )
-        if blog in traveller_self.bookmarked_blogs.all():
-            return Response(
-                {
-                    "error": True,
-                    "error_msg": "This blog is already bookmarked"
-                },
-                status=status.HTTP_405_METHOD_NOT_ALLOWED
-            )
-        else:
-            blog.bookmark_users.add(traveller_self)
-            blog.save()
-        return Response(status = status.HTTP_200_OK)
-
-
-class UnBookMarkView(APIView):
-    def get(self, request, id):
+    def put(self, request, id):
         traveller_self = Traveller.objects.get(username = request.user)
         blog = get_blog(id)
         if not blog:
@@ -148,15 +135,17 @@ class UnBookMarkView(APIView):
         if blog in traveller_self.bookmarked_blogs.all():
             blog.bookmark_users.remove(traveller_self)
             blog.save()
+            message = "bookmark removed"
         else:
-            return Response(
-                {
-                    "error": True,
-                    "error_msg": "This blog is not bookmarked"
-                },
-                status=status.HTTP_405_METHOD_NOT_ALLOWED
-            )
-        return Response(status = status.HTTP_200_OK)
+            blog.bookmark_users.add(traveller_self)
+            blog.save()
+            message = "blog bookmarked"
+        return Response(
+                    { "success": message },
+                    status = status.HTTP_200_OK
+                )
+
+
 
 class BookMarkBlogView(APIView):
     def get(self, request):

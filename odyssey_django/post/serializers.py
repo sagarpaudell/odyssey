@@ -12,11 +12,16 @@ class CommentSerializer(ModelSerializer):
         fields=("id","traveller", "comment", "comment_time")
 
 class PostSerializer(ModelSerializer):
+    is_bookmarked = serializers.SerializerMethodField('check_bookmark')
     traveller = TravellerSerializerPublic(read_only = True)
     place = PlaceSerializer(read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
-
     permissions_classes = [IsAuthenticated]
+    def check_bookmark(self, obj):
+        traveller = self.context.get("traveller")
+        if traveller:
+            return obj.is_bookmarked(traveller)
+        return None
 
     # def create(self, validated_data, traveller, place):
         # """ create new posts """
@@ -31,4 +36,4 @@ class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields=("id", "traveller", "caption", "photo", "place", "like_users",
-                "comments", "post_time")
+                "comments", "post_time", "is_bookmarked")

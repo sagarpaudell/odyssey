@@ -18,7 +18,9 @@ class NewsfeedView(APIView):
                 Q(traveller__in = following) | Q(traveller=traveller)
             ).order_by("-post_time")
         print(posts)
-        post_serialized = PostSerializer(posts, many=True)
+        post_serialized = PostSerializer(
+                posts, many=True, context={"traveller":traveller}
+            )
         return Response(post_serialized.data)
 
 class SelfPostView(APIView):
@@ -39,7 +41,10 @@ class SelfPostView(APIView):
                         },
                         status=status.HTTP_404_NOT_FOUND
                         )
-        serializer = PostSerializer(data = request.data)
+                serializer = PostSerializer(
+                        data = request.data,
+                        context={"traveller":traveller}
+                    )
 
         if serializer.is_valid(raise_exception=ValueError):
             print(serializer.validated_data)
@@ -63,23 +68,28 @@ class SelfPostView(APIView):
     def get(self, request):
         posts = Traveller.objects.get(username = request.user).posts.all()
         print(posts)
-        serializer = PostSerializer(posts, many=True)
+        serializer = PostSerializer(posts, many=True, context={"traveller":traveller})
         return Response(serializer.data)
 
 
 class PostView(APIView):
     def get(self, request, id):
         post = get_post(id)
-        following = Traveller.objects.get(username=request.user).get_following()
+        if not post:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        traveller = Traveller.objects.get(username=request.user)
+        following = traveller.get_following()
         if post.traveller in following or post.traveller.username == request.user:
-            serializer = PostSerializer(post)
-            return Response(serializer.data)
+            serializer = PostSerializer(post, context= {"traveller": traveller})
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     def put(self, request, id):
         post = get_post(id)
+        if not post:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         if post.traveller == Traveller.objects.get(username = request.user):
-            serializer = PostSerializer(post, data=request.data)
+            serializer = PostSerializer(post, data=request.data,)
 
             place_id= request.data.pop("place_id", False)
             if place_id:
@@ -109,55 +119,51 @@ class PostView(APIView):
                    )
 
         return Response(status=status.HTTP_401_UNAUTHORIZED)
+    def delete(self, request, id):
+        post = get_post(id)
+        if not post:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        if post.traveller == Traveller.objects.get(username = request.user):
+            post.delete()
+            return Response({"success":"post deleted"}, status = status.HTTP_200_OK) 
 
 class BookMarkView(APIView):
-    def get(self, request, id):
+    def put(self, request, id):
         traveller_self = Traveller.objects.get(username = request.user)
         post = get_post(id)
-        if post in traveller_self.bookmarked_posts.all():
-            return Response(
-                {
+        if not post:
+            return Response( {
                     "error": True,
-                    "error_msg": "This post is already bookmarked"
+                    "error_msg": "Blog not found"
                 },
-                status=status.HTTP_405_METHOD_NOT_ALLOWED
+                status=status.HTTP_404_NOT_FOUND
             )
-        else:
-            post.bookmark_users.add(traveller_self)
-            post.save()
-        return Response(status = status.HTTP_200_OK)
-
-
-class UnBookMarkView(APIView):
-    def get(self, request, id):
-        traveller_self = Traveller.objects.get(username = request.user)
-        post = get_post(id)
         if post in traveller_self.bookmarked_posts.all():
             post.bookmark_users.remove(traveller_self)
             post.save()
+            message="bookmark removed"
         else:
-            return Response(
-                {
-                    "error": True,
-                    "error_msg": "This post is not bookmarked"
-                },
-                status=status.HTTP_405_METHOD_NOT_ALLOWED
-            )
-        return Response(status = status.HTTP_200_OK)
+            post.bookmark_users.add(traveller_self)
+            post.save()
+            message = "bookmark added"
+        return Response(
+                { "success": message },
+                status = status.HTTP_200_OK
+                )
 
 class BookMarkPostView(APIView):
     def get(self, request):
         traveller_self = Traveller.objects.get(username = request.user)
         bm_post = traveller_self.bookmarked_posts.all()
-        print(bm_post)
-        serializer = PostSerializer(bm_post, many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
-
-
+        serializer = PostSerializer(bm_post, many=True, context={"traveller": traveller_self})
+        return Response(
+                serializer.data,
+                status=status.HTTP_200_OK
+            )
 
 def get_post(id):
     try:
         post = Post.objects.get(id = id)
-    except post.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    except Post.DoesNotExist:
+        return False
     return post
