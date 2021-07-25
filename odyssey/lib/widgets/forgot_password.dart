@@ -41,7 +41,7 @@ class ForgotPassword extends StatelessWidget {
                 alignment:Alignment.center,
                 child: 
                     Text(
-                          "Enter the email address associated with your account:",
+                          "Enter the username associated with your account:",
                           textAlign: TextAlign.center,
                            style: TextStyle(color: Theme.of(context).primaryColor, fontSize:16,
                         fontWeight: FontWeight.w400),
@@ -52,7 +52,7 @@ class ForgotPassword extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
                 child: TextField(textAlign: TextAlign.center,
                 decoration: InputDecoration(
-                  hintText: "Enter your email address",
+                  hintText: "Enter your username",
                   
                 ),),
               ),
