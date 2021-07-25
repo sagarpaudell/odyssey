@@ -44,7 +44,6 @@ class MajorAttractionView(generics.ListCreateAPIView):
     def get(self, request, id):
         major_attractions = self.get_object(id)
         serializer = MajorAttractionSerializer(major_attractions, many = True)
-        print (serializer.data)
         return Response(serializer.data)
 
     # def put(self, request , id):
