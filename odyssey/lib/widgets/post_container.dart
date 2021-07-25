@@ -24,7 +24,6 @@ class PostContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('thhis isss $post');
     return Card(
       shadowColor: Colors.white,
       margin: EdgeInsets.symmetric(

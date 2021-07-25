@@ -10,7 +10,7 @@ class Posts with ChangeNotifier {
   Posts([this.authToken]);
   Future<List<dynamic>> getSelfPosts() async {
     // print('getprofile');
-    const url = 'https://travellum.herokuapp.com/post-api/posts/';
+    const url = 'https://travellum.herokuapp.com/post-api/post/';
     final token = 'Bearer ' + authToken;
     // print('token');
     try {
@@ -19,27 +19,25 @@ class Posts with ChangeNotifier {
         headers: {'Content-Type': 'application/json', 'Authorization': token},
       );
       final selfPostData = json.decode(userDataResponse.body);
-      // print(postData);
+
       notifyListeners();
       return selfPostData;
     } catch (e) {
-      print(e);
+      print(json.decode(e));
+      throw (e);
     }
   }
 
   // List<Map<String, dynamic>>
   Future<List<dynamic>> getPosts() async {
-    // print('getprofile');
     const url = 'https://travellum.herokuapp.com/post-api/newsfeed';
     final token = 'Bearer ' + authToken;
-    // print('token');
     try {
       final userDataResponse = await http.get(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json', 'Authorization': token},
       );
       final postData = json.decode(userDataResponse.body);
-      // print(postData);
       notifyListeners();
       return postData;
     } catch (e) {

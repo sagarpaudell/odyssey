@@ -133,4 +133,16 @@ class Auth with ChangeNotifier {
     //   throw error;
     // }
   }
+
+  void logout() {
+    token = null;
+    userName = null;
+    fullName = null;
+    userId = null;
+    userProfileInfo = null;
+
+    _userRefreshToken = null;
+
+    notifyListeners();
+  }
 }
