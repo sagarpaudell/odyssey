@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:odyssey/pages/edit_profile_page.dart';
+import 'package:odyssey/screens/screens.dart';
 import '../widgets/profile_container.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
+import '../providers/posts.dart';
+import '../widgets/post_container.dart';
 
 class SelfProfile extends StatefulWidget {
   static const routeName = 'selfprofile';
@@ -12,6 +15,26 @@ class SelfProfile extends StatefulWidget {
 
 class _SelfProfileState extends State<SelfProfile> {
   static const choices = ['editprofile', 'opensettings', 'logout'];
+  List<dynamic> selfPosts;
+  Future fbuilder;
+  @override
+  void initState() {
+    fbuilder = getSelfPosts();
+    super.initState();
+  }
+
+  Future<void> getSelfPosts() async {
+    try {
+      var temp =
+          await Provider.of<Posts>(context, listen: false).getSelfPosts();
+      setState(() {
+        selfPosts = temp;
+      });
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var selfProfileInfo = Provider.of<Auth>(context).userProfileInfo;
@@ -31,7 +54,13 @@ class _SelfProfileState extends State<SelfProfile> {
                 color: Colors.red[400],
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/', (Route<dynamic> route) => false);
+              setState(
+                  () => Provider.of<Auth>(context, listen: false).logout());
+            },
           ),
         ],
       );
@@ -126,7 +155,20 @@ class _SelfProfileState extends State<SelfProfile> {
           )
         ],
       ),
-      body: ProfileContainer(selfProfileInfo),
+      body: CustomScrollView(slivers: [
+        SliverToBoxAdapter(
+          child: ProfileContainer(selfProfileInfo),
+        ),
+        selfPosts == null
+            ? SliverToBoxAdapter(child: CircularProgressIndicator())
+            : SliverList(
+                delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  return PostContainer(post: selfPosts[index]);
+                }, childCount: selfPosts.length),
+              ),
+      ]),
+
       // body: Column(
       //   children: [
       //     Container(

@@ -34,7 +34,6 @@ class Blog with ChangeNotifier {
         Uri.parse(_url),
         headers: <String, String>{'Authorization': 'Bearer $authToken'},
       );
-      print(json.decode(response.body));
       return json.decode(response.body);
     } catch (error) {
       print(error);

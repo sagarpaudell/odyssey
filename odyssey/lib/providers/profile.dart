@@ -107,19 +107,16 @@ class Profile with ChangeNotifier {
     final url = 'https://travellum.herokuapp.com/traveller-api/$friendUserName';
     final token = 'Bearer ' + authToken;
     try {
-      print('control is here');
       final userDataResponse = await http.get(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json', 'Authorization': token},
       );
       final friendData = json.decode(userDataResponse.body);
-
-      print('This gives as result $friendData');
+      print('this is $friendData');
       notifyListeners();
 
       return friendData;
     } catch (error) {
-      print(json.decode(error));
       throw error;
     }
   }
