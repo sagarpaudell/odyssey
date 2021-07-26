@@ -24,12 +24,11 @@ class NewsfeedView(APIView):
         return Response(post_serialized.data)
 
 class SelfPostView(APIView):
-
     parser_classes = [MultiPartParser]
-
     def post(self, request):
         traveller = Traveller.objects.get(username = self.request.user)
         place_id= request.data.pop("place_id", False)
+        serializer = PostSerializer(data=request.data)
         if place_id:
             try:
                 place = Place.objects.get(id = place_id[0])
@@ -41,13 +40,12 @@ class SelfPostView(APIView):
                         },
                         status=status.HTTP_404_NOT_FOUND
                         )
-                serializer = PostSerializer(
-                        data = request.data,
-                        context={"traveller":traveller}
-                    )
+            serializer = PostSerializer(
+                    data = request.data,
+                    context={"traveller":traveller}
+                )
 
         if serializer.is_valid(raise_exception=ValueError):
-            print(serializer.validated_data)
             if place_id:
                 serializer.save(place=place, traveller=traveller)
             else:
@@ -66,7 +64,8 @@ class SelfPostView(APIView):
                )
 
     def get(self, request):
-        posts = Traveller.objects.get(username = request.user).posts.all()
+        traveller = Traveller.objects.get(username = request.user)
+        posts = traveller.posts.all()
         print(posts)
         serializer = PostSerializer(posts, many=True, context={"traveller":traveller})
         return Response(serializer.data)
@@ -90,8 +89,9 @@ class PostView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         if post.traveller == Traveller.objects.get(username = request.user):
             serializer = PostSerializer(post, data=request.data,)
-
-            place_id= request.data.pop("place_id", False)
+            request.data._mutable = True
+            place_id = request.data.pop("place_id", False)
+            request.data._mutable = False
             if place_id:
                 try:
                     place = Place.objects.get(id = place_id[0])
@@ -119,13 +119,134 @@ class PostView(APIView):
                    )
 
         return Response(status=status.HTTP_401_UNAUTHORIZED)
+
     def delete(self, request, id):
         post = get_post(id)
         if not post:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                    {
+                        "error": True,
+                        "error_msg": "Post not found"
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                )
         if post.traveller == Traveller.objects.get(username = request.user):
             post.delete()
-            return Response({"success":"post deleted"}, status = status.HTTP_200_OK) 
+            return Response({"success":"post deleted"},
+                    status = status.HTTP_200_OK
+                )
+        return Response(
+                {
+                    "error": True,
+                    "error_msg": "Not your post"
+                },
+                status = status.HTTP_401_UNAUTHORIZED
+            )
+
+
+class LikeView(APIView):
+    def put(self, request, id):
+        post = get_post(id)
+        if not post:
+            return Response(
+                    {
+                        "error": True,
+                        "error_msg": "Post not found"
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        traveller = Traveller.objects.get(username=request.user)
+        if traveller in post.like_users.all():
+            post.like_users.remove(traveller)
+            message = "Unliked post"
+        else:
+            post.like_users.add(traveller)
+            message = "Liked post"
+        traveller.save()
+        return Response({"success":message}, status = status.HTTP_200_OK)
+
+class CommentView(APIView):
+    def post(self, request, id):
+        """ here id is post id """
+        post = get_post(id)
+        if not post:
+            return Response(
+                    {
+                        "error": True,
+                        "error_msg": "Post not found"
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        traveller = Traveller.objects.get(username=request.user)
+        serializer = CommentSerializer(data = request.data)
+        if serializer.is_valid(raise_exception = ValueError):
+            serializer.save(post_id=post, traveller=traveller)
+            return Response(serializer.data, status = status.HTTP_200_OK)
+        return Response(
+               {
+                   "error":True,
+                   "error_msg": serializer.error_messages,
+               },
+               status=status.HTTP_400_BAD_REQUEST
+               )
+
+    def put(self, request, id):
+        """ here id is comment id """
+        try:
+            comment = Comment.objects.get(id=id)
+        except Comment.DoesNotExist:
+            return Response(
+                    {
+                        "error": True,
+                        "error_msg": "Comment not found"
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        if comment.traveller == Traveller.objects.get(username = request.user):
+            serializer = CommentSerializer(comment, request.data)
+        else:
+            return Response(
+                    {
+                        "error": True,
+                        "error_msg": "Not commented by you"
+                    },
+                    status = status.HTTP_401_UNAUTHORIZED
+                )
+
+        if serializer.is_valid(raise_exception = ValueError):
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_200_OK)
+        return Response(
+               {
+                   "error":True,
+                   "error_msg": serializer.error_messages,
+               },
+               status=status.HTTP_400_BAD_REQUEST
+           )
+
+    def delete(self, request, id):
+        try:
+            comment = Comment.objects.get(id=id)
+        except Comment.DoesNotExist:
+            return Response(
+                    {
+                        "error": True,
+                        "error_msg": "Comment not found"
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        if comment.traveller == Traveller.objects.get(username = request.user):
+            comment.delete()
+            return Response({"success":"comment deleted"},
+                    status = status.HTTP_200_OK
+                )
+        return Response(
+                {
+                    "error": True,
+                    "error_msg": "Not commented by you"
+                },
+                status = status.HTTP_401_UNAUTHORIZED
+            )
 
 class BookMarkView(APIView):
     def put(self, request, id):
@@ -155,7 +276,11 @@ class BookMarkPostView(APIView):
     def get(self, request):
         traveller_self = Traveller.objects.get(username = request.user)
         bm_post = traveller_self.bookmarked_posts.all()
-        serializer = PostSerializer(bm_post, many=True, context={"traveller": traveller_self})
+        serializer = PostSerializer(
+                bm_post,
+                many=True,
+                context={"traveller": traveller_self}
+            )
         return Response(
                 serializer.data,
                 status=status.HTTP_200_OK

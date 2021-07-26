@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
-from rest_framework import serializers
+from rest_framework import fields, serializers
 from rest_framework.validators import UniqueTogetherValidator
 from rest_framework.permissions import IsAuthenticated
+from .models import OTP
 
 class UserSerializer(serializers.ModelSerializer):
     permission_classes = [IsAuthenticated]
@@ -23,3 +24,9 @@ class UserSerializer(serializers.ModelSerializer):
                     fields=['username', 'email']
                     )
                 ]
+
+
+class OTPSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OTP
+        fields = ['verified_email']
