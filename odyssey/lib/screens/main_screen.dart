@@ -5,6 +5,7 @@ import 'package:odyssey/widgets/custom_tab_bar.dart';
 import './profile_self.dart';
 
 class MainScreen extends StatefulWidget {
+  static const routeName = '/mainscreen';
   @override
   _MainScreenState createState() => _MainScreenState();
 }
