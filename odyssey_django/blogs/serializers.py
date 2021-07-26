@@ -19,7 +19,7 @@ class BlogSerializer(serializers.ModelSerializer):
         traveller = self.context.get("traveller")
         if traveller:
             return obj.is_bookmarked(traveller)
-        return None
+        return False
     class Meta:
         model = Blog
         fields = ('id','title','author','place','description','date',
