@@ -21,7 +21,7 @@ class PostSerializer(ModelSerializer):
         traveller = self.context.get("traveller")
         if traveller:
             return obj.is_bookmarked(traveller)
-        return None
+        return False
 
     # def create(self, validated_data, traveller, place):
         # """ create new posts """
