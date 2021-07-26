@@ -9,12 +9,40 @@ import 'package:odyssey/widgets/profile_avatar.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:intl/intl.dart';
 
-class BlogContainer extends StatelessWidget {
+class BlogContainer extends StatefulWidget {
   final Map<String, dynamic> singleBlog;
-  const BlogContainer(this.singleBlog);
+  final Function fun;
+
+  const BlogContainer(this.singleBlog, [this.fun]);
+
+  @override
+  _BlogContainerState createState() => _BlogContainerState();
+}
+
+class _BlogContainerState extends State<BlogContainer> {
+  bool _is_bookmarked = false;
+  void toggleBookmark(bool selectBlog) {
+    if (widget.fun != null) {
+      widget.fun(selectBlog);
+    }
+    setState(() {
+      _is_bookmarked = !_is_bookmarked;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (widget.singleBlog['is_bookmarked']) {
+      _is_bookmarked = true;
+    }
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final String selfUserName =
+        Provider.of<Auth>(context, listen: false).userName;
+
     // final bool isDesktop = Responsive.isDesktop(context);
     return Container(
       margin: EdgeInsets.all(10),
@@ -34,7 +62,7 @@ class BlogContainer extends StatelessWidget {
         child: Column(
           children: [
             Image(
-              image: NetworkImage(singleBlog["photo1"]),
+              image: NetworkImage(widget.singleBlog["photo1"]),
               errorBuilder: (BuildContext context, Object exception,
                   StackTrace stackTrace) {
                 return Image.asset('./assets/images/mana.jpg');
@@ -42,7 +70,8 @@ class BlogContainer extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: _BlogInfo(singleBlog),
+              child: _BlogInfo(widget.singleBlog, selfUserName, context,
+                  toggleBookmark, _is_bookmarked),
             ),
           ],
         ),
@@ -51,156 +80,149 @@ class BlogContainer extends StatelessWidget {
   }
 }
 
-class _BlogInfo extends StatelessWidget {
-  final Map<String, dynamic> singleBlog;
-  _BlogInfo(this.singleBlog);
-  String selfUserName;
-
-  @override
-  Widget build(BuildContext context) {
-    selfUserName = Provider.of<Auth>(context).userName;
-
-    return Column(
-      children: [
-        SizedBox(
-          height: 10,
-        ),
-        Text(
-          singleBlog['title'],
-          style: TextStyle(
-              fontFamily: 'Arial',
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.8),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-                onTap: () {
-                  if (singleBlog['author']['username'] == selfUserName) {
-                    Navigator.of(context)
-                        .pushReplacementNamed(SelfProfile.routeName);
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            UserProfile(singleBlog['author']['username']),
+Widget _BlogInfo(Map<String, dynamic> singleBlog, String selfUserName,
+    BuildContext context, Function toggleB, bool _is_bookmarked) {
+  return Column(
+    children: [
+      SizedBox(
+        height: 10,
+      ),
+      Text(
+        singleBlog['title'],
+        style: TextStyle(
+            fontFamily: 'Arial',
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.8),
+      ),
+      SizedBox(
+        height: 20,
+      ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+              onTap: () {
+                if (singleBlog['author']['username'] == selfUserName) {
+                  Navigator.of(context)
+                      .pushReplacementNamed(SelfProfile.routeName);
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          UserProfile(singleBlog['author']['username']),
+                    ),
+                  );
+                }
+              },
+              child:
+                  ProfileAvatar(imageUrl: singleBlog['author']['photo_main'])),
+          SizedBox(
+            width: 10,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${singleBlog['author']['username']}',
+                style: const TextStyle(
+                  // fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                ),
+              ),
+              Jiffy(DateTime.parse(singleBlog['date']))
+                      .fromNow()
+                      .toString()
+                      .contains(RegExp(r'hours|minutes|seconds'))
+                  ? Text(
+                      Jiffy(DateTime.parse(singleBlog['date'])).fromNow(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
                       ),
-                    );
-                  }
-                },
-                child: ProfileAvatar(
-                    imageUrl: singleBlog['author']['photo_main'])),
-            SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+                    )
+                  : Text(
+                      DateFormat('MMM dd, yyyy')
+                          .format(DateTime.parse(singleBlog['date'])),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+              // Text(
+              //   '{singleBlog.timeAgo}',
+              //   style: const TextStyle(
+              //     // fontWeight: FontWeight.w600,
+              //     fontSize: 14,
+              //   ),
+              // ),
+            ],
+          ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
-                  '${singleBlog['author']['username']}',
-                  style: const TextStyle(
-                    // fontWeight: FontWeight.w600,
-                    fontSize: 20,
+                Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(50)),
+                  child: const Icon(
+                    Icons.share_outlined,
+                    size: 24,
+                    color: Colors.grey,
                   ),
                 ),
-                Jiffy(DateTime.parse(singleBlog['date']))
-                        .fromNow()
-                        .toString()
-                        .contains(RegExp(r'hours|minutes|seconds'))
-                    ? Text(
-                        Jiffy(DateTime.parse(singleBlog['date'])).fromNow(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                      )
-                    : Text(
-                        DateFormat('MMM dd, yyyy')
-                            .format(DateTime.parse(singleBlog['date'])),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                      ),
-                // Text(
-                //   '{singleBlog.timeAgo}',
-                //   style: const TextStyle(
-                //     // fontWeight: FontWeight.w600,
-                //     fontSize: 14,
-                //   ),
-                // ),
-              ],
-            ),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
+                Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(50)),
+                  child: IconButton(
+                    onPressed: () {
+                      Provider.of<Blog>(context, listen: false)
+                          .toogleBookmarkedBlog(singleBlog['id'].toString());
+                      toggleB(true);
+                    },
+                    icon: _is_bookmarked
+                        ? Icon(
+                            Icons.bookmark,
+                            color: Theme.of(context).primaryColor,
+                            size: 24,
+                          )
+                        : Icon(
+                            Icons.bookmark_border_outlined,
+                            size: 24,
+                          ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BlogScreen(singleBlog['id']),
+                    ),
+                  ),
+                  child: Container(
                     padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
                         color: Colors.grey[100],
                         borderRadius: BorderRadius.circular(50)),
                     child: const Icon(
-                      Icons.share_outlined,
+                      Icons.arrow_forward_ios_outlined,
                       size: 24,
                       color: Colors.grey,
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(50)),
-                    child: IconButton(
-                      onPressed: () {
-                        Provider.of<Blog>(context, listen: false)
-                            .toogleBookmarkedBlog(singleBlog['id'].toString());
-                      },
-                      icon: singleBlog['is_bookmarked']
-                          ? Icon(
-                              Icons.bookmark,
-                              color: Theme.of(context).primaryColor,
-                              size: 24,
-                            )
-                          : Icon(
-                              Icons.bookmark_border_outlined,
-                              size: 24,
-                            ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => BlogScreen(singleBlog['id']),
-                      ),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(50)),
-                      child: const Icon(
-                        Icons.arrow_forward_ios_outlined,
-                        size: 24,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
 
-        // const Divider(),
-      ],
-    );
-  }
+      // const Divider(),
+    ],
+  );
 }

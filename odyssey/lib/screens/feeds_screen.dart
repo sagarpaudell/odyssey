@@ -73,10 +73,10 @@ class _FeedsScreenState extends State<FeedsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GestureDetector(
-                  onTap: () => Navigator.push(
+                  onTap: () => Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => Bookmark(),
+                      builder: (_) => Bookmark(selectPost: true),
                     ),
                   ),
                   child: Icon(

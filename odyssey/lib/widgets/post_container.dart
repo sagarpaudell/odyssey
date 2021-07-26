@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -11,7 +10,6 @@ import 'package:odyssey/widgets/profile_avatar.dart';
 import 'package:intl/intl.dart';
 import '../screens/profile_self.dart';
 import '../screens/profile_user.dart';
-
 import '../providers/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -30,9 +28,9 @@ class _PostContainerState extends State<PostContainer> {
   bool _is_liked = false;
   int _like_counter = 0;
 
-  void toggleBookmark() {
+  void toggleBookmark(bool selectBlog) {
     if (widget.fun != null) {
-      widget.fun();
+      widget.fun(selectBlog);
     }
     setState(() {
       _is_bookmarked = !_is_bookmarked;
@@ -65,7 +63,8 @@ class _PostContainerState extends State<PostContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final String selfUserName = Provider.of<Auth>(context).userName;
+    final String selfUserName =
+        Provider.of<Auth>(context, listen: false).userName;
 
     return Card(
       shadowColor: Colors.white,
@@ -201,7 +200,7 @@ Widget _PostHeader(
         ],
         child: IconButton(
           icon: const Icon(Icons.more_horiz),
-          // onPressed: () => print('hello'),
+          onPressed: () => print('hello'),
         ),
       ),
     ],
@@ -306,7 +305,7 @@ Widget _PostButtons(
                   onPressed: () {
                     Provider.of<Posts>(context, listen: false)
                         .toogleBookmarkedPost(post['id'].toString());
-                    toggleB();
+                    toggleB(false);
                   },
                   icon: _is_bookmarked
                       ? Icon(

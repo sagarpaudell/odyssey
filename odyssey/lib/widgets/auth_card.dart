@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:odyssey/pages/auth_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:odyssey/widgets/forgot_password.dart';
+import 'package:odyssey/widgets/signup_verification.dart';
 // import '../pages/feeds_page.dart';
 import '../providers/auth.dart';
 import 'package:provider/provider.dart';
@@ -380,7 +381,12 @@ class _AuthCardState extends State<AuthCard>
                 Container(
                   width: deviceSize.width * 0.9,
                   child: OutlinedButton(
-                    onPressed: () {},
+                    onPressed: ()=>showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SignupVerification();
+                              },
+                            ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
