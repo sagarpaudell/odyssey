@@ -1,8 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:odyssey/screens/auth_screen.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth.dart';
 
-class ForgotPassword extends StatelessWidget {
+class ForgotPassword extends StatefulWidget {
+  @override
+  _ForgotPasswordState createState() => _ForgotPasswordState();
+}
+
+class _ForgotPasswordState extends State<ForgotPassword> {
+  Future fbuilder;
+  final _usernameController = TextEditingController();
+
+  @override
+  void initState() {
+    fbuilder = send();
+    super.initState();
+  }
+
+  Future<void> send() async {
+    await Provider.of<Auth>(context, listen: false).sendOTP(true);
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
@@ -53,6 +73,7 @@ class ForgotPassword extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
                 child: TextField(
+                  controller: _usernameController,
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
                     hintText: "Enter your username",
@@ -96,6 +117,8 @@ class ForgotPassword extends StatelessWidget {
 }
 
 _secondStep(context) {
+  final _OTPController = TextEditingController();
+
   return Scaffold(
     backgroundColor: Colors.transparent,
     body: SingleChildScrollView(
@@ -142,6 +165,8 @@ _secondStep(context) {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
               child: TextField(
+                maxLength: 6,
+                controller: _OTPController,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
@@ -159,11 +184,17 @@ _secondStep(context) {
                         color: Theme.of(context).primaryColor.withOpacity(0.7)),
                   ),
                   TweenAnimationBuilder(
-                    tween: Tween(begin: 100.0, end: 0.0),
+                    tween: Tween(begin: 10.0, end: 0.0),
                     duration: Duration(seconds: 100),
                     builder: (_, value, child) => Text(
                       "00:${value.toInt()}",
                       style: TextStyle(color: Colors.red[300].withOpacity(0.9)),
+                    ),
+                    onEnd: () => ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('The OTP has expired. Please resend OTP'),
+                        backgroundColor: Theme.of(context).errorColor,
+                      ),
                     ),
                   ),
                 ],

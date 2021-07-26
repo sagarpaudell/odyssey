@@ -14,6 +14,10 @@ class SignupVerification extends StatefulWidget {
 
 class _SignupVerificationState extends State<SignupVerification> {
   Future fbuilder;
+  String email;
+  final _OTPController = TextEditingController();
+  bool emailVerified = false;
+  bool _isLoading = false;
   @override
   void initState() {
     fbuilder = send();
@@ -25,7 +29,14 @@ class _SignupVerificationState extends State<SignupVerification> {
   }
 
   @override
+  void dispose() {
+    _OTPController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    email = Provider.of<Auth>(context).userProfileInfo['email'];
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -63,7 +74,7 @@ class _SignupVerificationState extends State<SignupVerification> {
                 padding: EdgeInsets.symmetric(horizontal: 30),
                 alignment: Alignment.center,
                 child: Text(
-                  "A code has been sent to your email address: blabla@gmail.com. Enter the verification code received in your email here:",
+                  "A code has been sent to your email address: $email. Enter the verification code here:",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Theme.of(context).primaryColor,
@@ -75,6 +86,8 @@ class _SignupVerificationState extends State<SignupVerification> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                 child: TextField(
+                  controller: _OTPController,
+                  maxLength: 6,
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -93,31 +106,62 @@ class _SignupVerificationState extends State<SignupVerification> {
                               Theme.of(context).primaryColor.withOpacity(0.7)),
                     ),
                     TweenAnimationBuilder(
-                      tween: Tween(begin: 100.0, end: 0.0),
-                      duration: Duration(seconds: 100),
+                      tween: Tween(begin: 300.0, end: 0.0),
+                      duration: Duration(seconds: 300),
                       builder: (_, value, child) => Text(
                         "00:${value.toInt()}",
                         style:
                             TextStyle(color: Colors.red[300].withOpacity(0.9)),
                       ),
+                      onEnd: () => ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                              Text('The OTP has expired. Please resend OTP'),
+                          backgroundColor: Theme.of(context).errorColor,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(top: 14),
-                // height: (deviceSize.height - 200) * 0.10,
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: ElevatedButton(
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return _successPage(context);
-                    },
-                  ),
-                  child: Text('Verify'),
-                ),
-              ),
+              _isLoading
+                  ? CircularProgressIndicator()
+                  : Container(
+                      margin: EdgeInsets.only(top: 14),
+                      // height: (deviceSize.height - 200) * 0.10,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          setState(() => _isLoading = true);
+                          emailVerified =
+                              await Provider.of<Auth>(context, listen: false)
+                                  .emailOTPVerify(_OTPController.text);
+                          if (emailVerified) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return _successPage(context);
+                              },
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('The entered OTP is invalid'),
+                                backgroundColor: Theme.of(context).errorColor,
+                              ),
+                            );
+                            setState(() => _isLoading = false);
+                          }
+                        },
+                        //showDialog(
+                        //   context: context,
+                        //   builder: (BuildContext context) {
+                        //     return _successPage(context);
+                        //   },
+                        // ),
+                        child: Text('Verify'),
+                      ),
+                    ),
               Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: Row(
@@ -133,10 +177,16 @@ class _SignupVerificationState extends State<SignupVerification> {
                       onTap: () {
                         // OTP code resend
                       },
-                      child: Text(
-                        "Resend OTP Code",
-                        style:
-                            TextStyle(color: Colors.red[300].withOpacity(0.9)),
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacementNamed(
+                              SignupVerification.routeName);
+                        },
+                        child: Text(
+                          "Resend OTP Code",
+                          style: TextStyle(
+                              color: Colors.red[300].withOpacity(0.9)),
+                        ),
                       ),
                     ),
                   ],

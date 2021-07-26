@@ -64,6 +64,7 @@ class Auth with ChangeNotifier {
         } catch (error) {
           throw error;
         }
+        print(userProfileInfo);
         userName = username;
         const verifyUrl =
             'https://travellum.herokuapp.com/accounts-api/checkverified';
@@ -157,14 +158,14 @@ class Auth with ChangeNotifier {
   Future<void> sendOTP(bool forForgotPass) async {
     var response;
     const otpUrl =
-        'https://travellum.herokuapp.com/accounts-api/otpverification';
+        'https://travellum.herokuapp.com/accounts-api/otpverification/';
 
     try {
       if (forForgotPass) {
         response = await http.put(Uri.parse(otpUrl),
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': 'Bearer $token'
+              'Authorization': 'Bearer $_rootToken'
             },
             body: json.encode({
               'username': userName,
@@ -181,6 +182,28 @@ class Auth with ChangeNotifier {
       }
 
       print(json.decode(response));
+    } catch (error) {
+      print(json.decode(error.body).toString());
+      throw error;
+    }
+  }
+
+  Future<bool> emailOTPVerify(String OTP) async {
+    var response;
+    const otpUrl = 'https://travellum.herokuapp.com/accounts-api/verifyemail/';
+
+    try {
+      response = await http.put(Uri.parse(otpUrl),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+          body: json.encode({
+            'username': userName,
+            'OTP': OTP,
+          }));
+      print(json.decode(response.body)['email_verification']);
+      return json.decode(response.body)['email_verification'];
     } catch (error) {
       print(json.decode(error.body).toString());
       throw error;

@@ -98,7 +98,11 @@ class _MyAppState extends State<MyApp> {
           ),
 
           //home: auth.isAuth ? ChatScreen() : AuthPage(),
-          home: auth.isAuth ? MainScreen() : AuthPage(),
+          home: auth.isAuth
+              ? auth.email_verifed
+                  ? MainScreen()
+                  : SignupVerification()
+              : AuthPage(),
           routes: {
             MainScreen.routeName: (ctx) => MainScreen(),
             AuthPage.routeName: (ctx) => AuthPage(),
