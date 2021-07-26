@@ -148,7 +148,6 @@ class _AuthCardState extends State<AuthCard>
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -323,13 +322,13 @@ class _AuthCardState extends State<AuthCard>
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             TextButton(
-                  //             
-                              onPressed: ()=>showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return ForgotPassword();
-                              },
-                            ),
+                              //
+                              onPressed: () => showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return ForgotPassword();
+                                },
+                              ),
                               child: Text("Forgot password?"),
                             )
                           ],
@@ -381,12 +380,7 @@ class _AuthCardState extends State<AuthCard>
                 Container(
                   width: deviceSize.width * 0.9,
                   child: OutlinedButton(
-                    onPressed: ()=>showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return SignupVerification();
-                              },
-                            ),
+                    onPressed: () {},
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
