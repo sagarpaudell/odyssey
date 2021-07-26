@@ -1,8 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'dart:convert';
+import '../models/http_exception.dart';
+import 'dart:convert';
+import 'package:provider/provider.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:odyssey/models/post.dart';
+import 'dart:io';
 
 class Posts with ChangeNotifier {
   final String authToken;
@@ -73,6 +77,59 @@ class Posts with ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<void> publishPost(String caption,
+      [File post_photo, String place_id = null]) async {
+    const url = 'https://travellum.herokuapp.com/post-api/post/';
+    final token = 'Bearer ' + authToken;
+
+    Map<String, String> headers = {"Authorization": token};
+    Map<String, String> headersss = {
+      "Authorization": token,
+      'Content-Type': 'application/json',
+    };
+    if (post_photo == null) {
+      try {
+        final request = new http.MultipartRequest('POST', Uri.parse(url));
+        request.fields['caption'] = caption;
+        // request.fields['place_id'] = place_id;
+        // request.files.add(
+        //   http.MultipartFile.fromBytes(
+        //     'photo',
+        //     post_photo.readAsBytesSync(),
+        //     filename: '${DateTime.now().toString()}.jpg',
+        //   ),
+        // );
+        request.headers.addAll(headers);
+
+        var response = await request.send();
+        notifyListeners();
+      } catch (error) {
+        print(error);
+        throw error;
+      }
+    } else {
+      try {
+        final request = new http.MultipartRequest('POST', Uri.parse(url));
+        request.fields['caption'] = caption;
+        // request.fields['place_id'] = place_id;
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'photo',
+            post_photo.readAsBytesSync(),
+            filename: '${DateTime.now().toString()}.jpg',
+          ),
+        );
+        request.headers.addAll(headers);
+
+        var response = await request.send();
+        notifyListeners();
+      } catch (error) {
+        print(error);
+        throw error;
+      }
     }
   }
 }

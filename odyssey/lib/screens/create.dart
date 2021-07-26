@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:odyssey/providers/posts.dart';
+import 'package:odyssey/providers/profile.dart';
+import 'package:provider/provider.dart';
 
 class Create extends StatefulWidget {
   @override
@@ -6,8 +13,53 @@ class Create extends StatefulWidget {
 }
 
 class _CreateState extends State<Create> {
+  File _imageFile;
+  bool showImage = false;
   var isPost = true;
+  String caption;
   String dropdownValue = 'Nepal';
+  final _captionController = TextEditingController();
+  Future<void> _pickImage(ImageSource source) async {
+    final selected = await ImagePicker().pickImage(source: source);
+    final selection = File(selected.path);
+
+    setState(() {
+      _imageFile = selection;
+    });
+  }
+
+  Future<void> _cropImage() async {
+    File cropped = await ImageCropper.cropImage(
+      sourcePath: _imageFile.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9,
+      ],
+      androidUiSettings: AndroidUiSettings(
+        toolbarTitle: 'Cropper',
+        toolbarColor: Colors.deepOrange,
+        toolbarWidgetColor: Colors.white,
+        initAspectRatio: CropAspectRatioPreset.original,
+        lockAspectRatio: true,
+        // cropGridRowCount: 2,
+        showCropGrid: true,
+        // cropGridColumnCount: 10,
+      ),
+    );
+
+    setState(() {
+      _imageFile = cropped;
+    });
+  }
+
+  void _clear() {
+    setState(() {
+      _imageFile = null;
+      showImage = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,23 +68,29 @@ class _CreateState extends State<Create> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 50),
         child: Column(
           children: [
-            TextFormField(
+            TextField(
               // allow multiline
               maxLines: null,
               //enable multiline keyboard
               // keyboardType: TextInputType.multiline,
               textInputAction: TextInputAction.next,
-              onFieldSubmitted: (_) {
-                // Move the focus to the next node explicitly.
-                FocusScope.of(context).nextFocus();
-              },
+              // onFieldSubmitted: (_) {
+              //   // Move the focus to the next node explicitly.
+              //   FocusScope.of(context).nextFocus();
+              //   setState((e) {
+              //     caption = e.text;
+              //   });
+
+              // },
+              controller: _captionController,
               maxLength: 100,
               decoration: InputDecoration(
                 labelText: isPost ? 'CAPTION' : 'TITLE',
                 labelStyle: TextStyle(
-                    letterSpacing: 1.5,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold),
+                  letterSpacing: 1.5,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
                 // hintText: 'Write something about your post . . .',
                 border: InputBorder.none,
                 filled: true,
@@ -91,15 +149,15 @@ class _CreateState extends State<Create> {
                   )
                 : SizedBox(),
             !isPost
-                ? TextFormField(
+                ? TextField(
                     maxLines: 15,
                     //enable multiline keyboard
                     // keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) {
-                      // Move the focus to the next node explicitly.
-                      FocusScope.of(context).nextFocus();
-                    },
+                    // onFieldSubmitted: (_) {
+                    //   // Move the focus to the next node explicitly.
+                    //   FocusScope.of(context).nextFocus();
+                    // },
                     maxLength: 2000,
                     decoration: InputDecoration(
                       labelText: 'DESCRITPION',
@@ -166,46 +224,110 @@ class _CreateState extends State<Create> {
             ),
             Row(
               children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 20, 20, 20),
-                  height: 200,
-                  width: MediaQuery.of(context).size.width / 2.4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      print('camera');
-                    },
-                    icon: Icon(
-                      Icons.camera,
-                      color: Colors.indigo,
-                      size: 35,
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 200,
-                  width: MediaQuery.of(context).size.width / 2.4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      print('gallery');
-                    },
-                    icon: Icon(
-                      Icons.photo,
-                      color: Colors.teal,
-                      size: 35,
-                    ),
-                  ),
-                ),
+                showImage
+                    ? Container(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Stack(
+                              alignment: Alignment.topRight,
+                              children: [
+                                Image.file(_imageFile),
+                                Container(
+                                  height: 35,
+                                  width: 35,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.3),
+                                    // color: Colors.white,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: IconButton(
+                                    icon: Icon(Icons.close),
+                                    color: Colors.white.withOpacity(0.8),
+                                    iconSize: 20,
+                                    onPressed: () {
+                                      _clear();
+                                    },
+                                    // icon:Icons.close,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 25,
+                            ),
+                          ],
+                        ),
+                        // height: 200,
+                        width: 200,
+                      )
+                    : Row(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 20, 20, 20),
+                            height: 200,
+                            width: MediaQuery.of(context).size.width / 2.4,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                            ),
+                            child: IconButton(
+                              onPressed: () async {
+                                await _pickImage(ImageSource.camera);
+                                print(_imageFile);
+                                await _cropImage();
+                                setState(() {
+                                  showImage = true;
+                                });
+                              },
+                              icon: Icon(
+                                Icons.camera,
+                                color: Colors.indigo,
+                                size: 35,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 200,
+                            width: MediaQuery.of(context).size.width / 2.4,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                            ),
+                            child: IconButton(
+                              onPressed: () async {
+                                await _pickImage(ImageSource.gallery);
+                                await print('imagefile:${_imageFile}');
+                                await _cropImage();
+                                setState(() {
+                                  showImage = true;
+                                });
+                              },
+                              icon: Icon(
+                                Icons.photo,
+                                color: Colors.teal,
+                                size: 35,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
               ],
             ),
             Row(
               children: [
-                ElevatedButton(onPressed: () {}, child: Text('Post')),
+                isPost
+                    // Publish Post
+                    ? ElevatedButton(
+                        onPressed: () {
+                          print('caption: ${_captionController.text}');
+                          Provider.of<Posts>(context, listen: false)
+                              .publishPost(_captionController.text, _imageFile);
+                        },
+                        child: Text('Publish'),
+                      )
+                    // Publish Blog
+                    : ElevatedButton(onPressed: () {}, child: Text('Publish')),
               ],
             )
           ],
