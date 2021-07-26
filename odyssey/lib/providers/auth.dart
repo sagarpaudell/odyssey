@@ -10,6 +10,7 @@ class Auth with ChangeNotifier {
   String userName;
   String fullName;
   String userId;
+  bool email_verifed;
   Map<String, dynamic> userProfileInfo;
   DateTime _expiryDate;
   String _userRefreshToken;
@@ -64,6 +65,20 @@ class Auth with ChangeNotifier {
           throw error;
         }
         userName = username;
+        const verifyUrl =
+            'https://travellum.herokuapp.com/accounts-api/checkverified';
+        try {
+          final verifyResponse = await http.get(
+            Uri.parse(verifyUrl),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': tokenHeader
+            },
+          );
+          email_verifed = json.decode(verifyResponse.body)['verified_email'];
+        } catch (error) {
+          throw error;
+        }
       }
 
       notifyListeners();
@@ -132,6 +147,39 @@ class Auth with ChangeNotifier {
     // } catch (error) {
     //   throw error;
     // }
+  }
+
+  Future<void> sendOTP(bool forForgotPass) async {
+    var response;
+    const otpUrl =
+        'https://travellum.herokuapp.com/accounts-api/otpverification';
+
+    try {
+      if (forForgotPass) {
+        response = await http.put(Uri.parse(otpUrl),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token'
+            },
+            body: json.encode({
+              'username': userName,
+            }));
+      } else {
+        response = await http.post(Uri.parse(otpUrl),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token'
+            },
+            body: json.encode({
+              'username': userName,
+            }));
+      }
+
+      print(json.decode(response));
+    } catch (error) {
+      print(json.decode(error.body).toString());
+      throw error;
+    }
   }
 
   void logout() {

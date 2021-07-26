@@ -4,6 +4,7 @@ import 'package:odyssey/providers/chat.dart';
 import 'package:odyssey/providers/auth.dart';
 import 'package:odyssey/providers/profile.dart';
 import 'package:odyssey/providers/posts.dart';
+import 'package:odyssey/widgets/signup_verification.dart';
 import './screens/profile_self.dart';
 import './screens/profile_user.dart';
 import './screens/screens.dart';
@@ -106,6 +107,7 @@ class _MyAppState extends State<MyApp> {
             ChatScreen.routeName: (ctx) => ChatScreen(),
             SelfProfile.routeName: (ctx) => SelfProfile(),
             Bookmark.routeName: (ctx) => Bookmark(),
+            SignupVerification.routeName: (ctx) => SignupVerification(),
           },
         ),
       ),
