@@ -173,20 +173,15 @@ class _SignupVerificationState extends State<SignupVerification> {
                           color:
                               Theme.of(context).primaryColor.withOpacity(0.7)),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        // OTP code resend
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushReplacementNamed(SignupVerification.routeName);
                       },
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pushReplacementNamed(
-                              SignupVerification.routeName);
-                        },
-                        child: Text(
-                          "Resend OTP Code",
-                          style: TextStyle(
-                              color: Colors.red[300].withOpacity(0.9)),
-                        ),
+                      child: Text(
+                        "Resend OTP Code",
+                        style:
+                            TextStyle(color: Colors.red[300].withOpacity(0.9)),
                       ),
                     ),
                   ],

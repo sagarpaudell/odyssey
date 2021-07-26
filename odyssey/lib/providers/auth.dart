@@ -155,20 +155,22 @@ class Auth with ChangeNotifier {
     // }
   }
 
-  Future<void> sendOTP(bool forForgotPass) async {
+  Future<Map<String, dynamic>> sendOTP(bool forForgotPass,
+      [String uname]) async {
     var response;
     const otpUrl =
         'https://travellum.herokuapp.com/accounts-api/otpverification/';
 
     try {
       if (forForgotPass) {
+        await getToken();
         response = await http.put(Uri.parse(otpUrl),
             headers: {
               'Content-Type': 'application/json',
               'Authorization': 'Bearer $_rootToken'
             },
             body: json.encode({
-              'username': userName,
+              'username': uname,
             }));
       } else {
         response = await http.post(Uri.parse(otpUrl),
@@ -180,8 +182,9 @@ class Auth with ChangeNotifier {
               'username': userName,
             }));
       }
-
-      print(json.decode(response));
+      final responseData = json.decode(response.body);
+      print('this is ${responseData}');
+      return (responseData);
     } catch (error) {
       print(json.decode(error.body).toString());
       throw error;
@@ -204,6 +207,30 @@ class Auth with ChangeNotifier {
           }));
       print(json.decode(response.body)['email_verification']);
       return json.decode(response.body)['email_verification'];
+    } catch (error) {
+      print(json.decode(error.body).toString());
+      throw error;
+    }
+  }
+
+  Future<bool> passwordOTPVerify(String OTP, String uname) async {
+    getToken();
+    var response;
+    const otpUrl =
+        'https://travellum.herokuapp.com/accounts-api/checkpasswordotp/';
+
+    try {
+      response = await http.put(Uri.parse(otpUrl),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $_rootToken'
+          },
+          body: json.encode({
+            'username': uname,
+            'OTP': OTP,
+          }));
+      print(json.decode(response.body)['allow_reset']);
+      return json.decode(response.body)['allow_reset'];
     } catch (error) {
       print(json.decode(error.body).toString());
       throw error;
