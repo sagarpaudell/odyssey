@@ -95,7 +95,11 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> signup(
-      String email, String phone, String userName, String password) async {
+    String email,
+    String phone,
+    String userName,
+    String password,
+  ) async {
     const _url = 'http://10.0.2.2:8000/accounts-api/user/';
     getToken();
     final authToken = 'Bearer ' + _rootToken;
@@ -116,6 +120,7 @@ class Auth with ChangeNotifier {
           },
         ),
       );
+
       final responseData = json.decode(response.body);
       // if (responseData['email']) {
       //   throw HttpException('email');
