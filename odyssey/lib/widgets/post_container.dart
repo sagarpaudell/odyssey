@@ -27,12 +27,31 @@ class PostContainer extends StatefulWidget {
 
 class _PostContainerState extends State<PostContainer> {
   bool _is_bookmarked = false;
+  bool _is_liked = false;
+  int _like_counter = 0;
+
   void toggleBookmark() {
     if (widget.fun != null) {
       widget.fun();
     }
     setState(() {
       _is_bookmarked = !_is_bookmarked;
+    });
+  }
+
+  void toggleLikes() {
+    _is_liked = !_is_liked;
+  }
+
+  void like() {
+    setState(() {
+      _like_counter += 1;
+    });
+  }
+
+  void unlike() {
+    setState(() {
+      _like_counter -= 1;
     });
   }
 
@@ -89,7 +108,16 @@ class _PostContainerState extends State<PostContainer> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: _PostButtons(
-                  widget.post, context, toggleBookmark, _is_bookmarked),
+                widget.post,
+                context,
+                toggleBookmark,
+                toggleLikes,
+                like,
+                unlike,
+                _is_bookmarked,
+                _is_liked,
+                _like_counter,
+              ),
             ),
           ],
         ),
@@ -173,31 +201,66 @@ Widget _PostHeader(
         ],
         child: IconButton(
           icon: const Icon(Icons.more_horiz),
-          onPressed: () => print('hello'),
+          // onPressed: () => print('hello'),
         ),
       ),
     ],
   );
 }
 
-Widget _PostButtons(Map<String, dynamic> post, BuildContext context,
-    Function toggleB, bool _is_bookmarked) {
+Widget _PostButtons(
+  Map<String, dynamic> post,
+  BuildContext context,
+  Function toggleB,
+  Function toggleL,
+  Function like,
+  Function unlike,
+  bool _is_bookmarked,
+  bool _is_liked,
+  int _like_counter,
+) {
   return Column(
     children: [
       const SizedBox(height: 8.0),
 
       Row(
         children: [
-          const Icon(
-            Icons.emoji_emotions_outlined,
-            size: 24.0,
-          ),
+          _is_liked
+              ? GestureDetector(
+                  onTap: () {
+                    toggleL();
+                    unlike();
+                  },
+                  child: Container(
+                    child: Icon(
+                      Icons.emoji_emotions_outlined,
+                      // color: Theme.of(context).primaryColorDark,
+                      color: Colors.blue,
+                      size: 27.0,
+                    ),
+                  ),
+                )
+              : GestureDetector(
+                  onTap: () {
+                    toggleL();
+                    like();
+                  },
+                  // onTap: () {
+                  //   print('hi');
+                  // },
+                  child: Container(
+                    child: Icon(
+                      Icons.emoji_emotions_outlined,
+                      color: Colors.grey[700],
+                      size: 25.0,
+                    ),
+                  ),
+                ),
           const SizedBox(width: 4.0),
           Text(
-            '${post["like_users"].length}',
-            style: TextStyle(
-              color: Colors.grey[600],
-            ),
+            // '${post["like_users"].length}',
+            '${_like_counter}',
+            style: TextStyle(color: Colors.grey[600], fontSize: 16),
           ),
           const SizedBox(width: 8.0),
           GestureDetector(
@@ -209,32 +272,31 @@ Widget _PostButtons(Map<String, dynamic> post, BuildContext context,
             ),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.comment_outlined,
-                  size: 24.0,
+                  color: Colors.grey[700],
+                  size: 25.0,
                 ),
                 const SizedBox(width: 4.0),
                 Text(
                   '${post["comments"].length}',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 16),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 8.0),
-          const Icon(
-            Icons.share_outlined,
-            size: 24.0,
-          ),
-          const SizedBox(width: 4.0),
-          Text(
-            '0',
-            style: TextStyle(
-              color: Colors.grey[600],
-            ),
-          ),
+          // const Icon(
+          //   Icons.share_outlined,
+          //   size: 24.0,
+          // ),
+          // const SizedBox(width: 4.0),
+          // Text(
+          //   '0',
+          //   style: TextStyle(
+          //     color: Colors.grey[600],
+          //   ),
+          // ),
           const SizedBox(width: 8.0),
           Expanded(
             child: Row(
