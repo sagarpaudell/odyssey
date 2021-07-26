@@ -11,23 +11,41 @@ import '../widgets/post_container.dart';
 import '../widgets/blog_container.dart';
 
 class Bookmark extends StatefulWidget {
+  final bool selectPost;
+
   static const routeName = '/bookmark';
+  Bookmark({this.selectPost});
   @override
   _BookmarkState createState() => _BookmarkState();
 }
 
 class _BookmarkState extends State<Bookmark> {
-  List<bool> isSelected = [true, false];
+  List<bool> isSelected;
   bool isPosts = true;
   List<dynamic> bookmarkedPosts;
   List<dynamic> bookmarkedBlogs;
-  void refreshBookmark() {
-    initState();
+  void refreshBookmark([bool selectBlog]) {
+    if (selectBlog) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => Bookmark(selectPost: false),
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => Bookmark(selectPost: true),
+        ),
+      );
+    }
   }
 
   Future fbuilder;
   @override
   void initState() {
+    isSelected = [widget.selectPost, !widget.selectPost];
     fbuilder = getBPosts();
     super.initState();
   }

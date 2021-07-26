@@ -21,9 +21,9 @@ class BlogContainer extends StatefulWidget {
 
 class _BlogContainerState extends State<BlogContainer> {
   bool _is_bookmarked = false;
-  void toggleBookmark() {
+  void toggleBookmark(bool selectBlog) {
     if (widget.fun != null) {
-      widget.fun();
+      widget.fun(selectBlog);
     }
     setState(() {
       _is_bookmarked = !_is_bookmarked;
@@ -183,7 +183,7 @@ Widget _BlogInfo(Map<String, dynamic> singleBlog, String selfUserName,
                     onPressed: () {
                       Provider.of<Blog>(context, listen: false)
                           .toogleBookmarkedBlog(singleBlog['id'].toString());
-                      toggleB();
+                      toggleB(true);
                     },
                     icon: _is_bookmarked
                         ? Icon(

@@ -30,9 +30,9 @@ class _PostContainerState extends State<PostContainer> {
   bool _is_liked = false;
   int _like_counter = 0;
 
-  void toggleBookmark() {
+  void toggleBookmark(bool selectBlog) {
     if (widget.fun != null) {
-      widget.fun();
+      widget.fun(selectBlog);
     }
     setState(() {
       _is_bookmarked = !_is_bookmarked;
@@ -307,7 +307,7 @@ Widget _PostButtons(
                   onPressed: () {
                     Provider.of<Posts>(context, listen: false)
                         .toogleBookmarkedPost(post['id'].toString());
-                    toggleB();
+                    toggleB(false);
                   },
                   icon: _is_bookmarked
                       ? Icon(

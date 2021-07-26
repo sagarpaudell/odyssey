@@ -73,8 +73,12 @@ class _FeedsScreenState extends State<FeedsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GestureDetector(
-                  onTap: () =>
-                      Navigator.popAndPushNamed(context, Bookmark.routeName),
+                  onTap: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => Bookmark(selectPost: true),
+                    ),
+                  ),
                   child: Icon(
                     Icons.bookmark_border,
                     color: Colors.black,
