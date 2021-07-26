@@ -7,6 +7,8 @@ import 'package:odyssey/providers/posts.dart';
 import './screens/profile_self.dart';
 import './screens/profile_user.dart';
 import './screens/screens.dart';
+import './screens/bookmarks.dart';
+
 import './screens/single_blog_screen.dart';
 import './widgets/fb_loading.dart';
 import './providers/blog.dart';
@@ -97,11 +99,13 @@ class _MyAppState extends State<MyApp> {
           //home: auth.isAuth ? ChatScreen() : AuthPage(),
           home: auth.isAuth ? MainScreen() : AuthPage(),
           routes: {
+            MainScreen.routeName: (ctx) => MainScreen(),
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsScreen.routeName: (ctx) => FeedsScreen(),
             EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
             ChatScreen.routeName: (ctx) => ChatScreen(),
             SelfProfile.routeName: (ctx) => SelfProfile(),
+            Bookmark.routeName: (ctx) => Bookmark(),
           },
         ),
       ),

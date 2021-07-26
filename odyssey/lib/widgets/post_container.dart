@@ -46,7 +46,8 @@ class _PostContainerState extends State<PostContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final String selfUserName = Provider.of<Auth>(context).userName;
+    final String selfUserName =
+        Provider.of<Auth>(context, listen: false).userName;
 
     return Card(
       shadowColor: Colors.white,
