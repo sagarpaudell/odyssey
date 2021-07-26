@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../screens/single_blog_screen.dart';
 import '../screens/profile_self.dart';
 import '../screens/profile_user.dart';
-
+import '../providers/blog.dart';
 import 'package:odyssey/widgets/profile_avatar.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:intl/intl.dart';
@@ -157,10 +157,21 @@ class _BlogInfo extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: Colors.grey[100],
                         borderRadius: BorderRadius.circular(50)),
-                    child: const Icon(
-                      Icons.bookmark_border_outlined,
-                      size: 24,
-                      color: Colors.grey,
+                    child: IconButton(
+                      onPressed: () {
+                        Provider.of<Blog>(context, listen: false)
+                            .toogleBookmarkedBlog(singleBlog['id'].toString());
+                      },
+                      icon: singleBlog['is_bookmarked']
+                          ? Icon(
+                              Icons.bookmark,
+                              color: Theme.of(context).primaryColor,
+                              size: 24,
+                            )
+                          : Icon(
+                              Icons.bookmark_border_outlined,
+                              size: 24,
+                            ),
                     ),
                   ),
                   GestureDetector(

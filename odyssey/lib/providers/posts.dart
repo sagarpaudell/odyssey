@@ -44,4 +44,35 @@ class Posts with ChangeNotifier {
       print(e);
     }
   }
+
+  Future<List<dynamic>> getBookmarkedPosts() async {
+    const url = 'https://travellum.herokuapp.com/post-api/bookmarked';
+    final token = 'Bearer ' + authToken;
+    try {
+      final userDataResponse = await http.get(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+      final postBookmarkedData = json.decode(userDataResponse.body);
+      notifyListeners();
+      return postBookmarkedData;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> toogleBookmarkedPost(String id) async {
+    final url = 'https://travellum.herokuapp.com/post-api/bookmark/$id';
+    final token = 'Bearer ' + authToken;
+    try {
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+      print(json.decode(response.statusCode.toString()));
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
 }
