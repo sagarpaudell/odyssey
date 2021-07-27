@@ -55,18 +55,18 @@ class ProfileContainer extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          Container(
-                            height: 28,
-                            margin: EdgeInsets.only(top: 6),
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).primaryColor,
-                                onPrimary: Colors.white,
-                              ),
-                              child: Text("Follow"),
-                            ),
-                          ),
+                          // Container(
+                          //   height: 28,
+                          //   margin: EdgeInsets.only(top: 6),
+                          //   child: ElevatedButton(
+                          //     onPressed: () {},
+                          //     style: ElevatedButton.styleFrom(
+                          //       primary: Theme.of(context).primaryColor,
+                          //       onPrimary: Colors.white,
+                          //     ),
+                          //     child: Text("Follow"),
+                          //   ),
+                          // ),
                           Container(
                             margin: EdgeInsets.only(right: 10, top: 6),
                             child: IconButton(

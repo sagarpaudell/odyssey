@@ -27,7 +27,9 @@ class SelfPostView(APIView):
     parser_classes = [MultiPartParser]
     def post(self, request):
         traveller = Traveller.objects.get(username = self.request.user)
-        place_id= request.data.pop("place_id", False)
+        request.data._mutable = True
+        place_id = request.data.pop("place_id", False)
+        request.data._mutable = False
         serializer = PostSerializer(data=request.data)
         if place_id:
             try:

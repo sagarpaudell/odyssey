@@ -1,8 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:odyssey/screens/auth_screen.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth.dart';
 
-class ForgotPassword extends StatelessWidget {
+class ForgotPassword extends StatefulWidget {
+  @override
+  _ForgotPasswordState createState() => _ForgotPasswordState();
+}
+
+class _ForgotPasswordState extends State<ForgotPassword> {
+  Future fbuilder;
+  final _usernameController = TextEditingController();
+  Map<String, dynamic> OTPData;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> send() async {
+    try {
+      OTPData = await Provider.of<Auth>(context, listen: false)
+          .sendOTP(true, _usernameController.text);
+      print('This is OTPData $OTPData');
+    } catch (e) {
+      // TODO
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
@@ -53,40 +83,57 @@ class ForgotPassword extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
                 child: TextField(
+                  controller: _usernameController,
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
                     hintText: "Enter your username",
                   ),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(top: 18, bottom: 18),
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 30),
-                alignment: Alignment.center,
-                child: Text(
-                  "(We'll send you a confirmation code to this email)",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor.withOpacity(0.6),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400),
-                ),
-              ),
-              Container(
-                // height: (deviceSize.height - 200) * 0.10,
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: ElevatedButton(
-                  // onPressed: ()=>_secondStep(context),
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return _secondStep(context);
-                    },
-                  ),
-                  child: Text('Continue'),
-                ),
-              ),
+              // Container(
+              //   margin: EdgeInsets.only(top: 18, bottom: 18),
+              //   width: MediaQuery.of(context).size.width,
+              //   padding: EdgeInsets.symmetric(horizontal: 30),
+              //   alignment: Alignment.center,
+              //   child: Text(
+              //     "(We'll send you a confirmation code to this email)",
+              //     textAlign: TextAlign.center,
+              //     style: TextStyle(
+              //         color: Theme.of(context).primaryColor.withOpacity(0.6),
+              //         fontSize: 14,
+              //         fontWeight: FontWeight.w400),
+              //   ),
+              // ),
+              _isLoading
+                  ? CircularProgressIndicator()
+                  : Container(
+                      // height: (deviceSize.height - 200) * 0.10,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: ElevatedButton(
+                        // onPressed: ()=>_secondStep(context),
+                        onPressed: () async {
+                          _isLoading = true;
+                          await send();
+                          if (OTPData['otp_request']) {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return secondStep(OTPData['email'],
+                                      _usernameController.text);
+                                });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'The username does not exist. Please enter corrext username'),
+                                backgroundColor: Theme.of(context).errorColor,
+                              ),
+                            );
+                          }
+                        },
+                        child: Text('Continue'),
+                      ),
+                    ),
             ],
           ),
         ),
@@ -95,121 +142,171 @@ class ForgotPassword extends StatelessWidget {
   }
 }
 
-_secondStep(context) {
-  return Scaffold(
-    backgroundColor: Colors.transparent,
-    body: SingleChildScrollView(
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: Colors.white,
-        ),
-        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.25),
-        alignment: Alignment.center,
-        height: MediaQuery.of(context).size.height * 0.5,
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              margin: EdgeInsets.only(top: 20),
-              alignment: Alignment.center,
-              child: Text(
-                "Verification",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              alignment: Alignment.center,
-              child: Text(
-                "Enter the verfication code that you received in your mail:",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
-              child: TextField(
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: "Verification code",
+class secondStep extends StatefulWidget {
+  final String email;
+  final String uname;
+  secondStep(this.email, this.uname);
+  @override
+  _secondStepState createState() => _secondStepState();
+}
+
+class _secondStepState extends State<secondStep> {
+  final _OTPController = TextEditingController();
+  bool _is_Loading = false;
+  bool allowReset = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: Colors.white,
+          ),
+          margin:
+              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.25),
+          alignment: Alignment.center,
+          height: MediaQuery.of(context).size.height * 0.5,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                margin: EdgeInsets.only(top: 20),
+                alignment: Alignment.center,
+                child: Text(
+                  "Verification",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
-            ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "This code will expire in ",
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor.withOpacity(0.7)),
-                  ),
-                  TweenAnimationBuilder(
-                    tween: Tween(begin: 100.0, end: 0.0),
-                    duration: Duration(seconds: 100),
-                    builder: (_, value, child) => Text(
-                      "00:${value.toInt()}",
-                      style: TextStyle(color: Colors.red[300].withOpacity(0.9)),
-                    ),
-                  ),
-                ],
+              SizedBox(
+                height: 20,
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 14),
-              // height: (deviceSize.height - 200) * 0.10,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: ElevatedButton(
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return _finalStep(context);
-                  },
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(horizontal: 30),
+                alignment: Alignment.center,
+                child: Text(
+                  "Enter the verfication code sent to ${widget.email}:",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400),
                 ),
-                child: Text('Verify'),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Didn't receive code? ",
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor.withOpacity(0.7)),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                child: TextField(
+                  maxLength: 6,
+                  controller: _OTPController,
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: "Verification code",
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      // OTP code resend
-                    },
-                    child: Text(
-                      "Resend OTP Code",
-                      style: TextStyle(color: Colors.red[300].withOpacity(0.9)),
+                ),
+              ),
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "This code will expire in ",
+                      style: TextStyle(
+                          color:
+                              Theme.of(context).primaryColor.withOpacity(0.7)),
                     ),
-                  ),
-                ],
+                    TweenAnimationBuilder(
+                      tween: Tween(begin: 300.0, end: 0.0),
+                      duration: Duration(seconds: 300),
+                      builder: (_, value, child) => Text(
+                        "00:${value.toInt()}",
+                        style:
+                            TextStyle(color: Colors.red[300].withOpacity(0.9)),
+                      ),
+                      onEnd: () => ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                              Text('The OTP has expired. Please resend OTP'),
+                          backgroundColor: Theme.of(context).errorColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              _is_Loading
+                  ? CircularProgressIndicator()
+                  : Container(
+                      margin: EdgeInsets.only(top: 14),
+                      // height: (deviceSize.height - 200) * 0.10,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          setState(() => _is_Loading = true);
+                          allowReset =
+                              await Provider.of<Auth>(context, listen: false)
+                                  .passwordOTPVerify(
+                                      _OTPController.text, widget.uname);
+                          if (allowReset) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return _successPage(context);
+                              },
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('The entered OTP is invalid'),
+                                backgroundColor: Theme.of(context).errorColor,
+                              ),
+                            );
+                            setState(() => _is_Loading = false);
+                          }
+                        },
+                        child: Text('Verify'),
+                      ),
+                    ),
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Didn't receive code? ",
+                      style: TextStyle(
+                          color:
+                              Theme.of(context).primaryColor.withOpacity(0.7)),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // Navigator.of(context).pushReplacement(
+                        //     secondStep(widget.email, widget.uname));
+                      },
+                      child: Text(
+                        "Resend OTP Code",
+                        style:
+                            TextStyle(color: Colors.red[300].withOpacity(0.9)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 _finalStep(context) {
