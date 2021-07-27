@@ -1,12 +1,11 @@
-from post.serializers import PostSerializer
-from blogs.serializers import BlogSerializer
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.models import User
 from rest_framework.parsers import MultiPartParser
-from django.shortcuts import get_object_or_404
+from post.serializers import PostSerializer
+from blogs.serializers import BlogSerializer
 from .serializers import TravellerSerializer, TravellerSerializerPublic
 from .serializers_profile import TravellerSerializerProfileViewPrivate,TravellerSerializerProfileViewPublic,TravellerSerializerProfileViewSelf
 from .models import Traveller, TravellerFollowing
@@ -36,8 +35,7 @@ class TravellerView(APIView):
 class TravellerGetView(APIView):
     def get(self, request, username):
         try:
-            friend_user = User.objects.filter(username=username).first()
-            traveller = Traveller.objects.get(username=friend_user)
+            traveller = Traveller.objects.get(username__username=username)
             current_user = Traveller.objects.get(username = request.user)
             traveller_followers = traveller.get_followers()
             current_user_followers = current_user.get_followers()
@@ -45,29 +43,31 @@ class TravellerGetView(APIView):
             total_blogs = traveller.get_blogs_count()
             blogs = traveller.get_blogs()
             blog_serializer = BlogSerializer(blogs, many =True)
-            if (current_user in traveller_followers):
+            if current_user in traveller_followers:
                 posts = traveller.get_posts()
-                post_serializer = PostSerializer(posts, many=True, context={"traveller":"current_user"})
+                post_serializer = PostSerializer(
+                        posts, 
+                        many=True,
+                        context={"traveller":current_user}
+                    )
                 serializer_dict = TravellerSerializerProfileViewPrivate(traveller).data
-                serializer_dict.update({"number of posts":total_posts, "number of blogs":total_blogs, "posts": post_serializer.data, "blogs": blog_serializer.data})
             else:
                 public_posts = traveller.get_public_posts()
-                print(public_posts)
                 post_serializer = PostSerializer(
                         public_posts,
                         many=True,
-                        context={"traveller":"current_user"}
+                        context={"traveller":current_user}
                     )
                 serializer = TravellerSerializerProfileViewPublic(traveller)
                 serializer_dict = serializer.data
-                serializer_dict.update(
-                        {
-                            "number of posts":total_posts,
-                            "number of blogs":total_blogs,
-                            "posts": post_serializer.data,
-                            "blogs": blog_serializer.data
-                        }
-                    )
+            serializer_dict.update(
+                    {
+                        "number of posts":total_posts,
+                        "number of blogs":total_blogs,
+                        "posts": post_serializer.data,
+                        "blogs": blog_serializer.data
+                    }
+                )
             return Response(serializer_dict)
         except Traveller.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -108,6 +108,24 @@ class FollowView(APIView):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class GetFollowers(APIView):
+    def get(self, request):
+        followers = Traveller.objects.get(username = request.user).get_followers()
+        serializer = TravellerSerializerPublic(followers, many=True)
+        return Response( 
+                serializer.data, 
+                status = status.HTTP_200_OK
+            )
+
+
+class GetFollowing(APIView):
+    def get(self, request):
+        following = Traveller.objects.get(username = request.user).get_following()
+        serializer = TravellerSerializerPublic(following, many=True)
+        return Response(
+                serializer.data,
+                status = status.HTTP_200_OK
+            )
 
 def get_object(request):
     try:

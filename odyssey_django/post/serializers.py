@@ -14,6 +14,10 @@ class CommentSerializer(ModelSerializer):
 class PostSerializer(ModelSerializer):
     is_bookmarked = serializers.SerializerMethodField('check_bookmark')
     traveller = TravellerSerializerPublic(read_only = True)
+    like_users = serializers.StringRelatedField(
+            read_only=True,
+            many = True
+        )
     place = PlaceSerializer(read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
     permissions_classes = [IsAuthenticated]
