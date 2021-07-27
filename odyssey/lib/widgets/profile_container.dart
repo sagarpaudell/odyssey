@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:odyssey/screens/userBlogs_screen.dart';
+import 'package:odyssey/widgets/followers_list.dart';
 
 class ProfileContainer extends StatelessWidget {
   Map<String, dynamic> profileContent;
@@ -55,18 +56,18 @@ class ProfileContainer extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          // Container(
-                          //   height: 28,
-                          //   margin: EdgeInsets.only(top: 6),
-                          //   child: ElevatedButton(
-                          //     onPressed: () {},
-                          //     style: ElevatedButton.styleFrom(
-                          //       primary: Theme.of(context).primaryColor,
-                          //       onPrimary: Colors.white,
-                          //     ),
-                          //     child: Text("Follow"),
-                          //   ),
-                          // ),
+                          Container(
+                            height: 28,
+                            margin: EdgeInsets.only(top: 6),
+                            child: ElevatedButton(
+                              onPressed: (){},
+                              style: ElevatedButton.styleFrom(
+                                primary: Theme.of(context).primaryColor,
+                                onPrimary: Colors.white,
+                              ),
+                              child: Text("Follow"),
+                            ),
+                          ),
                           Container(
                             margin: EdgeInsets.only(right: 10, top: 6),
                             child: IconButton(
@@ -121,7 +122,13 @@ class ProfileContainer extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: (){},
+                  onTap:() => showDialog(
+                                barrierDismissible: true,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return FollowersList();
+                                },
+                              ),
                   child: Container(
                     padding: EdgeInsets.all(4),
                     decoration: BoxDecoration(
@@ -174,7 +181,7 @@ class ProfileContainer extends StatelessWidget {
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
                         Text(
-                          'Posts',
+                          'Blogs',
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
