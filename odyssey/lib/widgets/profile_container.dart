@@ -84,7 +84,6 @@ class ProfileContainer extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.only(top: 16, bottom: 16),
             decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
@@ -121,54 +120,31 @@ class ProfileContainer extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFEBEDEF),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        "12.1k",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 18),
-                      ),
-                      Text(
-                        'Followers',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 18),
-                      ),
-                    ],
+                GestureDetector(
+                  onTap: (){},
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFEBEDEF),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          "12.1k",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 18),
+                        ),
+                        Text(
+                          'Followers',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 18),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                // Container(
-                //   padding: EdgeInsets.all(4),
-                //   decoration: BoxDecoration(
-                //       boxShadow: [
-                //         BoxShadow(
-                //           color: Theme.of(context).primaryColor,
-                //           spreadRadius: 1,
-                //         ),
-                //       ],
-                //       color: Color(0xFFEBEDEF),
-                //       borderRadius: BorderRadius.all(Radius.circular(10))),
-                //   child: Column(
-                //     children: [
-                //       Text(
-                //         "12",
-                //         style: TextStyle(
-                //             fontWeight: FontWeight.w500, fontSize: 18),
-                //       ),
-                //       Text(
-                //         'Posts',
-                //         style: TextStyle(
-                //             fontWeight: FontWeight.w500, fontSize: 18),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                TextButton(
-                  onPressed: () {
+                GestureDetector(
+                  onTap:() {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -192,13 +168,13 @@ class ProfileContainer extends StatelessWidget {
                       children: [
                         Text(
                           profileContent['number of blogs'] != null
-                              ? profileContent['number of blogs'].toString()
-                              : '10',
+                                ? profileContent['number of blogs'].toString()
+                                : '10',
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
                         Text(
-                          'Blogs',
+                          'Posts',
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),

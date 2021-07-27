@@ -55,6 +55,7 @@ class Comments extends StatelessWidget {
           height: 12,
         ),
         FocusedMenuHolder(
+          onPressed: (){},
           menuItems: [
             FocusedMenuItem(
               title: Text('Delete Comment'),
