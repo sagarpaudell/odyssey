@@ -7,3 +7,4 @@ export 'splash_screen.dart';
 export 'share_post.dart';
 export 'post.dart';
 export 'comment_post.dart';
+export 'notifications.dart';
