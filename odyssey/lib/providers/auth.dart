@@ -10,6 +10,7 @@ class Auth with ChangeNotifier {
   String userName;
   String fullName;
   String userId;
+  bool email_verifed;
   Map<String, dynamic> userProfileInfo;
   DateTime _expiryDate;
   String _userRefreshToken;
@@ -63,7 +64,22 @@ class Auth with ChangeNotifier {
         } catch (error) {
           throw error;
         }
+        print(userProfileInfo);
         userName = username;
+        const verifyUrl =
+            'https://travellum.herokuapp.com/accounts-api/checkverified';
+        try {
+          final verifyResponse = await http.get(
+            Uri.parse(verifyUrl),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': tokenHeader
+            },
+          );
+          email_verifed = json.decode(verifyResponse.body)['verified_email'];
+        } catch (error) {
+          throw error;
+        }
       }
 
       notifyListeners();
@@ -80,7 +96,11 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> signup(
-      String email, String phone, String userName, String password) async {
+    String email,
+    String phone,
+    String userName,
+    String password,
+  ) async {
     const _url = 'http://10.0.2.2:8000/accounts-api/user/';
     getToken();
     final authToken = 'Bearer ' + _rootToken;
@@ -101,6 +121,7 @@ class Auth with ChangeNotifier {
           },
         ),
       );
+
       final responseData = json.decode(response.body);
       // if (responseData['email']) {
       //   throw HttpException('email');
@@ -132,6 +153,88 @@ class Auth with ChangeNotifier {
     // } catch (error) {
     //   throw error;
     // }
+  }
+
+  Future<Map<String, dynamic>> sendOTP(bool forForgotPass,
+      [String uname]) async {
+    var response;
+    const otpUrl =
+        'https://travellum.herokuapp.com/accounts-api/otpverification/';
+
+    try {
+      if (forForgotPass) {
+        await getToken();
+        response = await http.put(Uri.parse(otpUrl),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $_rootToken'
+            },
+            body: json.encode({
+              'username': uname,
+            }));
+      } else {
+        response = await http.post(Uri.parse(otpUrl),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token'
+            },
+            body: json.encode({
+              'username': userName,
+            }));
+      }
+      final responseData = json.decode(response.body);
+      print('this is ${responseData}');
+      return (responseData);
+    } catch (error) {
+      print(json.decode(error.body).toString());
+      throw error;
+    }
+  }
+
+  Future<bool> emailOTPVerify(String OTP) async {
+    var response;
+    const otpUrl = 'https://travellum.herokuapp.com/accounts-api/verifyemail/';
+
+    try {
+      response = await http.put(Uri.parse(otpUrl),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+          body: json.encode({
+            'username': userName,
+            'OTP': OTP,
+          }));
+      print(json.decode(response.body)['email_verification']);
+      return json.decode(response.body)['email_verification'];
+    } catch (error) {
+      print(json.decode(error.body).toString());
+      throw error;
+    }
+  }
+
+  Future<bool> passwordOTPVerify(String OTP, String uname) async {
+    getToken();
+    var response;
+    const otpUrl =
+        'https://travellum.herokuapp.com/accounts-api/checkpasswordotp/';
+
+    try {
+      response = await http.put(Uri.parse(otpUrl),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $_rootToken'
+          },
+          body: json.encode({
+            'username': uname,
+            'OTP': OTP,
+          }));
+      print(json.decode(response.body)['allow_reset']);
+      return json.decode(response.body)['allow_reset'];
+    } catch (error) {
+      print(json.decode(error.body).toString());
+      throw error;
+    }
   }
 
   void logout() {

@@ -87,20 +87,25 @@ class OTPVerification(APIView):
 
     def put(self , request):
         username = request.data["username"].lower()
-        user = User.objects.get(username = username)
-        otp = OTP.objects.get(username=user)
-        otp.date = datetime.now(timezone.utc)
-        otp.otp = random.randint(100000,999999)
-        otp.email_verification = False
-        otp.password_reset = True
-        otp.save()
-        subject = 'Password Reset OTP'
-        message =  f'Please use this otp to reset password:{otp.otp}'
-        email_from = 'odysseydmn@gmail.com'
-        recipient_list = [str(user.email),]
-        send_mail(subject, message, email_from, recipient_list)
-        dict = {"otp_request":True}
-        return Response(dict)
+        dict={}
+        try:
+            user = User.objects.get(username = username)
+            otp = OTP.objects.get(username=user)
+            otp.date = datetime.now(timezone.utc)
+            otp.otp = random.randint(100000,999999)
+            otp.email_verification = False
+            otp.password_reset = True
+            otp.save()
+            subject = 'Password Reset OTP'
+            message =  f'Please use this otp to reset password:{otp.otp}'
+            email_from = 'odysseydmn@gmail.com'
+            recipient_list = [str(user.email),]
+            send_mail(subject, message, email_from, recipient_list)
+            dict = {"otp_request":True, "email":user.email}
+            return Response(dict)
+        except:
+            dict = {"otp_request":False}
+            return Response(dict, status= status.HTTP_404_NOT_FOUND)
 
 class CheckOTPPassword(APIView):
     def put(self, request):
@@ -111,7 +116,7 @@ class CheckOTPPassword(APIView):
         print(otp.time_difference())
         print(user_entered_otp)
         dict = {}
-        if (str(otp.otp) == str(user_entered_otp) and otp.time_difference()<1800 and otp.email_verification == False and otp.password_reset == True):
+        if (str(otp.otp) == str(user_entered_otp) and otp.time_difference()<300 and otp.email_verification == False and otp.password_reset == True):
             otp.allow_reset = True
             otp.save()
             dict = {"allow_reset":True}
@@ -128,7 +133,7 @@ class ResetPassword(APIView):
         otp = OTP.objects.get(username = user)
         new_password = request.data["new_password"]
         dict = {}
-        if (otp.time_difference()<1800 and otp.allow_reset == True and otp.password_reset == True):
+        if (otp.time_difference()<300 and otp.allow_reset == True and otp.password_reset == True):
             user.set_password(new_password)
             user.save()
             otp.allow_reset = False
@@ -145,7 +150,7 @@ class VerifyEmail(APIView):
         otp = OTP.objects.get(username = user)
         user_entered_otp = request.data["OTP"]
         dict = {}
-        if (str(otp.otp) == str(user_entered_otp) and otp.time_difference()<1800 and otp.allow_reset == True and otp.email_verification == True):
+        if (str(otp.otp) == str(user_entered_otp) and otp.time_difference()<300 and otp.allow_reset == True and otp.email_verification == True):
             otp.verified_email = True
             otp.allow_reset = False
             otp.save()

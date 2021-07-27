@@ -16,8 +16,11 @@ class TravellerView(APIView):
 
     def get(self, request):
         traveller = get_object(request)
-        serializer = TravellerSerializer(traveller)
-        return Response(serializer.data)
+        traveller_email = request.user.email
+        print(traveller_email)
+        serializer = TravellerSerializer(traveller).data
+        serializer.update({'email':traveller_email})
+        return Response(serializer)
 
     def put(self, request):
         traveller = get_object(request)
