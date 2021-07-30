@@ -15,7 +15,7 @@ class _MainScreenState extends State<MainScreen> {
     FeedsScreen(),
     Scaffold(),
     Create(),
-    Scaffold(),
+    Notifications(),
     SelfProfile(),
   ];
   final List<IconData> _icons = const [

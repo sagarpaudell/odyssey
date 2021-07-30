@@ -35,10 +35,14 @@ class _FeedsScreenState extends State<FeedsScreen> {
   //   super.initState();
   // }
 
-  Future fbuilder;
+  fetchUserPosts() {
+    Future fbuilder;
+    fbuilder = getUserPosts();
+  }
+
   @override
   void initState() {
-    fbuilder = getUserPosts();
+    fetchUserPosts();
     super.initState();
   }
 
@@ -124,7 +128,10 @@ class _FeedsScreenState extends State<FeedsScreen> {
                   : SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
-                          return PostContainer(post: userPosts[index]);
+                          return PostContainer(
+                            post: userPosts[index],
+                            fetchUserPosts: fetchUserPosts,
+                          );
                         },
                         childCount: userPosts.length,
                       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:odyssey/screens/userBlogs_screen.dart';
+import 'package:odyssey/widgets/followers_list.dart';
 
 class ProfileContainer extends StatelessWidget {
   Map<String, dynamic> profileContent;
@@ -55,18 +56,18 @@ class ProfileContainer extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          // Container(
-                          //   height: 28,
-                          //   margin: EdgeInsets.only(top: 6),
-                          //   child: ElevatedButton(
-                          //     onPressed: () {},
-                          //     style: ElevatedButton.styleFrom(
-                          //       primary: Theme.of(context).primaryColor,
-                          //       onPrimary: Colors.white,
-                          //     ),
-                          //     child: Text("Follow"),
-                          //   ),
-                          // ),
+                          Container(
+                            height: 28,
+                            margin: EdgeInsets.only(top: 6),
+                            child: ElevatedButton(
+                              onPressed: (){},
+                              style: ElevatedButton.styleFrom(
+                                primary: Theme.of(context).primaryColor,
+                                onPrimary: Colors.white,
+                              ),
+                              child: Text("Follow"),
+                            ),
+                          ),
                           Container(
                             margin: EdgeInsets.only(right: 10, top: 6),
                             child: IconButton(
@@ -84,7 +85,6 @@ class ProfileContainer extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.only(top: 16, bottom: 16),
             decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
@@ -121,54 +121,37 @@ class ProfileContainer extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFEBEDEF),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        "12.1k",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 18),
-                      ),
-                      Text(
-                        'Followers',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 18),
-                      ),
-                    ],
+                GestureDetector(
+                  onTap:() => showDialog(
+                                barrierDismissible: true,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return FollowersList();
+                                },
+                              ),
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFEBEDEF),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          "12.1k",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 18),
+                        ),
+                        Text(
+                          'Followers',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 18),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                // Container(
-                //   padding: EdgeInsets.all(4),
-                //   decoration: BoxDecoration(
-                //       boxShadow: [
-                //         BoxShadow(
-                //           color: Theme.of(context).primaryColor,
-                //           spreadRadius: 1,
-                //         ),
-                //       ],
-                //       color: Color(0xFFEBEDEF),
-                //       borderRadius: BorderRadius.all(Radius.circular(10))),
-                //   child: Column(
-                //     children: [
-                //       Text(
-                //         "12",
-                //         style: TextStyle(
-                //             fontWeight: FontWeight.w500, fontSize: 18),
-                //       ),
-                //       Text(
-                //         'Posts',
-                //         style: TextStyle(
-                //             fontWeight: FontWeight.w500, fontSize: 18),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                TextButton(
-                  onPressed: () {
+                GestureDetector(
+                  onTap:() {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -192,8 +175,8 @@ class ProfileContainer extends StatelessWidget {
                       children: [
                         Text(
                           profileContent['number of blogs'] != null
-                              ? profileContent['number of blogs'].toString()
-                              : '10',
+                                ? profileContent['number of blogs'].toString()
+                                : '10',
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),

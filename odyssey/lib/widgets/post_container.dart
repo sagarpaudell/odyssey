@@ -12,11 +12,16 @@ import '../screens/profile_self.dart';
 import '../screens/profile_user.dart';
 import '../providers/auth.dart';
 import 'package:provider/provider.dart';
+import 'package:odyssey/providers/auth.dart';
+
+import 'auth_card.dart';
 
 class PostContainer extends StatefulWidget {
   final Map<String, dynamic> post;
   final Function fun;
-  const PostContainer({Key key, @required this.post, this.fun})
+  final Function fetchUserPosts;
+  const PostContainer(
+      {Key key, @required this.post, this.fun, this.fetchUserPosts})
       : super(key: key);
 
   @override
@@ -81,8 +86,13 @@ class _PostContainerState extends State<PostContainer> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _PostHeader(widget.post, selfUserName, context),
-                  const SizedBox(height: 4.0),
+                  _PostHeader(
+                    widget.post,
+                    selfUserName,
+                    context,
+                    widget.fetchUserPosts,
+                  ),
+                  const SizedBox(height: 10.0),
                   Text(widget.post['caption']),
                   widget.post['photo_main'] != null
                       ? const SizedBox.shrink()
@@ -135,8 +145,10 @@ class _PostContainerState extends State<PostContainer> {
 
 //   @override
 //   Widget build(BuildContext context) {
-Widget _PostHeader(
-    Map<String, dynamic> post, String selfUserName, BuildContext context) {
+Widget _PostHeader(Map<String, dynamic> post, String selfUserName,
+    BuildContext context, Function fetchUserPosts) {
+  final authData = Provider.of<Auth>(context, listen: false);
+
   return Row(
     children: [
       GestureDetector(
@@ -188,21 +200,36 @@ Widget _PostHeader(
           ],
         ),
       ),
-      FocusedMenuHolder(
-        openWithTap: true,
-        onPressed: () {},
-        menuItems: [
-          FocusedMenuItem(
-            title: Text('Delete Post'),
-            trailingIcon: Icon(Icons.delete),
-            onPressed: () {},
-          ),
-        ],
-        child: IconButton(
-          icon: const Icon(Icons.more_horiz),
-          onPressed: () => print('hello'),
-        ),
-      ),
+      authData.userId.toString() == post['traveller']['id'].toString()
+          ? FocusedMenuHolder(
+              openWithTap: true,
+              onPressed: () {},
+              menuItems: [
+                FocusedMenuItem(
+                  title: Text('Edit Post'),
+                  trailingIcon: Icon(Icons.edit),
+                  onPressed: () {},
+                ),
+                FocusedMenuItem(
+                  title: Text('Delete Post'),
+                  trailingIcon: Icon(Icons.delete),
+                  onPressed: () {
+                    Provider.of<Posts>(context, listen: false)
+                        .deletePost(post['id']);
+                    fetchUserPosts();
+                  },
+                ),
+              ],
+              child: Icon(Icons.more_horiz)
+              // IconButton(
+              // icon: const Icon(Icons.more_horiz),
+              // onPressed: () {
+              // print(authData.userId);
+              // print(post['traveller']['id']);
+              // },
+              // ),
+              )
+          : SizedBox(),
     ],
   );
 }

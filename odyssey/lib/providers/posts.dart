@@ -86,22 +86,12 @@ class Posts with ChangeNotifier {
     final token = 'Bearer ' + authToken;
 
     Map<String, String> headers = {"Authorization": token};
-    Map<String, String> headersss = {
-      "Authorization": token,
-      'Content-Type': 'application/json',
-    };
+
     if (post_photo == null) {
       try {
         final request = new http.MultipartRequest('POST', Uri.parse(url));
         request.fields['caption'] = caption;
-        // request.fields['place_id'] = place_id;
-        // request.files.add(
-        //   http.MultipartFile.fromBytes(
-        //     'photo',
-        //     post_photo.readAsBytesSync(),
-        //     filename: '${DateTime.now().toString()}.jpg',
-        //   ),
-        // );
+
         request.headers.addAll(headers);
 
         var response = await request.send();
@@ -130,6 +120,23 @@ class Posts with ChangeNotifier {
         print(error);
         throw error;
       }
+    }
+  }
+
+  Future<void> deletePost(int postId) async {
+    final url = 'https://travellum.herokuapp.com/post-api/post/$postId';
+    final token = 'Bearer ' + authToken;
+    try {
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+      print(response.body);
+
+      notifyListeners();
+    } catch (error) {
+      print(json.decode(error));
+      throw error;
     }
   }
 }
