@@ -237,6 +237,31 @@ class Auth with ChangeNotifier {
     }
   }
 
+  Future<bool> passwordReset(String uname, String new_password) async {
+    getToken();
+    var response;
+    const otpUrl =
+        'https://travellum.herokuapp.com/accounts-api/resetpassword/';
+
+    try {
+      response = await http.put(Uri.parse(otpUrl),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $_rootToken'
+          },
+          body: json.encode({
+            'username': uname,
+            'new_password': new_password,
+          }));
+      print(
+          '$uname has new pass $new_password with response ${json.decode(response.body)}');
+      return json.decode(response.body)['password_reset'];
+    } catch (error) {
+      print(json.decode(error.body).toString());
+      throw error;
+    }
+  }
+
   void logout() {
     token = null;
     userName = null;

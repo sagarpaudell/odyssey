@@ -260,7 +260,7 @@ class _secondStepState extends State<secondStep> {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return _successPage(context);
+                                return _finalStep(context, widget.uname);
                               },
                             );
                           } else {
@@ -309,8 +309,29 @@ class _secondStepState extends State<secondStep> {
   }
 }
 
-_finalStep(context) {
+_finalStep(context, String uname) {
+  final GlobalKey<FormState> _form = GlobalKey();
+
+  final _passFocusNode = FocusNode();
+  final _confirmPassFocusNode = FocusNode();
+  final _passController = TextEditingController();
+  bool resetSuccess = false;
+  Future<void> _saveForm() async {
+    final isValid = _form.currentState.validate();
+    if (!isValid) {
+      print('invalid');
+      return;
+    }
+    _form.currentState.save();
+
+    try {
+      resetSuccess = await Provider.of<Auth>(context)
+          .passwordReset(uname, _passController.text);
+    } catch (error) {}
+  }
+
   return Scaffold(
+    resizeToAvoidBottomInset: true,
     backgroundColor: Colors.transparent,
     body: SingleChildScrollView(
       child: Container(
@@ -322,75 +343,110 @@ _finalStep(context) {
         alignment: Alignment.center,
         height: MediaQuery.of(context).size.height * 0.5,
         width: MediaQuery.of(context).size.width,
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              margin: EdgeInsets.only(top: 20),
-              alignment: Alignment.center,
-              child: Text(
-                "Reset your password",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              alignment: Alignment.center,
-              child: Text(
-                "Set a new password for your account",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.blueGrey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
+        child: Form(
+          key: _form,
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                margin: EdgeInsets.only(top: 20),
+                alignment: Alignment.center,
+                child: Text(
+                  "Reset your password",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
-              child: TextField(
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: "Enter new password",
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(horizontal: 30),
+                alignment: Alignment.center,
+                child: Text(
+                  "Set a new password for your account",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.blueGrey,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 40,
-              ),
-              child: TextField(
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: "Confirm password",
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 14),
-              // height: (deviceSize.height - 200) * 0.10,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: ElevatedButton(
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return _successPage(context);
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                child: TextFormField(
+                  decoration: InputDecoration(labelText: 'Password'),
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.text,
+                  obscureText: true,
+                  controller: _passController,
+                  focusNode: _passFocusNode,
+                  onFieldSubmitted: (_) => FocusScope.of(context)
+                      .requestFocus(_confirmPassFocusNode),
+                  validator: (value) {
+                    if (value.isEmpty || value.length < 6) {
+                      return 'Please Provide a value greater than 6 characters';
+                    }
+                    return null;
                   },
                 ),
-                child: Text('Reset password'),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                ),
+                child: TextFormField(
+                  decoration: InputDecoration(labelText: 'Confirm Password'),
+                  textInputAction: TextInputAction.done,
+                  obscureText: true,
+                  keyboardType: TextInputType.text,
+                  focusNode: _confirmPassFocusNode,
+                  validator: (value) {
+                    if (value != _passController.text) {
+                      return 'Passwords do not match!';
+                    }
+
+                    return null;
+                  },
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 14),
+                // height: (deviceSize.height - 200) * 0.10,
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await _saveForm();
+                    if (resetSuccess) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return _successPage(context);
+                        },
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              'The password couldn\'t be changed. Please try again'),
+                          backgroundColor: Theme.of(context).errorColor,
+                        ),
+                      );
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (ctx) => AuthPage()));
+                    }
+                  },
+                  child: Text('Reset password'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     ),
