@@ -325,7 +325,7 @@ class _AuthCardState extends State<AuthCard>
                               //
                               onPressed: () => showDialog(
                                 context: context,
-                                builder: (BuildContext context) {
+                                builder: (BuildContext ctx) {
                                   return ForgotPassword();
                                 },
                               ),

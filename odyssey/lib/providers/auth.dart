@@ -10,7 +10,7 @@ class Auth with ChangeNotifier {
   String userName;
   String fullName;
   String userId;
-  bool email_verifed;
+  bool email_verifed = false;
   Map<String, dynamic> userProfileInfo;
   DateTime _expiryDate;
   String _userRefreshToken;
@@ -77,8 +77,10 @@ class Auth with ChangeNotifier {
             },
           );
           email_verifed = json.decode(verifyResponse.body)['verified_email'];
+          print('the email is $email_verifed');
         } catch (error) {
-          throw error;
+          //throw error;
+          print('here is error');
         }
       }
 
