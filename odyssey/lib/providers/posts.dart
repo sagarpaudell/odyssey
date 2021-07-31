@@ -139,4 +139,21 @@ class Posts with ChangeNotifier {
       throw error;
     }
   }
+
+  Future<void> toggleLike(int postId) async {
+    final url = 'https://travellum.herokuapp.com/post-api/like/$postId';
+    final token = 'Bearer ' + authToken;
+    try {
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+      print('Response: ${response.body}');
+
+      notifyListeners();
+    } catch (error) {
+      print(json.decode(error));
+      throw error;
+    }
+  }
 }
