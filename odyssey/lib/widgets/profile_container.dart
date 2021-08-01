@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:odyssey/screens/userBlogs_screen.dart';
-import 'package:odyssey/widgets/followers_list.dart';
+import '../screens/userBlogs_screen.dart';
+import './fofo_list.dart';
 import 'package:provider/provider.dart';
 import '../providers/profile.dart';
 import './message.dart';
@@ -18,6 +18,9 @@ class _ProfileContainerState extends State<ProfileContainer> {
   @override
   Widget build(BuildContext context) {
     final String selfUserName = Provider.of<Profile>(context).username;
+    final bool isMe = widget.profileContent['username'] == selfUserName;
+    final String usernameInQUes =
+        isMe ? selfUserName : widget.profileContent['username'];
     return Container(
       height: MediaQuery.of(context).size.height * 0.35,
       child: Column(
@@ -64,7 +67,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w400),
                       ),
-                      widget.profileContent['username'] != selfUserName
+                      !isMe
                           ? Row(
                               children: [
                                 Container(
@@ -139,32 +142,41 @@ class _ProfileContainerState extends State<ProfileContainer> {
               direction: Axis.horizontal,
               alignment: WrapAlignment.spaceEvenly,
               children: [
-                Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFEBEDEF),
+                GestureDetector(
+                  onTap: () => showDialog(
+                    barrierDismissible: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return FoFo(true, usernameInQUes);
+                    },
                   ),
-                  child: Column(
-                    children: [
-                      Text(
-                        "120",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 18),
-                      ),
-                      Text(
-                        'Places Visited',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 18),
-                      ),
-                    ],
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFEBEDEF),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          "120",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 18),
+                        ),
+                        Text(
+                          'Following',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 18),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 GestureDetector(
                   onTap: () => showDialog(
                     barrierDismissible: true,
                     context: context,
-                    builder: (BuildContext context) {
-                      return FollowersList();
+                    builder: (BuildContext ctx) {
+                      return FoFo(false, usernameInQUes);
                     },
                   ),
                   child: Container(
