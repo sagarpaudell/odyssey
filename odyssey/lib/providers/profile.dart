@@ -120,4 +120,20 @@ class Profile with ChangeNotifier {
       throw error;
     }
   }
+
+  Future<void> toogleFollow(String uname) async {
+    final url =
+        'https://travellum.herokuapp.com/traveller-api/follow-user/$uname';
+    final token = 'Bearer ' + authToken;
+    try {
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+      print(json.decode(response.body));
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
 }

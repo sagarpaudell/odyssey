@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:odyssey/screens/userBlogs_screen.dart';
 import 'package:odyssey/widgets/followers_list.dart';
+import 'package:provider/provider.dart';
+import '../providers/profile.dart';
+import './message.dart';
 
-class ProfileContainer extends StatelessWidget {
+class ProfileContainer extends StatefulWidget {
   Map<String, dynamic> profileContent;
   ProfileContainer(this.profileContent);
 
   @override
+  _ProfileContainerState createState() => _ProfileContainerState();
+}
+
+class _ProfileContainerState extends State<ProfileContainer> {
+  bool following = false;
+  @override
   Widget build(BuildContext context) {
+    final String selfUserName = Provider.of<Profile>(context).username;
     return Container(
       height: MediaQuery.of(context).size.height * 0.35,
       child: Column(
@@ -23,7 +33,7 @@ class ProfileContainer extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 52,
                       backgroundImage:
-                          NetworkImage(profileContent['photo_main']),
+                          NetworkImage(widget.profileContent['photo_main']),
                       onBackgroundImageError:
                           (Object exception, StackTrace stackTrace) {
                         return Image.asset('./assets/images/guptaji.jpg');
@@ -38,7 +48,7 @@ class ProfileContainer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${profileContent['first_name']} ${profileContent['last_name']}',
+                        '${widget.profileContent['first_name']} ${widget.profileContent['last_name']}',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -54,30 +64,58 @@ class ProfileContainer extends StatelessWidget {
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w400),
                       ),
-                      Row(
-                        children: [
-                          Container(
-                            height: 28,
-                            margin: EdgeInsets.only(top: 6),
-                            child: ElevatedButton(
-                              onPressed: (){},
-                              style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).primaryColor,
-                                onPrimary: Colors.white,
-                              ),
-                              child: Text("Follow"),
+                      widget.profileContent['username'] != selfUserName
+                          ? Row(
+                              children: [
+                                Container(
+                                  height: 28,
+                                  margin: EdgeInsets.only(top: 6),
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      setState(() {
+                                        following = !following;
+                                      });
+                                      await Provider.of<Profile>(context,
+                                              listen: false)
+                                          .toogleFollow(widget
+                                              .profileContent['username']);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Theme.of(context).primaryColor,
+                                      onPrimary: Colors.white,
+                                    ),
+                                    child: Text(
+                                        following ? "Following" : "Follow"),
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(right: 10, top: 6),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => Message(
+                                                '${widget.profileContent['first_name']} ${widget.profileContent['last_name']}',
+                                                widget
+                                                    .profileContent['username'],
+                                                widget.profileContent['id']
+                                                    .toString(),
+                                                NetworkImage(
+                                                    widget.profileContent[
+                                                        'photo_main']))),
+                                      );
+                                    },
+                                    icon: Icon(Icons.message),
+                                    iconSize: 20,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : SizedBox(
+                              height: 0,
+                              width: 0,
                             ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(right: 10, top: 6),
-                            child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.message),
-                              iconSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 )
@@ -122,13 +160,13 @@ class ProfileContainer extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap:() => showDialog(
-                                barrierDismissible: true,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return FollowersList();
-                                },
-                              ),
+                  onTap: () => showDialog(
+                    barrierDismissible: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return FollowersList();
+                    },
+                  ),
                   child: Container(
                     padding: EdgeInsets.all(4),
                     decoration: BoxDecoration(
@@ -151,11 +189,12 @@ class ProfileContainer extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap:() {
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => UserBlogScreen(profileContent['blogs']),
+                        builder: (_) =>
+                            UserBlogScreen(widget.profileContent['blogs']),
                       ),
                     );
                     print('tap tap');
@@ -174,9 +213,10 @@ class ProfileContainer extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          profileContent['number of blogs'] != null
-                                ? profileContent['number of blogs'].toString()
-                                : '10',
+                          widget.profileContent['number of blogs'] != null
+                              ? widget.profileContent['number of blogs']
+                                  .toString()
+                              : '10',
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
