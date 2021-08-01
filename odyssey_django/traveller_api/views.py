@@ -89,16 +89,18 @@ class FollowView(APIView):
                         following_traveller_id = new_following
                     )
                 following.delete()
-                message = "traveller unfollowed"
+                message = False
             else:
                 following =TravellerFollowing(
                         traveller_id = user,
                         following_traveller_id = new_following
                     )
                 following.save()
-                message = "traveller followed"
+                message = True
             return Response(
-                    {"success":message},
+                    {
+                        "following":message
+                    },
                     status=status.HTTP_202_ACCEPTED
                 )
         except Traveller.DoesNotExist:
