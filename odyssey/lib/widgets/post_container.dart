@@ -32,7 +32,6 @@ class _PostContainerState extends State<PostContainer> {
   int _like_counter;
   bool is_liked;
 
-  @override
   // void initState() {
   //   super.initState();
   //   _like_counter = widget.post['like_users'].toList().length ~/ 2;
@@ -98,9 +97,7 @@ class _PostContainerState extends State<PostContainer> {
             .toList()
             .contains('id=${authData.userId}, ${authData.userName}')
         : false;
-    print(widget.post['like_users']);
-    print(_like_counter);
-    print('flagg:$is_liked');
+
     final String selfUserName = Provider.of<Auth>(
       context,
       listen: false,
