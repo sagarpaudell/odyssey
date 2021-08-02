@@ -136,4 +136,32 @@ class Profile with ChangeNotifier {
       print(e);
     }
   }
+
+  Future<List<dynamic>> getSelfFollowers() async {
+    final url = 'https://travellum.herokuapp.com/traveller-api/followers';
+    final token = 'Bearer ' + authToken;
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+      return json.decode(response.body);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<List<dynamic>> getSelfFollowing() async {
+    final url = 'https://travellum.herokuapp.com/traveller-api/following';
+    final token = 'Bearer ' + authToken;
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+      return json.decode(response.body);
+    } catch (e) {
+      print(e);
+    }
+  }
 }
