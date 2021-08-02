@@ -64,7 +64,6 @@ class Auth with ChangeNotifier {
         } catch (error) {
           throw error;
         }
-        print(userProfileInfo);
         userName = username;
         const verifyUrl =
             'https://travellum.herokuapp.com/accounts-api/checkverified';

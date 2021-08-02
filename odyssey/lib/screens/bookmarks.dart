@@ -78,11 +78,12 @@ class _BookmarkState extends State<Bookmark> {
         centerTitle: true,
         automaticallyImplyLeading: true,
         leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-            ),
-            onPressed: () =>
-                Navigator.popAndPushNamed(context, MainScreen.routeName)),
+          icon: Icon(
+            Icons.arrow_back,
+          ),
+          onPressed: () =>
+              Navigator.popAndPushNamed(context, MainScreen.routeName),
+        ),
       ),
       body: ListView(
         children: [

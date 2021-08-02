@@ -14,7 +14,14 @@ class ProfileContainer extends StatefulWidget {
 }
 
 class _ProfileContainerState extends State<ProfileContainer> {
-  bool following = false;
+  bool _following = false;
+  @override
+  void initState() {
+    _following = widget.profileContent['following'];
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final String selfUserName = Provider.of<Profile>(context).username;
@@ -76,7 +83,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                                   child: ElevatedButton(
                                     onPressed: () async {
                                       setState(() {
-                                        following = !following;
+                                        _following = !_following;
                                       });
                                       await Provider.of<Profile>(context,
                                               listen: false)
@@ -88,7 +95,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                                       onPrimary: Colors.white,
                                     ),
                                     child: Text(
-                                        following ? "Following" : "Follow"),
+                                        _following ? "Following" : "Follow"),
                                   ),
                                 ),
                                 Container(
@@ -143,13 +150,16 @@ class _ProfileContainerState extends State<ProfileContainer> {
               alignment: WrapAlignment.spaceEvenly,
               children: [
                 GestureDetector(
-                  onTap: () => showDialog(
-                    barrierDismissible: true,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return FoFo(true, usernameInQUes);
-                    },
-                  ),
+                  onTap: () => widget.profileContent['following_count'] == 0 ||
+                          !_following
+                      ? {}
+                      : showDialog(
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return FoFo(true, usernameInQUes);
+                          },
+                        ),
                   child: Container(
                     padding: EdgeInsets.all(4),
                     decoration: BoxDecoration(
@@ -158,7 +168,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                     child: Column(
                       children: [
                         Text(
-                          "120",
+                          '${widget.profileContent['following_count']}',
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
@@ -172,13 +182,16 @@ class _ProfileContainerState extends State<ProfileContainer> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => showDialog(
-                    barrierDismissible: true,
-                    context: context,
-                    builder: (BuildContext ctx) {
-                      return FoFo(false, usernameInQUes);
-                    },
-                  ),
+                  onTap: () => widget.profileContent['follower_count'] == 0 ||
+                          !_following
+                      ? {}
+                      : showDialog(
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (BuildContext ctx) {
+                            return FoFo(false, usernameInQUes);
+                          },
+                        ),
                   child: Container(
                     padding: EdgeInsets.all(4),
                     decoration: BoxDecoration(
@@ -187,7 +200,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                     child: Column(
                       children: [
                         Text(
-                          "12.1k",
+                          '${widget.profileContent['follower_count']}',
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
@@ -201,16 +214,15 @@ class _ProfileContainerState extends State<ProfileContainer> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            UserBlogScreen(widget.profileContent['blogs']),
-                      ),
-                    );
-                    print('tap tap');
-                  },
+                  onTap: () => widget.profileContent['number of blogs'] == 0
+                      ? {}
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                UserBlogScreen(widget.profileContent['blogs']),
+                          ),
+                        ),
                   child: Container(
                     padding: EdgeInsets.all(4),
                     decoration: BoxDecoration(
@@ -225,10 +237,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                     child: Column(
                       children: [
                         Text(
-                          widget.profileContent['number of blogs'] != null
-                              ? widget.profileContent['number of blogs']
-                                  .toString()
-                              : '10',
+                          widget.profileContent['number of blogs'].toString(),
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),

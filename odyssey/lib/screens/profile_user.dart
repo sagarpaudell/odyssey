@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/profile.dart';
 import '../widgets/profile_container.dart';
 import '../widgets/post_container.dart';
+import './main_screen.dart';
 
 class UserProfile extends StatefulWidget {
   String friendUserName;
@@ -135,7 +136,8 @@ class _UserProfileState extends State<UserProfile> {
         automaticallyImplyLeading: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () =>
+              Navigator.popAndPushNamed(context, MainScreen.routeName),
           color: Theme.of(context).primaryColor,
         ),
       ),
