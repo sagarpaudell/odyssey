@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../screens/userBlogs_screen.dart';
 import './fofo_list.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
     final bool isMe = widget.profileContent['username'] == selfUserName;
     final String usernameInQUes =
         isMe ? selfUserName : widget.profileContent['username'];
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.35,
       child: Column(
@@ -168,7 +170,11 @@ class _ProfileContainerState extends State<ProfileContainer> {
                     child: Column(
                       children: [
                         Text(
-                          '${widget.profileContent['following_count']}',
+                          widget.profileContent['following_count'].toString(),
+                          //formatNumber('11222'),
+                          // NumberFormat.compact().format(
+                          //   widget.profileContent['following_count'].toString(),
+                          // ),
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
@@ -200,7 +206,11 @@ class _ProfileContainerState extends State<ProfileContainer> {
                     child: Column(
                       children: [
                         Text(
-                          '${widget.profileContent['follower_count']}',
+                          widget.profileContent['follower_count'].toString(),
+                          // formatNumber(23332),
+                          // NumberFormat.compact().format(
+                          //   widget.profileContent['follower_count'].toString(),
+                          //),
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
@@ -237,7 +247,9 @@ class _ProfileContainerState extends State<ProfileContainer> {
                     child: Column(
                       children: [
                         Text(
-                          widget.profileContent['number of blogs'].toString(),
+                          NumberFormat.compact().format(
+                            widget.profileContent['number of blogs'].toString(),
+                          ),
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
@@ -281,5 +293,20 @@ class _ProfileContainerState extends State<ProfileContainer> {
         ],
       ),
     );
+  }
+
+  String formatNumber(dynamic myNumber) {
+    // Convert number into a string if it was not a string previously
+    String stringNumber = myNumber.toString();
+
+    // Convert number into double to be formatted.
+    // Default to zero if unable to do so
+    double doubleNumber = double.tryParse(stringNumber) ?? 0;
+
+    // Set number format to use
+    NumberFormat numberFormat = new NumberFormat.compact();
+    print(stringNumber);
+    print(numberFormat.format(doubleNumber));
+    return numberFormat.format(doubleNumber);
   }
 }
