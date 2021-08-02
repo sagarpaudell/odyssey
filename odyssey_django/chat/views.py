@@ -12,8 +12,7 @@ from .serializers import ChatSerializer
 class ChatView(APIView):
     def get(self, request, username):
         """ returns the message of the authenticated user with username"""
-        user = User.objects.get(username=username)
-        friend_user = Traveller.objects.get(username = user)
+        friend_user = Traveller.objects.get(username__username = username)
         login_user = Traveller.objects.get(username = self.request.user)
         chat = Chat.objects.filter(
                 Q(sender = login_user) | Q(receiver=login_user),
@@ -32,14 +31,36 @@ class ChatView(APIView):
     def post(self, request, username):
         """ receives post request in format {"message":""} and add new mesage
         to the database"""
-        user = User.objects.get(username=username)
-        friend_user = Traveller.objects.get(username = user)
+        friend_user = Traveller.objects.get(username__username = username)
         login_user = Traveller.objects.get(username = self.request.user)
         message_text = request.data["message_text"]
         chat = Chat.objects.create(sender = login_user, receiver = friend_user,
                 message_text = message_text)
         return Response(ChatSerializer(chat).data)
 
+    def delete(self, request, username):
+        """ deletes messages with username """
+        friend_user = Traveller.objects.get(username__username = username)
+        login_user = Traveller.objects.get(username = self.request.user)
+        chat = Chat.objects.filter(
+                Q(sender = login_user) | Q(receiver=login_user),
+                Q(receiver = friend_user) | Q(sender = friend_user)
+            ).order_by('-message_time')
+        if chat:
+            chat.delete()
+            return Response(
+                    {
+                        'success' : True,
+                        'success_msg' : 'chat deleted'
+                    }
+                )
+        return Response(
+                {
+                    'error' : True,
+                    'error_msg': "No chat found"
+                },
+                status = status.HTTP_404_NOT_FOUND
+            )
 
 class AllConversationsView(APIView):
     def get(self, request):
