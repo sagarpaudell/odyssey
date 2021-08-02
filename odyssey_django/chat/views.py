@@ -18,10 +18,14 @@ class ChatView(APIView):
         chat = Chat.objects.filter(
                 Q(sender = login_user) | Q(receiver=login_user),
                 Q(receiver = friend_user) | Q(sender = friend_user)
-            )
+            ).order_by('-message_time')
         if chat:
-            print(chat)
-            serializer = ChatSerializer(chat , many=True)
+            if chat.first().sender == friend_user:
+                chat.update(message_seen = True)
+            serializer = ChatSerializer(
+                    chat,
+                    many=True
+                )
             return Response(serializer.data)
         return Response(status = status.HTTP_404_NOT_FOUND)
 
@@ -35,7 +39,6 @@ class ChatView(APIView):
         chat = Chat.objects.create(sender = login_user, receiver = friend_user,
                 message_text = message_text)
         return Response(ChatSerializer(chat).data)
-    
 
 
 class AllConversationsView(APIView):
