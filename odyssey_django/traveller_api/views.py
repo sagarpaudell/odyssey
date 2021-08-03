@@ -1,5 +1,4 @@
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,7 +6,10 @@ from rest_framework.parsers import MultiPartParser
 from post.serializers import PostSerializer
 from blogs.serializers import BlogSerializer
 from .serializers import TravellerSerializer, TravellerSerializerPublic
-from .serializers_profile import TravellerSerializerProfileViewPrivate,TravellerSerializerProfileViewPublic,TravellerSerializerProfileViewSelf
+from .serializers_profile import (
+        TravellerSerializerProfileViewPrivate,
+        TravellerSerializerProfileViewPublic
+    )
 from .models import Traveller, TravellerFollowing
 
 
@@ -41,7 +43,6 @@ class TravellerGetView(APIView):
             traveller = Traveller.objects.get(username__username=username)
             current_user = Traveller.objects.get(username = request.user)
             traveller_followers = traveller.get_followers()
-            current_user_followers = current_user.get_followers()
             total_posts = traveller.get_posts_count()
             total_blogs = traveller.get_blogs_count()
             blogs = traveller.get_blogs()
@@ -49,19 +50,25 @@ class TravellerGetView(APIView):
             if current_user in traveller_followers:
                 posts = traveller.get_posts()
                 post_serializer = PostSerializer(
-                        posts, 
+                        posts,
                         many=True,
-                        context={"traveller":current_user}
+                        context = {"traveller":current_user}
                     )
-                serializer_dict = TravellerSerializerProfileViewPrivate(traveller).data
+                serializer_dict = TravellerSerializerProfileViewPrivate(
+                        traveller,
+                        context = {"traveller": current_user}
+                        ).data
             else:
                 public_posts = traveller.get_public_posts()
                 post_serializer = PostSerializer(
                         public_posts,
                         many=True,
-                        context={"traveller":current_user}
+                        context = {"traveller":current_user}
                     )
-                serializer = TravellerSerializerProfileViewPublic(traveller)
+                serializer = TravellerSerializerProfileViewPublic(
+                        traveller,
+                        context = {"traveller": current_user}
+                        )
                 serializer_dict = serializer.data
             serializer_dict.update(
                     {
@@ -89,16 +96,18 @@ class FollowView(APIView):
                         following_traveller_id = new_following
                     )
                 following.delete()
-                message = "traveller unfollowed"
+                message = False
             else:
                 following =TravellerFollowing(
                         traveller_id = user,
                         following_traveller_id = new_following
                     )
                 following.save()
-                message = "traveller followed"
+                message = True
             return Response(
-                    {"success":message},
+                    {
+                        "following":message
+                    },
                     status=status.HTTP_202_ACCEPTED
                 )
         except Traveller.DoesNotExist:
@@ -114,9 +123,10 @@ class FollowView(APIView):
 class GetFollowers(APIView):
     def get(self, request):
         followers = Traveller.objects.get(username = request.user).get_followers()
+        print(followers)
         serializer = TravellerSerializerPublic(followers, many=True)
-        return Response( 
-                serializer.data, 
+        return Response(
+                serializer.data,
                 status = status.HTTP_200_OK
             )
 

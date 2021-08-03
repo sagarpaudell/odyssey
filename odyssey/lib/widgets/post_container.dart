@@ -20,8 +20,7 @@ class PostContainer extends StatefulWidget {
   final Map<String, dynamic> post;
   final Function fun;
   final Function fetchUserPosts;
-  const PostContainer(
-      {Key key, @required this.post, this.fun, this.fetchUserPosts})
+  PostContainer({Key key, @required this.post, this.fun, this.fetchUserPosts})
       : super(key: key);
 
   @override
@@ -30,8 +29,13 @@ class PostContainer extends StatefulWidget {
 
 class _PostContainerState extends State<PostContainer> {
   bool _is_bookmarked = false;
-  bool _is_liked = false;
-  int _like_counter = 0;
+  int _like_counter;
+  bool is_liked;
+
+  // void initState() {
+  //   super.initState();
+  //   _like_counter = widget.post['like_users'].toList().length ~/ 2;
+  // }
 
   void toggleBookmark(bool selectBlog) {
     if (widget.fun != null) {
@@ -42,19 +46,35 @@ class _PostContainerState extends State<PostContainer> {
     });
   }
 
-  void toggleLikes() {
-    _is_liked = !_is_liked;
-  }
+  void toggleLikes() async {
+    await Provider.of<Posts>(context, listen: false)
+        .toggleLike(widget.post['id']);
+    await widget.fetchUserPosts();
+    // print(widget.post['like_users']);
 
-  void like() {
+    final authData = Provider.of<Auth>(context, listen: false);
+    bool flag = await (widget.post['like_users'].toList().length != 0)
+        ? widget.post['like_users']
+            .toList()
+            .contains('id=${authData.userId}, ${authData.userName}')
+        : false;
+    if (flag) {
+      setState(() {
+        is_liked = false;
+        _like_counter -= 1;
+      });
+    } else {
+      setState(() {
+        is_liked = true;
+        _like_counter += 1;
+      });
+    }
+    // await print(authData.userName);
+    // await print(widget.post['like_users']);
+    // await print('flag:$flag');
     setState(() {
-      _like_counter += 1;
-    });
-  }
-
-  void unlike() {
-    setState(() {
-      _like_counter -= 1;
+      // print((widget.post['like_users'].toList().length != 0));
+      // print('flag: $flag');
     });
   }
 
@@ -68,8 +88,34 @@ class _PostContainerState extends State<PostContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final String selfUserName =
-        Provider.of<Auth>(context, listen: false).userName;
+    final authData = Provider.of<Auth>(context, listen: false);
+    // _like_counter = widget.post['like_users'].toList().length ~/ 2;
+    _like_counter = widget.post['like_users'].toList().length;
+
+    is_liked = (widget.post['like_users'].toList().length != 0)
+        ? widget.post['like_users']
+            .toList()
+            .contains('id=${authData.userId}, ${authData.userName}')
+        : false;
+
+    final String selfUserName = Provider.of<Auth>(
+      context,
+      listen: false,
+    ).userName;
+
+    // final test = widget.post['like_users'].toList();
+    // print('test: ${test.runtimeType}');
+    // print('test: ${test}');
+    // final test2 = authData.toString();
+    // print('test2: ${test2.runtimeType}');
+    // final test3 = widget.post['like_users'].toList() != null;
+    // print(test3);
+    // List test4 = [];
+    // print(test4.toList().length == 1);
+
+    // print(widget.post['like_users']);
+    // print((widget.post['like_users'].toList().length != 0));
+    // print(flag);
 
     return Card(
       shadowColor: Colors.white,
@@ -121,11 +167,9 @@ class _PostContainerState extends State<PostContainer> {
                 context,
                 toggleBookmark,
                 toggleLikes,
-                like,
-                unlike,
                 _is_bookmarked,
-                _is_liked,
                 _like_counter,
+                is_liked,
               ),
             ),
           ],
@@ -154,9 +198,9 @@ Widget _PostHeader(Map<String, dynamic> post, String selfUserName,
       GestureDetector(
         onTap: () {
           if (post['traveller']['username'] == selfUserName) {
-            Navigator.of(context).pushReplacementNamed(SelfProfile.routeName);
+            Navigator.of(context).pushNamed(SelfProfile.routeName);
           } else {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (_) => UserProfile(post['traveller']['username']),
@@ -239,23 +283,22 @@ Widget _PostButtons(
   BuildContext context,
   Function toggleB,
   Function toggleL,
-  Function like,
-  Function unlike,
   bool _is_bookmarked,
-  bool _is_liked,
   int _like_counter,
+  bool is_liked,
 ) {
+  // print('flag: $flag');
+  // print(post);
   return Column(
     children: [
       const SizedBox(height: 8.0),
 
       Row(
         children: [
-          _is_liked
+          is_liked
               ? GestureDetector(
                   onTap: () {
                     toggleL();
-                    unlike();
                   },
                   child: Container(
                     child: Icon(
@@ -269,7 +312,6 @@ Widget _PostButtons(
               : GestureDetector(
                   onTap: () {
                     toggleL();
-                    like();
                   },
                   // onTap: () {
                   //   print('hi');

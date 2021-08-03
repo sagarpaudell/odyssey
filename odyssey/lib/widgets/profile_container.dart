@@ -1,13 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:odyssey/screens/userBlogs_screen.dart';
-import 'package:odyssey/widgets/followers_list.dart';
+import 'package:intl/intl.dart';
+import '../screens/userBlogs_screen.dart';
+import './fofo_list.dart';
+import 'package:provider/provider.dart';
+import '../providers/profile.dart';
+import './message.dart';
 
-class ProfileContainer extends StatelessWidget {
+class ProfileContainer extends StatefulWidget {
   Map<String, dynamic> profileContent;
   ProfileContainer(this.profileContent);
 
   @override
+  _ProfileContainerState createState() => _ProfileContainerState();
+}
+
+class _ProfileContainerState extends State<ProfileContainer> {
+  bool _following = false;
+  @override
+  void initState() {
+    _following = widget.profileContent['following'];
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final String selfUserName = Provider.of<Profile>(context).username;
+    final bool isMe = widget.profileContent['username'] == selfUserName;
+    final String usernameInQUes =
+        isMe ? selfUserName : widget.profileContent['username'];
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.35,
       child: Column(
@@ -23,7 +45,7 @@ class ProfileContainer extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 52,
                       backgroundImage:
-                          NetworkImage(profileContent['photo_main']),
+                          NetworkImage(widget.profileContent['photo_main']),
                       onBackgroundImageError:
                           (Object exception, StackTrace stackTrace) {
                         return Image.asset('./assets/images/guptaji.jpg');
@@ -38,7 +60,7 @@ class ProfileContainer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${profileContent['first_name']} ${profileContent['last_name']}',
+                        '${widget.profileContent['first_name']} ${widget.profileContent['last_name']}',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -54,30 +76,58 @@ class ProfileContainer extends StatelessWidget {
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w400),
                       ),
-                      Row(
-                        children: [
-                          Container(
-                            height: 28,
-                            margin: EdgeInsets.only(top: 6),
-                            child: ElevatedButton(
-                              onPressed: (){},
-                              style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).primaryColor,
-                                onPrimary: Colors.white,
-                              ),
-                              child: Text("Follow"),
+                      !isMe
+                          ? Row(
+                              children: [
+                                Container(
+                                  height: 28,
+                                  margin: EdgeInsets.only(top: 6),
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      setState(() {
+                                        _following = !_following;
+                                      });
+                                      await Provider.of<Profile>(context,
+                                              listen: false)
+                                          .toogleFollow(widget
+                                              .profileContent['username']);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Theme.of(context).primaryColor,
+                                      onPrimary: Colors.white,
+                                    ),
+                                    child: Text(
+                                        _following ? "Following" : "Follow"),
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(right: 10, top: 6),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => Message(
+                                                '${widget.profileContent['first_name']} ${widget.profileContent['last_name']}',
+                                                widget
+                                                    .profileContent['username'],
+                                                widget.profileContent['id']
+                                                    .toString(),
+                                                NetworkImage(
+                                                    widget.profileContent[
+                                                        'photo_main']))),
+                                      );
+                                    },
+                                    icon: Icon(Icons.message),
+                                    iconSize: 20,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : SizedBox(
+                              height: 0,
+                              width: 0,
                             ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(right: 10, top: 6),
-                            child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.message),
-                              iconSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 )
@@ -101,34 +151,17 @@ class ProfileContainer extends StatelessWidget {
               direction: Axis.horizontal,
               alignment: WrapAlignment.spaceEvenly,
               children: [
-                Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFEBEDEF),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        "120",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 18),
-                      ),
-                      Text(
-                        'Places Visited',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ),
                 GestureDetector(
-                  onTap:() => showDialog(
-                                barrierDismissible: true,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return FollowersList();
-                                },
-                              ),
+                  onTap: () => widget.profileContent['following_count'] == 0 ||
+                          !_following
+                      ? {}
+                      : showDialog(
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return FoFo(true, usernameInQUes);
+                          },
+                        ),
                   child: Container(
                     padding: EdgeInsets.all(4),
                     decoration: BoxDecoration(
@@ -137,7 +170,47 @@ class ProfileContainer extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          "12.1k",
+                          widget.profileContent['following_count'].toString(),
+                          //formatNumber('11222'),
+                          // NumberFormat.compact().format(
+                          //   widget.profileContent['following_count'].toString(),
+                          // ),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 18),
+                        ),
+                        Text(
+                          'Following',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => widget.profileContent['follower_count'] == 0 ||
+                          !_following
+                      ? {}
+                      : showDialog(
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (BuildContext ctx) {
+                            return FoFo(false, usernameInQUes);
+                          },
+                        ),
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFEBEDEF),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          widget.profileContent['follower_count'].toString(),
+                          // formatNumber(23332),
+                          // NumberFormat.compact().format(
+                          //   widget.profileContent['follower_count'].toString(),
+                          //),
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
@@ -151,15 +224,15 @@ class ProfileContainer extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap:() {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => UserBlogScreen(profileContent['blogs']),
-                      ),
-                    );
-                    print('tap tap');
-                  },
+                  onTap: () => widget.profileContent['number of blogs'] == 0
+                      ? {}
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                UserBlogScreen(widget.profileContent['blogs']),
+                          ),
+                        ),
                   child: Container(
                     padding: EdgeInsets.all(4),
                     decoration: BoxDecoration(
@@ -174,9 +247,9 @@ class ProfileContainer extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          profileContent['number of blogs'] != null
-                                ? profileContent['number of blogs'].toString()
-                                : '10',
+                          NumberFormat.compact().format(
+                            widget.profileContent['number of blogs'].toString(),
+                          ),
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
@@ -220,5 +293,20 @@ class ProfileContainer extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String formatNumber(dynamic myNumber) {
+    // Convert number into a string if it was not a string previously
+    String stringNumber = myNumber.toString();
+
+    // Convert number into double to be formatted.
+    // Default to zero if unable to do so
+    double doubleNumber = double.tryParse(stringNumber) ?? 0;
+
+    // Set number format to use
+    NumberFormat numberFormat = new NumberFormat.compact();
+    print(stringNumber);
+    print(numberFormat.format(doubleNumber));
+    return numberFormat.format(doubleNumber);
   }
 }

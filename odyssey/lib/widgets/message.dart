@@ -129,31 +129,30 @@ class _MessageState extends State<Message> {
     return Container(
       padding: EdgeInsets.all(10),
       child: TextField(
-              controller: _controller,
-              onTap: () => Timer(
-                Duration(milliseconds: 300),
-                () => _scrollController
-                    .jumpTo(_scrollController.position.maxScrollExtent),
-              ),
-              decoration: InputDecoration(
-                suffixIcon: IconButton(
-                    icon: Icon(Icons.send, color: Theme.of(context).primaryColor),
-                    onPressed: () {
-                      _sendMessageFun();
-                    }),
-                contentPadding: EdgeInsets.only(
-                  left: 30,
-                  right: 50,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide(width: 0.1),
-                ),
-                hintText: "Write a message",
-              ),
-            ),
+        controller: _controller,
+        onTap: () => Timer(
+          Duration(milliseconds: 300),
+          () => _scrollController
+              .jumpTo(_scrollController.position.maxScrollExtent),
+        ),
+        decoration: InputDecoration(
+          suffixIcon: IconButton(
+              icon: Icon(Icons.send, color: Theme.of(context).primaryColor),
+              onPressed: () {
+                _sendMessageFun();
+              }),
+          contentPadding: EdgeInsets.only(
+            left: 30,
+            right: 50,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide(width: 0.1),
+          ),
+          hintText: "Write a message",
+        ),
+      ),
     );
-        
   }
 
   //end of _sendMessage
@@ -255,10 +254,10 @@ class _MessageState extends State<Message> {
         actions: [
           PopupMenuButton(
             child: Icon(
-                Icons.more_vert,
-                color: Colors.black,
-                size: 28,
-              ),
+              Icons.more_vert,
+              color: Colors.black,
+              size: 28,
+            ),
             onSelected: choiceAction,
             itemBuilder: (BuildContext context) {
               return choices.map((String choice) {
@@ -290,58 +289,68 @@ class _MessageState extends State<Message> {
             },
           )
         ],
-        automaticallyImplyLeading: false,
-        leading: Container(
-          margin: EdgeInsets.all(8),
-          child: CircleAvatar(
-            radius: 18,
-            child: Stack(
-              children: [
-                CircleAvatar(
-                  radius: 16,
-                  backgroundImage: widget.friendImage,
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Theme.of(context).primaryColor,
+            ),
+            onPressed: () => Navigator.pop(context, false)),
+        title: Row(
+          children: [
+            Container(
+              margin: EdgeInsets.all(8),
+              child: CircleAvatar(
+                radius: 18,
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 16,
+                      backgroundImage: widget.friendImage,
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        height: 10,
+                        width: 10,
+                        decoration: BoxDecoration(
+                            color: Colors.greenAccent[400],
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 2,
+                            )),
+                      ),
+                    )
+                  ],
                 ),
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    height: 10,
-                    width: 10,
-                    decoration: BoxDecoration(
-                        color: Colors.greenAccent[400],
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 2,
-                        )),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(right: 20),
+              width: MediaQuery.of(context).size.width * 0.6,
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                icon: Text(
+                  widget.friendName,
+                  overflow: TextOverflow.visible, //temporary fix
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: Theme.of(context).primaryColor,
                   ),
-                )
-              ],
-            ),
-          ),
-        ),
-        title: Container(
-          padding: EdgeInsets.only(right: 20),
-          width: MediaQuery.of(context).size.width * 0.6,
-          alignment: Alignment.centerLeft,
-          child: IconButton(
-            icon: Text(
-              widget.friendName,
-              overflow: TextOverflow.visible, //temporary fix
-              maxLines: 1,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: Theme.of(context).primaryColor,
+                ),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => UserProfile(widget.friendUserName),
+                  ),
+                ),
               ),
             ),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => UserProfile(widget.friendUserName),
-              ),
-            ),
-          ),
+          ],
         ),
       ),
       body: FutureBuilder<void>(
