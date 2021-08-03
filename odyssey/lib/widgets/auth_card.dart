@@ -163,7 +163,7 @@ class _AuthCardState extends State<AuthCard>
                 AnimatedContainer(
                   duration: Duration(milliseconds: 300),
                   curve: Curves.easeIn,
-                  margin: EdgeInsets.only(top: 40),
+                  margin: _authMode == AuthMode.Signup ? EdgeInsets.only(top: 12):EdgeInsets.only(top: 40),
                   height: _authMode == AuthMode.Signup ? 80 : 200,
                   alignment: Alignment.center,
                   child: Image.asset(
@@ -173,116 +173,33 @@ class _AuthCardState extends State<AuthCard>
                 ),
                 _authMode == AuthMode.Signup
                     ? Container(
-                        height: (deviceSize.height - 80) * 0.6,
+                        height: (deviceSize.height - 80) * 0.55,
                         padding: EdgeInsets.only(left: 30, right: 30),
                         child: ListView(children: [
-                          TextFormField(
-                            decoration: InputDecoration(labelText: 'E-mail'),
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            onFieldSubmitted: (_) {
-                              FocusScope.of(context)
-                                  .requestFocus(_phoneFocusNode);
-                            },
-                            validator: (value) {
-                              // if (value.isEmpty || !value.contains('@')) {
-                              //   return 'Invalid email!';
-                              // }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _authData['email'] = value;
-                            },
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(labelText: 'Phone'),
-                            textInputAction: TextInputAction.next,
-                            keyboardType: TextInputType.number,
-                            focusNode: _phoneFocusNode,
-                            onFieldSubmitted: (_) => FocusScope.of(context)
-                                .requestFocus(_userNameFocusNode),
-                            validator: (value) {
-                              if (value.isEmpty || value.length < 7) {
-                                return 'Number too short';
-                              }
-                              if (double.tryParse(value) == null) {
-                                return 'Please enter a valid number.';
-                              }
-                              if (double.parse(value) <= 0) {
-                                return 'Please enter a number greater than zero.';
-                              }
-
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _authData['phone'] = value;
-                            },
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(labelText: 'UserName'),
-                            textInputAction: TextInputAction.next,
-                            keyboardType: TextInputType.text,
-                            focusNode: _userNameFocusNode,
-                            onFieldSubmitted: (_) => FocusScope.of(context)
-                                .requestFocus(_passFocusNode),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please Provide a value';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _authData['userName'] = value;
-                            },
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(labelText: 'Password'),
-                            textInputAction: TextInputAction.next,
-                            keyboardType: TextInputType.number,
-                            obscureText: true,
-                            controller: _passwordController,
-                            focusNode: _passFocusNode,
-                            onFieldSubmitted: (_) => FocusScope.of(context)
-                                .requestFocus(_confirmPassFocusNode),
-                            validator: (value) {
-                              if (value.isEmpty || value.length < 6) {
-                                return 'Please Provide a value greater than 6 characters';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _authData['password'] = value;
-                            },
-                          ),
-                          TextFormField(
-                            decoration:
-                                InputDecoration(labelText: 'Confirm Password'),
-                            textInputAction: TextInputAction.done,
-                            obscureText: true,
-                            focusNode: _confirmPassFocusNode,
-                            validator: (value) {
-                              if (value != _passwordController.text) {
-                                return 'Passwords do not match!';
-                              }
-
-                              return null;
-                            },
-                          ),
-                        ]),
-                      )
-                    : Container(
-                        height: (deviceSize.height - 200) * 0.35,
-                        padding: EdgeInsets.only(left: 30, right: 30),
-                        child: ListView(
-                          children: [
-                            TextFormField(
-                              decoration:
-                                  InputDecoration(labelText: 'Username'),
-                              keyboardType: TextInputType.text,
+                          Container(
+                            height: deviceSize.height*0.07,
+                            margin: EdgeInsets.only(bottom: 14),
+                            child: TextFormField(
+                              decoration: InputDecoration(labelText: 'E-mail',
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.all(Radius.circular(10),
+                                ),                             
+                              ),
+                              focusedBorder:OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10),
+                                
+                                ),
+                                ),
+                              filled: true,
+                              fillColor: Color(0xffF5F5F5),
+                              prefixIcon:Icon(Icons.email),
+                              ),
+                              keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.next,
                               onFieldSubmitted: (_) {
                                 FocusScope.of(context)
-                                    .requestFocus(_confirmPassFocusNode);
+                                    .requestFocus(_phoneFocusNode);
                               },
                               validator: (value) {
                                 // if (value.isEmpty || !value.contains('@')) {
@@ -291,25 +208,232 @@ class _AuthCardState extends State<AuthCard>
                                 return null;
                               },
                               onSaved: (value) {
-                                _authData['userName'] = value;
+                                _authData['email'] = value;
                               },
                             ),
-                            TextFormField(
-                              decoration:
-                                  InputDecoration(labelText: 'Password'),
-                              textInputAction: TextInputAction.done,
-                              obscureText: true,
-                              focusNode: _confirmPassFocusNode,
+                          ),
+                          Container(
+                            height: deviceSize.height*0.07,
+                            margin: EdgeInsets.only(bottom: 14),
+                            child: TextFormField(
+                              decoration: InputDecoration(labelText: 'Phone',
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.all(Radius.circular(10),
+                                ),                             
+                              ),
+                              focusedBorder:OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10),
+                                
+                                ),
+                                ),
+                              filled: true,
+                              fillColor: Color(0xffF5F5F5),
+                              prefixIcon:Icon(Icons.phone),
+                              ),
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.number,
+                              focusNode: _phoneFocusNode,
+                              onFieldSubmitted: (_) => FocusScope.of(context)
+                                  .requestFocus(_userNameFocusNode),
                               validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Passwords is empty';
+                                if (value.isEmpty || value.length < 7) {
+                                  return 'Number too short';
+                                }
+                                if (double.tryParse(value) == null) {
+                                  return 'Please enter a valid number.';
+                                }
+                                if (double.parse(value) <= 0) {
+                                  return 'Please enter a number greater than zero.';
                                 }
 
                                 return null;
                               },
                               onSaved: (value) {
+                                _authData['phone'] = value;
+                              },
+                            ),
+                          ),
+                          Container(
+                            height: deviceSize.height*0.07,
+                            margin: EdgeInsets.only(bottom: 14),
+                            child: TextFormField(
+                              decoration: InputDecoration(labelText: 'UserName',
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.all(Radius.circular(10),
+                                  ),                             
+                                ),
+                                focusedBorder:OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(10),
+                                  
+                                  ),
+                                  ),
+                                filled: true,
+                                fillColor: Color(0xffF5F5F5),
+                                prefixIcon:Icon(Icons.account_circle),),
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.text,
+                              focusNode: _userNameFocusNode,
+                              onFieldSubmitted: (_) => FocusScope.of(context)
+                                  .requestFocus(_passFocusNode),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Please Provide a value';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _authData['userName'] = value;
+                              },
+                            ),
+                          ),
+                          Container(
+                            height: deviceSize.height*0.07,
+                            margin: EdgeInsets.only(bottom: 14),
+                            child: TextFormField(
+                              decoration: InputDecoration(labelText: 'Password',
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.all(Radius.circular(10),
+                                  ),                             
+                                ),
+                                focusedBorder:OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(10),
+                                  
+                                  ),
+                                  ),
+                                filled: true,
+                                fillColor: Color(0xffF5F5F5),
+                                prefixIcon:Icon(Icons.lock),
+                                ),
+                              textInputAction: TextInputAction.next,
+                              obscureText: true,
+                              controller: _passwordController,
+                              focusNode: _passFocusNode,
+                              onFieldSubmitted: (_) => FocusScope.of(context)
+                                  .requestFocus(_confirmPassFocusNode),
+                              validator: (value) {
+                                if (value.isEmpty || value.length < 6) {
+                                  return 'Please Provide a value greater than 6 characters';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
                                 _authData['password'] = value;
                               },
+                            ),
+                          ),
+                          Container(
+                            height: deviceSize.height*0.07,
+                            margin: EdgeInsets.only(bottom: 14),
+                            child: TextFormField(
+                              decoration:
+                                  InputDecoration(labelText: 'Confirm Password',
+                                  enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.all(Radius.circular(10),
+                                  ),                             
+                                ),
+                                focusedBorder:OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(10),
+                                  
+                                  ),
+                                  ),
+                                filled: true,
+                                fillColor: Color(0xffF5F5F5),
+                                prefixIcon:Icon(Icons.lock),
+                                ),
+                              textInputAction: TextInputAction.done,
+                              obscureText: true,
+                              focusNode: _confirmPassFocusNode,
+                              validator: (value) {
+                                if (value != _passwordController.text) {
+                                  return 'Passwords do not match!';
+                                }
+
+                                return null;
+                              },
+                            ),
+                          ),
+                        ]),
+                      )
+                    : Container(
+                        height: (deviceSize.height - 200) * 0.30,
+                        padding: EdgeInsets.only(left: 30, right: 30),
+                        child: ListView(
+                          children: [
+                            Container(
+                              height: deviceSize.height*0.08,
+                              margin: EdgeInsets.only(bottom: 18),
+                              child: TextFormField(
+                                decoration:
+                                    InputDecoration(labelText: 'Username',
+                                    enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                    borderRadius: BorderRadius.all(Radius.circular(10),
+                                    ),                             
+                                  ),
+                                  focusedBorder:OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(10),
+                                    
+                                    ),
+                                    ),
+                                  filled: true,
+                                  fillColor: Color(0xffF5F5F5),
+                                  prefixIcon:Icon(Icons.lock),
+                                  ),
+                                keyboardType: TextInputType.text,
+                                textInputAction: TextInputAction.next,
+                                onFieldSubmitted: (_) {
+                                  FocusScope.of(context)
+                                      .requestFocus(_confirmPassFocusNode);
+                                },
+                                validator: (value) {
+                                  // if (value.isEmpty || !value.contains('@')) {
+                                  //   return 'Invalid email!';
+                                  // }
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  _authData['userName'] = value;
+                                },
+                              ),
+                            ),
+                            Container(
+                              height: deviceSize.height*0.08,
+                              margin: EdgeInsets.only(bottom: 18),
+                              child: TextFormField(
+                                decoration:
+                                    InputDecoration(labelText: 'Password',
+                                    enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                    borderRadius: BorderRadius.all(Radius.circular(10),
+                                    ),                             
+                                  ),
+                                  focusedBorder:OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(10),
+                                    
+                                    ),
+                                    ),
+                                  filled: true,
+                                  fillColor: Color(0xffF5F5F5),
+                                  prefixIcon:Icon(Icons.lock),
+                                  ),
+                                textInputAction: TextInputAction.done,
+                                obscureText: true,
+                                focusNode: _confirmPassFocusNode,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Passwords is empty';
+                                  }
+
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  _authData['password'] = value;
+                                },
+                              ),
                             ),
                           ],
                         ),
@@ -342,7 +466,7 @@ class _AuthCardState extends State<AuthCard>
                     ? CircularProgressIndicator()
                     : Container(
                         height: _authMode == AuthMode.Signup
-                            ? (deviceSize.height - 80) * 0.10
+                            ? (deviceSize.height - 80) * 0.08
                             : (deviceSize.height - 200) * 0.10,
                         width: deviceSize.width * 0.9,
                         child: ElevatedButton(
@@ -353,7 +477,7 @@ class _AuthCardState extends State<AuthCard>
                         ),
                       ),
                 SizedBox(
-                  height: 10,
+                  height: 18,
                 ),
 
                 Row(children: <Widget>[
