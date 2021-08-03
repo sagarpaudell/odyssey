@@ -331,7 +331,7 @@ _finalStep(context, String uname) {
   }
 
   return Scaffold(
-    // resizeToAvoidBottomInset: true,
+    resizeToAvoidBottomInset: true,
     backgroundColor: Colors.transparent,
     body: SingleChildScrollView(
       child: Container(
@@ -421,7 +421,6 @@ _finalStep(context, String uname) {
                 // height: (deviceSize.height - 200) * 0.10,
                 width: MediaQuery.of(context).size.width * 0.5,
                 child: ElevatedButton(
-                  // onPressed: (){},
                   onPressed: () async {
                     await _saveForm();
                     if (resetSuccess) {
@@ -520,8 +519,3 @@ _successPage(context) {
     ),
   );
 }
-
-
-
-
-
