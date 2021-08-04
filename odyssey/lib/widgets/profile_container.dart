@@ -23,6 +23,21 @@ class _ProfileContainerState extends State<ProfileContainer> {
     super.initState();
   }
 
+  String formatNumber(dynamic myNumber) {
+    // Convert number into a string if it was not a string previously
+    String stringNumber = myNumber.toString();
+
+    // Convert number into double to be formatted.
+    // Default to zero if unable to do so
+    double doubleNumber = double.tryParse(stringNumber) ?? 0;
+
+    // Set number format to use
+    NumberFormat numberFormat = new NumberFormat.compact();
+    print(stringNumber);
+    print(numberFormat.format(doubleNumber));
+    return numberFormat.format(doubleNumber);
+  }
+
   @override
   Widget build(BuildContext context) {
     final String selfUserName = Provider.of<Profile>(context).username;
@@ -170,11 +185,8 @@ class _ProfileContainerState extends State<ProfileContainer> {
                     child: Column(
                       children: [
                         Text(
-                          widget.profileContent['following_count'].toString(),
-                          //formatNumber('11222'),
-                          // NumberFormat.compact().format(
-                          //   widget.profileContent['following_count'].toString(),
-                          // ),
+                          formatNumber(
+                              widget.profileContent['following_count']),
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
@@ -206,11 +218,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                     child: Column(
                       children: [
                         Text(
-                          widget.profileContent['follower_count'].toString(),
-                          // formatNumber(23332),
-                          // NumberFormat.compact().format(
-                          //   widget.profileContent['follower_count'].toString(),
-                          //),
+                          formatNumber(widget.profileContent['follower_count']),
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
@@ -247,9 +255,8 @@ class _ProfileContainerState extends State<ProfileContainer> {
                     child: Column(
                       children: [
                         Text(
-                          NumberFormat.compact().format(
-                            widget.profileContent['number of blogs'].toString(),
-                          ),
+                          formatNumber(
+                              widget.profileContent['number of blogs']),
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 18),
                         ),
@@ -293,20 +300,5 @@ class _ProfileContainerState extends State<ProfileContainer> {
         ],
       ),
     );
-  }
-
-  String formatNumber(dynamic myNumber) {
-    // Convert number into a string if it was not a string previously
-    String stringNumber = myNumber.toString();
-
-    // Convert number into double to be formatted.
-    // Default to zero if unable to do so
-    double doubleNumber = double.tryParse(stringNumber) ?? 0;
-
-    // Set number format to use
-    NumberFormat numberFormat = new NumberFormat.compact();
-    print(stringNumber);
-    print(numberFormat.format(doubleNumber));
-    return numberFormat.format(doubleNumber);
   }
 }
