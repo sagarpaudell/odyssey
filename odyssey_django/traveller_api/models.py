@@ -5,6 +5,7 @@ from django.core.files import File
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.core.files.storage import default_storage
+from PIL import Image
 
 from traveller_api.utils import image_resize
 from cloudinary.models import CloudinaryField
