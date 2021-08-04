@@ -2,6 +2,7 @@ from re import T
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+from PIL import Image
 
 class Traveller(models.Model):
     first_name = models.CharField(max_length=200,blank=True)
@@ -45,13 +46,27 @@ class Traveller(models.Model):
 
     def get_posts_count(self):
         return self.posts.all().count()
-    
+
     def get_blogs(self):
-       return self.blogs.all()
+        return self.blogs.all()
 
     def get_blogs_count(self):
         return self.blogs.all().count()
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        img = Image.open(self.photo_main.path)
+        final_size=(200,200)
+        width, height = img.size   # Get dimensions
+        if width>200 or height >200:
+            square_length = width if width<height else height
+            left = (width - square_length)/2
+            top = (height - square_length)/2
+            right = (width + square_length)/2
+            bottom = (height + square_length)/2
+            img = img.crop((left, top, right, bottom))
+            img.thumbnail(final_size)
+            img.save(self.photo_main.path)
 
 class TravellerFollowing(models.Model):
     traveller_id = models.ForeignKey(
