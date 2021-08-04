@@ -198,9 +198,9 @@ Widget _PostHeader(Map<String, dynamic> post, String selfUserName,
       GestureDetector(
         onTap: () {
           if (post['traveller']['username'] == selfUserName) {
-            Navigator.of(context).pushReplacementNamed(SelfProfile.routeName);
+            Navigator.of(context).pushNamed(SelfProfile.routeName);
           } else {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (_) => UserProfile(post['traveller']['username']),
