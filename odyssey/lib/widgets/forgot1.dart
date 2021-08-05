@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:odyssey/screens/auth_screen.dart';
@@ -37,26 +44,30 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: SingleChildScrollView(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: Colors.white,
-          ),
-          margin:
-              EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.25),
-          alignment: Alignment.center,
-          height: MediaQuery.of(context).size.height * 0.5,
-          width: MediaQuery.of(context).size.width,
+      return Scaffold(
+    // resizeToAvoidBottomInset: true,
+    backgroundColor: Colors.transparent,
+    body: SingleChildScrollView(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: Colors.white,
+        ),
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.25),
+        alignment: Alignment.center,
+        height: MediaQuery.of(context).size.height * 0.5,
+        width: MediaQuery.of(context).size.width,
+        child: Form(
+          // key: _form,
           child: Column(
             children: [
               Container(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 margin: EdgeInsets.only(top: 20),
                 alignment: Alignment.center,
                 child: Text(
-                  "Forgot Password?",
+                  "Reset your password",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: 24,
@@ -71,74 +82,90 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 padding: EdgeInsets.symmetric(horizontal: 30),
                 alignment: Alignment.center,
                 child: Text(
-                  "Enter the username associated with your account:",
+                  "Set a new password for your account",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400),
+                    color: Colors.blueGrey,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
-                child: TextField(
-                  controller: _usernameController,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    hintText: "Enter your username",
-                  ),
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                child: TextFormField(
+                  decoration: InputDecoration(labelText: 'Password'),
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.text,
+                  // obscureText: true,
+                  // controller: _passController,
+                  // focusNode: _passFocusNode,
+                  // onFieldSubmitted: (_) => FocusScope.of(context)
+                  //     .requestFocus(_confirmPassFocusNode),
+                  // validator: (value) {
+                  //   if (value.isEmpty || value.length < 6) {
+                  //     return 'Please Provide a value greater than 6 characters';
+                  //   }
+                  //   return null;
+                  // },
                 ),
               ),
-              // Container(
-              //   margin: EdgeInsets.only(top: 18, bottom: 18),
-              //   width: MediaQuery.of(context).size.width,
-              //   padding: EdgeInsets.symmetric(horizontal: 30),
-              //   alignment: Alignment.center,
-              //   child: Text(
-              //     "(We'll send you a confirmation code to this email)",
-              //     textAlign: TextAlign.center,
-              //     style: TextStyle(
-              //         color: Theme.of(context).primaryColor.withOpacity(0.6),
-              //         fontSize: 14,
-              //         fontWeight: FontWeight.w400),
-              //   ),
-              // ),
-              _isLoading
-                  ? CircularProgressIndicator()
-                  : Container(
-                      // height: (deviceSize.height - 200) * 0.10,
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      child: ElevatedButton(
-                        // onPressed: ()=>_secondStep(context),
-                        onPressed: () async {
-                          _isLoading = true;
-                          await send();
-                          if (OTPData['otp_request']) {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return secondStep(OTPData['email'],
-                                      _usernameController.text);
-                                });
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                    'The username does not exist. Please enter corrext username'),
-                                backgroundColor: Theme.of(context).errorColor,
-                              ),
-                            );
-                          }
-                        },
-                        child: Text('Continue'),
-                      ),
-                    ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                ),
+                child: TextFormField(
+                  decoration: InputDecoration(labelText: 'Confirm Password'),
+                  textInputAction: TextInputAction.done,
+                  obscureText: true,
+                  keyboardType: TextInputType.text,
+                  // focusNode: _confirmPassFocusNode,
+                  // validator: (value) {
+                  //   if (value != _passController.text) {
+                  //     return 'Passwords do not match!';
+                  //   }
+
+                  //   return null;
+                  // },
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 14),
+                // height: (deviceSize.height - 200) * 0.10,
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: ElevatedButton(
+                  onPressed: (){},
+                  // onPressed: () async {
+                  //   await _saveForm();
+                  //   if (resetSuccess) {
+                  //     showDialog(
+                  //       context: context,
+                  //       builder: (BuildContext context) {
+                  //         return _successPage(context);
+                  //       },
+                  //     );
+                  //   } else {
+                  //     ScaffoldMessenger.of(context).showSnackBar(
+                  //       SnackBar(
+                  //         content: Text(
+                  //             'The password couldn\'t be changed. Please try again'),
+                  //         backgroundColor: Theme.of(context).errorColor,
+                  //       ),
+                  //     );
+                  //     Navigator.of(context).push(
+                  //         MaterialPageRoute(builder: (ctx) => AuthPage()));
+                  //   }
+                  // },
+                  child: Text('Reset password'),
+                ),
+              ),
             ],
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 }
 
@@ -331,7 +358,7 @@ _finalStep(context, String uname) {
   }
 
   return Scaffold(
-    resizeToAvoidBottomInset: true,
+    // resizeToAvoidBottomInset: true,
     backgroundColor: Colors.transparent,
     body: SingleChildScrollView(
       child: Container(

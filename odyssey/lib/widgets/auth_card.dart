@@ -381,7 +381,7 @@ class _AuthCardState extends State<AuthCard>
                                     ),
                                   filled: true,
                                   fillColor: Color(0xffF5F5F5),
-                                  prefixIcon:Icon(Icons.lock),
+                                  prefixIcon:Icon(Icons.account_circle),
                                   ),
                                 keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.next,

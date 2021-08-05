@@ -12,11 +12,14 @@ import 'package:provider/provider.dart';
 import '../providers/posts.dart';
 import '../providers/blog.dart' as blogss;
 import '../providers/auth.dart';
+import 'package:rolling_switch/rolling_switch.dart';
+
 
 // import '../themes/style.dart';
 // import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class FeedsScreen extends StatefulWidget {
+
   static const routeName = '/feeds';
 
   @override
@@ -24,6 +27,7 @@ class FeedsScreen extends StatefulWidget {
 }
 
 class _FeedsScreenState extends State<FeedsScreen> {
+  
   List<dynamic> userPosts;
   List<dynamic> allBlogs;
   bool isPosts = true;
@@ -63,6 +67,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Color buttonColor=Theme.of(context).primaryColor;
     if (!isPosts) {
       getAllTheBlogs();
     }
@@ -70,6 +75,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            toolbarHeight: MediaQuery.of(context).size.height*0.09,
             brightness: Brightness.light,
             backgroundColor: Colors.white,
             floating: true,
@@ -88,15 +94,26 @@ class _FeedsScreenState extends State<FeedsScreen> {
                     color: Colors.black,
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isPosts = !isPosts;
-                    });
-                  },
-                  child: Image.asset(
-                    'assets/images/logoonly.png',
-                    height: 40.0,
+                Container(
+          
+                  height: MediaQuery.of(context).size.height*0.07,
+                  child: RollingSwitch.icon(
+                    onChanged: (bool state) {
+                      setState(() {
+                        isPosts = !isPosts;
+                      });
+                    },
+                    rollingInfoRight: const RollingIconInfo(
+                      backgroundColor:Color(0xFF1C2E4A),
+                      
+                      icon: Icons.post_add,
+                      text: Text('Blogs'),
+                    ),
+                    rollingInfoLeft: const RollingIconInfo(
+                      icon: Icons.home,
+                      backgroundColor: Colors.grey,
+                      text: Text('Posts'),
+                    ),
                   ),
                 ),
                 GestureDetector(

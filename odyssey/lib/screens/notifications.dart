@@ -33,7 +33,7 @@ class _NotificationsState extends State<Notifications> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
                     // alignment: Alignment.centerLeft,
