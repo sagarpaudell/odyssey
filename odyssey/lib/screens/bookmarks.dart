@@ -97,9 +97,6 @@ class _BookmarkState extends State<Bookmark> {
                   ),
                   Text('Blogs')
                 ],
-                borderRadius: BorderRadius.circular(20),
-                borderColor: Theme.of(context).primaryColor,
-                borderWidth: 1,
                 isSelected: isSelected,
                 selectedColor: Colors.white,
                 splashColor: Colors.lightBlue,
