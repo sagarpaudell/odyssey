@@ -33,7 +33,7 @@ class _NotificationsState extends State<Notifications> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
                     // alignment: Alignment.centerLeft,
@@ -101,19 +101,15 @@ class _NotificationsState extends State<Notifications> {
                     ),
                   ),
                   Container(
-                      width: MediaQuery.of(context).size.width * 0.6,
-                      child: Text(
-                        "Biraj adhikari liked your photo bla bla cha skljh alsh lkj hsvlkj ",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w400),
-                      )),
+                    width: MediaQuery.of(context).size.width*0.6,
+                    child: Text("Biraj Adhikari commented on your photo", 
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),)
+                  ),
                   Container(
                     alignment: Alignment.centerRight,
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    child: Text(
-                      "2021/3/17",
-                      style: TextStyle(color: Colors.black.withOpacity(0.5)),
-                    ),
+                    width: MediaQuery.of(context).size.width*0.2,
+                    child: Text("2021/7/17",
+                    style: TextStyle(color: Colors.black.withOpacity(0.5)),),
                   ),
                 ],
               ),

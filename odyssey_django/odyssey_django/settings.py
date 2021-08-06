@@ -200,11 +200,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-django_heroku.settings(locals())
-
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'htujpytup',
     'API_KEY': '844824473829745',
     'API_SECRET': 'SHk8m5le34YQu1I0B12n8W59zGE',
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+django_heroku.settings(locals())
+

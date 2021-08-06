@@ -22,7 +22,7 @@ class _MainScreenState extends State<MainScreen> {
     Icons.home,
     Icons.explore,
     Icons.add_a_photo_outlined,
-    Icons.emoji_emotions_outlined,
+    Icons.notifications,
     Icons.person,
   ];
   int _selectedIndex = 0;
