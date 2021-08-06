@@ -64,56 +64,84 @@ class _ExploreState extends State<Explore> {
             brightness: Brightness.light,
             backgroundColor: Colors.white,
             floating: true,
-            title: Container(
-              margin: EdgeInsets.all(12),
-              alignment: Alignment.topCenter,
-              child: Container(
-                child: ToggleButtons(
-                  fillColor: Theme.of(context).primaryColor,
-                  selectedColor: Colors.white,
-                  color: Theme.of(context).primaryColor,
-                  highlightColor: Colors.blueGrey,
-                  isSelected: isSelected,
-                  renderBorder: false,
-                  borderRadius: BorderRadius.circular(20),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        "POSTS",
-                        style: TextStyle(fontSize: 16),
-                      ),
+            title: Column(
+              children: [
+                
+                Container(
+                  margin: EdgeInsets.all(12),
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    child: ToggleButtons(
+                      fillColor: Theme.of(context).primaryColor,
+                      selectedColor: Colors.white,
+                      color: Theme.of(context).primaryColor,
+                      highlightColor: Colors.blueGrey,
+                      isSelected: isSelected,
+                      renderBorder: false,
+                      borderRadius: BorderRadius.circular(20),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            "POSTS",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            "BLOGS",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            "PLACES",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
+                      onPressed: (int newIndex) {
+                        setState(() {
+                          for (int index = 0; index < isSelected.length; index++) {
+                            if (index == newIndex) {
+                              isSelected[index] = true;
+                            } else {
+                              isSelected[index] = false;
+                            }
+                          }
+                        });
+                      },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        "BLOGS",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        "PLACES",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ],
-                  onPressed: (int newIndex) {
-                    setState(() {
-                      for (int index = 0; index < isSelected.length; index++) {
-                        if (index == newIndex) {
-                          isSelected[index] = true;
-                        } else {
-                          isSelected[index] = false;
-                        }
-                      }
-                    });
-                  },
+                  ),
                 ),
-              ),
+              ],
             ),
             centerTitle: true,
+          ),
+          SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: "Search by Places/People",
+                    filled: true,
+                    fillColor: Color(0xffF5F5F5),               
+                    prefixIcon: Icon(Icons.search),
+                    border:OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
+                    )
+
+                  ),
+                ),
+              );
+            },
+            childCount: 1,
+          ),
           ),
           isSelected[0] == true
               ? PostContent(fbuilder, explorePosts)
