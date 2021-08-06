@@ -5,7 +5,7 @@ from .models import Comment
 
 # Register your models here.
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('id', 'caption', 'traveller', 'post_time',)
+    list_display = ('id', 'caption', 'traveller', 'post_time',  'public_post')
     list_display_links = ('id','caption', 'traveller')
     list_filter = ('traveller', 'post_time',)
 
