@@ -17,7 +17,7 @@ class ChatView(APIView):
         chat = Chat.objects.filter(
                 Q(sender = login_user) | Q(receiver=login_user),
                 Q(receiver = friend_user) | Q(sender = friend_user)
-            ).order_by('-message_time')
+            ).order_by('message_time')
         if chat:
             if chat.first().sender == friend_user:
                 chat.update(message_seen = True)
