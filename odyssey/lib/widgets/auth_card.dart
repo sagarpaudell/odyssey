@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:odyssey/pages/auth_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:odyssey/screens/screens.dart';
 import 'package:odyssey/widgets/forgot_password.dart';
 import 'package:odyssey/widgets/signup_verification.dart';
 // import '../pages/feeds_page.dart';
@@ -109,16 +110,16 @@ class _AuthCardState extends State<AuthCard>
             _authData['phone'],
             _authData['userName'],
             _authData['password']);
-        //Navigator.of(context).popAndPushNamed(AuthPage.routeName);
+        Navigator.of(context).popAndPushNamed(AuthPage.routeName);
       }
     } on HttpException catch (error) {
       var errorMessage = error.toString();
       print(errorMessage);
-      if (error.toString().contains('email')) {
-        errorMessage = 'Enter a valid email address.';
-      } else if (error.toString().contains('username')) {
-        errorMessage = 'A user with that username already exists.';
-      }
+      // if (error.toString().contains('Invalid Username')) {
+      //   errorMessage = 'Enter a valid email address.';
+      // } else if (error.toString().contains('username')) {
+      //   errorMessage = 'A user with that username already exists.';
+      // }
       _showErrorDialog(errorMessage);
     }
     // } on HttpException catch (error) {
@@ -158,12 +159,14 @@ class _AuthCardState extends State<AuthCard>
           key: _form,
           child: Container(
             height: deviceSize.height,
-            child: Column(
+            child: ListView(
               children: [
                 AnimatedContainer(
                   duration: Duration(milliseconds: 300),
                   curve: Curves.easeIn,
-                  margin: _authMode == AuthMode.Signup ? EdgeInsets.only(top: 12):EdgeInsets.only(top: 40),
+                  margin: _authMode == AuthMode.Signup
+                      ? EdgeInsets.only(top: 12)
+                      : EdgeInsets.only(top: 40),
                   height: _authMode == AuthMode.Signup ? 80 : 200,
                   alignment: Alignment.center,
                   child: Image.asset(
@@ -177,23 +180,25 @@ class _AuthCardState extends State<AuthCard>
                         padding: EdgeInsets.only(left: 30, right: 30),
                         child: ListView(children: [
                           Container(
-                            height: deviceSize.height*0.07,
+                            height: deviceSize.height * 0.07,
                             margin: EdgeInsets.only(bottom: 14),
                             child: TextFormField(
-                              decoration: InputDecoration(labelText: 'E-mail',
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.all(Radius.circular(10),
-                                ),                             
-                              ),
-                              focusedBorder:OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10),
-                                
+                              decoration: InputDecoration(
+                                labelText: 'E-mail',
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
                                 ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
                                 ),
-                              filled: true,
-                              fillColor: Color(0xffF5F5F5),
-                              prefixIcon:Icon(Icons.email),
+                                filled: true,
+                                fillColor: Color(0xffF5F5F5),
+                                prefixIcon: Icon(Icons.email),
                               ),
                               keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.next,
@@ -213,23 +218,25 @@ class _AuthCardState extends State<AuthCard>
                             ),
                           ),
                           Container(
-                            height: deviceSize.height*0.07,
+                            height: deviceSize.height * 0.07,
                             margin: EdgeInsets.only(bottom: 14),
                             child: TextFormField(
-                              decoration: InputDecoration(labelText: 'Phone',
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.all(Radius.circular(10),
-                                ),                             
-                              ),
-                              focusedBorder:OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10),
-                                
+                              decoration: InputDecoration(
+                                labelText: 'Phone',
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
                                 ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
                                 ),
-                              filled: true,
-                              fillColor: Color(0xffF5F5F5),
-                              prefixIcon:Icon(Icons.phone),
+                                filled: true,
+                                fillColor: Color(0xffF5F5F5),
+                                prefixIcon: Icon(Icons.phone),
                               ),
                               textInputAction: TextInputAction.next,
                               keyboardType: TextInputType.number,
@@ -255,23 +262,26 @@ class _AuthCardState extends State<AuthCard>
                             ),
                           ),
                           Container(
-                            height: deviceSize.height*0.07,
+                            height: deviceSize.height * 0.07,
                             margin: EdgeInsets.only(bottom: 14),
                             child: TextFormField(
-                              decoration: InputDecoration(labelText: 'UserName',
-                              enabledBorder: OutlineInputBorder(
+                              decoration: InputDecoration(
+                                labelText: 'UserName',
+                                enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.all(Radius.circular(10),
-                                  ),                             
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
                                 ),
-                                focusedBorder:OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(10),
-                                  
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
                                   ),
-                                  ),
+                                ),
                                 filled: true,
                                 fillColor: Color(0xffF5F5F5),
-                                prefixIcon:Icon(Icons.account_circle),),
+                                prefixIcon: Icon(Icons.account_circle),
+                              ),
                               textInputAction: TextInputAction.next,
                               keyboardType: TextInputType.text,
                               focusNode: _userNameFocusNode,
@@ -289,24 +299,26 @@ class _AuthCardState extends State<AuthCard>
                             ),
                           ),
                           Container(
-                            height: deviceSize.height*0.07,
+                            height: deviceSize.height * 0.07,
                             margin: EdgeInsets.only(bottom: 14),
                             child: TextFormField(
-                              decoration: InputDecoration(labelText: 'Password',
-                              enabledBorder: OutlineInputBorder(
+                              decoration: InputDecoration(
+                                labelText: 'Password',
+                                enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.all(Radius.circular(10),
-                                  ),                             
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
                                 ),
-                                focusedBorder:OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(10),
-                                  
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
                                   ),
-                                  ),
+                                ),
                                 filled: true,
                                 fillColor: Color(0xffF5F5F5),
-                                prefixIcon:Icon(Icons.lock),
-                                ),
+                                prefixIcon: Icon(Icons.lock),
+                              ),
                               textInputAction: TextInputAction.next,
                               obscureText: true,
                               controller: _passwordController,
@@ -325,25 +337,26 @@ class _AuthCardState extends State<AuthCard>
                             ),
                           ),
                           Container(
-                            height: deviceSize.height*0.07,
+                            height: deviceSize.height * 0.07,
                             margin: EdgeInsets.only(bottom: 14),
                             child: TextFormField(
-                              decoration:
-                                  InputDecoration(labelText: 'Confirm Password',
-                                  enabledBorder: OutlineInputBorder(
+                              decoration: InputDecoration(
+                                labelText: 'Confirm Password',
+                                enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.all(Radius.circular(10),
-                                  ),                             
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
                                 ),
-                                focusedBorder:OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(10),
-                                  
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
                                   ),
-                                  ),
+                                ),
                                 filled: true,
                                 fillColor: Color(0xffF5F5F5),
-                                prefixIcon:Icon(Icons.lock),
-                                ),
+                                prefixIcon: Icon(Icons.lock),
+                              ),
                               textInputAction: TextInputAction.done,
                               obscureText: true,
                               focusNode: _confirmPassFocusNode,
@@ -364,25 +377,26 @@ class _AuthCardState extends State<AuthCard>
                         child: ListView(
                           children: [
                             Container(
-                              height: deviceSize.height*0.08,
+                              height: deviceSize.height * 0.08,
                               margin: EdgeInsets.only(bottom: 18),
                               child: TextFormField(
-                                decoration:
-                                    InputDecoration(labelText: 'Username',
-                                    enabledBorder: OutlineInputBorder(
+                                decoration: InputDecoration(
+                                  labelText: 'Username',
+                                  enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide.none,
-                                    borderRadius: BorderRadius.all(Radius.circular(10),
-                                    ),                             
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
                                   ),
-                                  focusedBorder:OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10),
-                                    
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
                                     ),
-                                    ),
+                                  ),
                                   filled: true,
                                   fillColor: Color(0xffF5F5F5),
-                                  prefixIcon:Icon(Icons.lock),
-                                  ),
+                                  prefixIcon: Icon(Icons.lock),
+                                ),
                                 keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (_) {
@@ -401,25 +415,26 @@ class _AuthCardState extends State<AuthCard>
                               ),
                             ),
                             Container(
-                              height: deviceSize.height*0.08,
+                              height: deviceSize.height * 0.08,
                               margin: EdgeInsets.only(bottom: 18),
                               child: TextFormField(
-                                decoration:
-                                    InputDecoration(labelText: 'Password',
-                                    enabledBorder: OutlineInputBorder(
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide.none,
-                                    borderRadius: BorderRadius.all(Radius.circular(10),
-                                    ),                             
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
                                   ),
-                                  focusedBorder:OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10),
-                                    
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
                                     ),
-                                    ),
+                                  ),
                                   filled: true,
                                   fillColor: Color(0xffF5F5F5),
-                                  prefixIcon:Icon(Icons.lock),
-                                  ),
+                                  prefixIcon: Icon(Icons.lock),
+                                ),
                                 textInputAction: TextInputAction.done,
                                 obscureText: true,
                                 focusNode: _confirmPassFocusNode,
@@ -468,7 +483,7 @@ class _AuthCardState extends State<AuthCard>
                         height: _authMode == AuthMode.Signup
                             ? (deviceSize.height - 80) * 0.08
                             : (deviceSize.height - 200) * 0.10,
-                        width: deviceSize.width * 0.9,
+                        width: deviceSize.width * 0.7,
                         child: ElevatedButton(
                           onPressed: _saveForm,
                           child: Text(

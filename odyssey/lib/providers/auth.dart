@@ -36,6 +36,13 @@ class Auth with ChangeNotifier {
           },
         ),
       );
+
+      print(json.decode(response.statusCode.toString()));
+      if (json.decode(response.statusCode.toString()) == 401) {
+        //print(responseData);
+        print('csdvs');
+        throw HttpException('Invalid Username or Password');
+      }
       if (username == 'postgres') {
         // print(json.decode(response.body));
         _rootToken = json.decode(response.body)['access'];
@@ -85,12 +92,6 @@ class Auth with ChangeNotifier {
 
       notifyListeners();
       final responseData = json.decode(response.body);
-
-      if (responseData['non_field_errors'] != null) {
-        //print(responseData);
-        //print('csdvs');
-        throw HttpException('Invalid Username or Password');
-      }
     } catch (e) {
       throw (e);
     }
@@ -102,10 +103,9 @@ class Auth with ChangeNotifier {
     String userName,
     String password,
   ) async {
-    const _url = 'http://10.0.2.2:8000/accounts-api/user/';
+    const _url = 'https://travellum.herokuapp.com/accounts-api/user/';
     getToken();
     final authToken = 'Bearer ' + _rootToken;
-    print(authToken);
     try {
       final response = await http.post(
         Uri.parse(_url),
@@ -123,7 +123,7 @@ class Auth with ChangeNotifier {
         ),
       );
 
-      final responseData = json.decode(response.body);
+      print(json.decode(response.statusCode.toString()));
       // if (responseData['email']) {
       //   throw HttpException('email');
       // }
@@ -131,7 +131,8 @@ class Auth with ChangeNotifier {
       //   throw HttpException('username');
       // }
     } catch (error) {
-      //print(error);
+      print('blahhh');
+      print(error);
       throw error;
     }
   }
