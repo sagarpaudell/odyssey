@@ -31,3 +31,13 @@ class BlogComment(models.Model):
     liked_users = models.ManyToManyField(Traveller, related_name='likedcomments', blank=True)
     disliked_users = models.ManyToManyField(Traveller, related_name='dislikedcomments', blank=True)
     comment_time = models.DateTimeField(auto_now_add=True)
+
+class Blog_notification(models.Model):
+    blog_id=models.ForeignKey(Blog, on_delete=models.CASCADE)
+    is_like = models.BooleanField(default = False, blank = True)
+    is_comment = models.BooleanField(default = False, blank = True)
+    comment_id = models.ForeignKey(
+            BlogComment,
+            on_delete = models.CASCADE,
+            null = True
+        )

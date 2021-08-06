@@ -23,6 +23,13 @@ class NewsfeedView(APIView):
             )
         return Response(post_serialized.data)
 
+
+class Explore(APIView):
+    def get(self):
+        posts = Post.objects.filter(public_post=True)
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data, status = status.HTTP_200_OK)
+
 class SelfPostView(APIView):
     parser_classes = [MultiPartParser]
     def post(self, request):

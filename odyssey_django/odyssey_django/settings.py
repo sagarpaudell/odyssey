@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'chat',
     'post',
     'blogs',
+    'notification',
     'cloudinary',
 ]
 

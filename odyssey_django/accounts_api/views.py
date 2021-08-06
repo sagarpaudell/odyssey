@@ -1,17 +1,19 @@
+import random
+from datetime import datetime, timezone
+
 from rest_framework import response
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from .models import OTP
-from .serializers import OTPSerializer, UserSerializer
+
 from django.contrib.auth.models import User
-from datetime import datetime, timezone
-import random
 from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
+from .models import OTP
+from .serializers import OTPSerializer, UserSerializer
 class UserRecordView(APIView):
     """ API View to create or get user info.
     a POST request allows to create a new user.
