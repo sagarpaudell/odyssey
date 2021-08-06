@@ -483,7 +483,7 @@ class _AuthCardState extends State<AuthCard>
                         height: _authMode == AuthMode.Signup
                             ? (deviceSize.height - 80) * 0.08
                             : (deviceSize.height - 200) * 0.10,
-                        width: deviceSize.width * 0.7,
+                        margin: EdgeInsets.only(left: 30, right:30),
                         child: ElevatedButton(
                           onPressed: _saveForm,
                           child: Text(
@@ -517,7 +517,7 @@ class _AuthCardState extends State<AuthCard>
                   height: 10,
                 ),
                 Container(
-                  width: deviceSize.width * 0.9,
+                  margin: EdgeInsets.only(left: 30, right:30),
                   child: OutlinedButton(
                     onPressed: () {},
                     child: Row(
