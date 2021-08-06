@@ -47,3 +47,14 @@ class Comment(models.Model):
             related_name='comments')
     comment = models.TextField(blank = False, null=False)
     comment_time = models.DateTimeField(auto_now_add=True, blank=True )
+
+class Post_notification(models.Model):
+    post_id=models.ForeignKey(Post, on_delete=models.CASCADE)
+    is_like = models.BooleanField(default = False, blank = True)
+    is_comment = models.BooleanField(default = False, blank = True)
+    comment_id = models.ForeignKey(
+            Comment,
+            on_delete = models.CASCADE,
+            null = True 
+        )
+

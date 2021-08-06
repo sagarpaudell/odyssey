@@ -89,9 +89,15 @@ def edit_or_create_traveller(sender, instance, **kwargs):
         traveller.last_name = instance.last_name
         traveller.save()
     else:
-        Traveller.objects.create(username=instance,
+        traveller = Traveller.objects.create(username=instance,
             first_name=instance.first_name,
             last_name=instance.last_name
             )
+        following = TravellerFollowing(
+                traveller_id=traveller ,
+                following_traveller_id = traveller
+            )
+        following.save()
+
 
 post_save.connect(edit_or_create_traveller, sender=User)

@@ -8,4 +8,3 @@ class ChatAdmin(admin.ModelAdmin):
     list_filter = ('sender','receiver', 'message_time')
 
 admin.site.register(Chat,ChatAdmin)
-
