@@ -20,7 +20,7 @@ class Bookmark extends StatefulWidget {
 }
 
 class _BookmarkState extends State<Bookmark> {
-  List<bool> isSelected;
+  List<bool> isSelected=[true,false];
   bool isPosts = true;
   List<dynamic> bookmarkedPosts;
   List<dynamic> bookmarkedBlogs;
@@ -92,27 +92,46 @@ class _BookmarkState extends State<Bookmark> {
             child: Center(
               child: ToggleButtons(
                 children: [
-                  Text(
-                    'Posts',
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      'Posts',style: 
+                    TextStyle(fontSize: 16),
+                    ),
                   ),
-                  Text('Blogs')
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text('Blogs',style: 
+                    TextStyle(fontSize: 16),),
+                  )
                 ],
-                isSelected: isSelected,
-                selectedColor: Colors.white,
-                splashColor: Colors.lightBlue,
-                fillColor: Theme.of(context).primaryColor,
+              fillColor: Theme.of(context).primaryColor,
+              selectedColor: Colors.white,
+              color: Theme.of(context).primaryColor,
+              highlightColor: Colors.blueGrey,
+              isSelected: isSelected,
+              renderBorder: false,
+              borderRadius: BorderRadius.circular(20),
                 onPressed: (int index) {
                   setState(() {
                     for (int indexBtn = 0;
                         indexBtn < isSelected.length;
                         indexBtn++) {
                       if (indexBtn == index) {
-                        isSelected[indexBtn] = !isSelected[indexBtn];
-                      } else {
+                        isSelected[indexBtn] = true;
+                          if(index==0){
+                            isPosts = true;
+                          }
+                          else{
+                            isPosts=false;
+                          }
+                      }
+                      else {
                         isSelected[indexBtn] = false;
                       }
                     }
-                    isPosts = !isPosts;
+                    
+                    
                   });
                 },
               ),

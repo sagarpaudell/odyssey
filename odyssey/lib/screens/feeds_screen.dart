@@ -107,13 +107,13 @@ class _FeedsScreenState extends State<FeedsScreen> {
                       backgroundColor:Color(0xFF1C2E4A),
                       
                       icon: Icons.post_add,
-                      text: Text('BLOGS', style: TextStyle(fontSize: 16),),
+                      text: Text('BLOGS', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                     
                     ),
                     rollingInfoLeft: const RollingIconInfo(
                       icon: Icons.home,
                       backgroundColor: Colors.grey,
-                      text: Text('POSTS', style: TextStyle(fontSize: 16),),
+                      text: Text('POSTS', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                     ),
                   ),
                 ),
