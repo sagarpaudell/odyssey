@@ -29,7 +29,7 @@ class Traveller(models.Model):
 
     def __str__(self):
         id = self.id
-        return f"{id=}, {self.username.username}"
+        return f"{self.username.username}({id}) "
 
     def get_following(self):
         following = [x.following_traveller_id for x in self.following.all()]

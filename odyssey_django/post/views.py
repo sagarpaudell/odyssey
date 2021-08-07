@@ -5,9 +5,10 @@ from rest_framework.parsers import MultiPartParser
 from django.db.models import Q
 
 from traveller_api.models import Traveller
+from notification.models import Notification, Notification_type
 from places_api.models import Place
 from .serializers import PostSerializer, CommentSerializer
-from .models import ( Post, Comment )
+from .models import ( Post, Comment , Post_notification)
 
 
 class NewsfeedView(APIView):
@@ -27,9 +28,7 @@ class NewsfeedView(APIView):
 class ExploreView(APIView):
     def get(self, request):
         posts = Post.objects.filter(public_post=True)
-        print(posts)
         serializer = PostSerializer(posts, many=True)
-        print(serializer.data)
         return Response(serializer.data, status = status.HTTP_200_OK)
 
 class SelfPostView(APIView):
@@ -170,11 +169,14 @@ class LikeView(APIView):
         if traveller in post.like_users.all():
             post.like_users.remove(traveller)
             message = "Unliked post"
+            notification(post = post, traveller = traveller, remove = True)
         else:
             post.like_users.add(traveller)
             message = "Liked post"
-        traveller.save()
+            notification(post = post, traveller = traveller)
+        post.save()
         return Response({"success":message}, status = status.HTTP_200_OK)
+
 
 class CommentView(APIView):
     def post(self, request, id):
@@ -191,7 +193,8 @@ class CommentView(APIView):
         traveller = Traveller.objects.get(username=request.user)
         serializer = CommentSerializer(data = request.data)
         if serializer.is_valid(raise_exception = ValueError):
-            serializer.save(post_id=post, traveller=traveller)
+            comment = serializer.save(post_id=post, traveller=traveller)
+            notification(post = post, comment = comment)
             return Response(serializer.data, status = status.HTTP_200_OK)
         return Response(
                {
@@ -303,3 +306,27 @@ def get_post(id):
     except Post.DoesNotExist:
         return False
     return post
+
+def notification(post=None, comment=None, traveller = None, remove = False):
+    is_comment = bool(comment)
+    is_like = not is_comment
+    post_notification, _created = Post_notification.objects.get_or_create(
+                        post_id = post,
+                        is_like = is_like,
+                        is_comment = is_comment,
+                        comment_id = comment
+                    )
+    noti_type, _created = Notification_type.objects.get_or_create(
+                        category = "POST",
+                        post_noti = post_notification
+                    )
+
+    notification, _create = Notification.objects.get_or_create(
+                sender = traveller,
+                receipent = post.traveller,
+                noti_type = noti_type
+            )
+    if remove:
+        return notification.noti_type.post_noti.delete()
+    return notification
+
