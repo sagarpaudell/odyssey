@@ -6,6 +6,7 @@ from .serializers import BlogSerializer,BlogCommentSerializer
 from .models import Blog,BlogComment
 from traveller_api.models import Traveller
 from places_api.models import Place
+from django.db.models import Q
 
 class MyBlogs(APIView):
     def get(self,request):
@@ -17,6 +18,14 @@ class MyBlogs(APIView):
                 many = True
             )
         return Response(serializer.data)
+
+class NewsfeedBlogs(APIView):
+    def get(self, request):
+        traveller = Traveller.objects.get(username = request.user)
+        following = traveller.get_following()
+        blogs = Blog.objects.filter(Q(author__in = following) | Q(author = traveller))
+        blog_serialized = BlogSerializer(blogs, many=True, context={"traveller": traveller})
+        return Response(blog_serialized.data)       
 
 class ViewBlogs(APIView):
     def get(self,request):

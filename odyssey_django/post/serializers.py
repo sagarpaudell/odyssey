@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from rest_framework.permissions import IsAuthenticated
 from traveller_api.serializers import TravellerSerializer, TravellerSerializerPrivate, TravellerSerializerPublic
-from places_api.serializers import PlaceSerializer
+from places_api.serializers import PlaceSerializer, PlaceSerializerNewsFeed
 from .models import Post, Comment
 
 class CommentSerializer(ModelSerializer):
@@ -18,7 +18,7 @@ class PostSerializer(ModelSerializer):
             read_only=True,
             many = True
         )
-    place = PlaceSerializer(read_only=True)
+    place = PlaceSerializerNewsFeed(read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
     permissions_classes = [IsAuthenticated]
     def check_bookmark(self, obj):

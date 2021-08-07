@@ -61,12 +61,41 @@ class _BlogContainerState extends State<BlogContainer> {
         borderRadius: BorderRadius.circular(15),
         child: Column(
           children: [
-            Image(
-              image: NetworkImage(widget.singleBlog["photo1"]),
-              errorBuilder: (BuildContext context, Object exception,
-                  StackTrace stackTrace) {
-                return Image.asset('./assets/images/mana.jpg');
-              },
+            Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                Image(
+                  image: NetworkImage(widget.singleBlog["photo1"]),
+                  errorBuilder: (BuildContext context, Object exception,
+                      StackTrace stackTrace) {
+                    return Image.asset('./assets/images/mana.jpg');
+                  },
+                ),
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(10, 2, 15, 2),
+                        decoration: BoxDecoration(
+                          // color: Theme.of(context).primaryColor.withOpacity(0.2),
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.location_on_outlined),
+                            Text('Langtang'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -95,6 +124,7 @@ Widget _BlogInfo(Map<String, dynamic> singleBlog, String selfUserName,
             fontWeight: FontWeight.bold,
             letterSpacing: 0.8),
       ),
+
       SizedBox(
         height: 20,
       ),
@@ -168,18 +198,9 @@ Widget _BlogInfo(Map<String, dynamic> singleBlog, String selfUserName,
                   decoration: BoxDecoration(
                       color: Colors.grey[100],
                       borderRadius: BorderRadius.circular(50)),
-                  child: const Icon(
-                    Icons.share_outlined,
-                    size: 24,
-                    color: Colors.grey,
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(50)),
                   child: IconButton(
+                    padding: EdgeInsets.all(2),
+                    constraints: BoxConstraints(),
                     onPressed: () {
                       Provider.of<Blog>(context, listen: false)
                           .toogleBookmarkedBlog(singleBlog['id'].toString());
@@ -196,6 +217,9 @@ Widget _BlogInfo(Map<String, dynamic> singleBlog, String selfUserName,
                             size: 24,
                           ),
                   ),
+                ),
+                SizedBox(
+                  width: 5,
                 ),
                 GestureDetector(
                   onTap: () => Navigator.push(
