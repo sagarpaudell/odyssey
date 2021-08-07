@@ -112,7 +112,7 @@ class Profile with ChangeNotifier {
         headers: {'Content-Type': 'application/json', 'Authorization': token},
       );
       final friendData = json.decode(userDataResponse.body);
-      print('this is $friendData');
+
       notifyListeners();
 
       return friendData;

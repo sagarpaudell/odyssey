@@ -13,6 +13,8 @@ import './screens/bookmarks.dart';
 import './screens/single_blog_screen.dart';
 import './widgets/fb_loading.dart';
 import './providers/blog.dart';
+import './screens/notifications.dart';
+import './providers/notification.dart' as noti;
 import 'package:provider/provider.dart';
 
 void main() {
@@ -78,6 +80,13 @@ class _MyAppState extends State<MyApp> {
             auth.token,
           ),
         ),
+        ChangeNotifierProxyProvider<Auth, noti.Notification>(
+          create: (ctx) => noti.Notification(),
+          update: (ctx, auth, _) => noti.Notification(
+            auth.userId,
+            auth.token,
+          ),
+        ),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
@@ -111,6 +120,7 @@ class _MyAppState extends State<MyApp> {
             ChatScreen.routeName: (ctx) => ChatScreen(),
             SelfProfile.routeName: (ctx) => SelfProfile(),
             Bookmark.routeName: (ctx) => Bookmark(),
+            Notifications.routeName: (ctx) => Notifications(),
             SignupVerification.routeName: (ctx) => SignupVerification(),
           },
         ),
