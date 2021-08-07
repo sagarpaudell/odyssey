@@ -1,3 +1,5 @@
+import 'dart:js';
+
 import 'package:flutter/material.dart';
 import '../providers/posts.dart';
 import '../providers/blog.dart' as blogss;
@@ -126,6 +128,9 @@ class _ExploreState extends State<Explore> {
               return Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: TextField(
+                  onTap: (){showSearch(context: context, delegate: SearchData()
+                  );
+                  },
                   decoration: InputDecoration(
                     hintText: "Search by Places/People",
                     filled: true,
@@ -153,67 +158,41 @@ class _ExploreState extends State<Explore> {
     );
   }
 }
-//       body: ListView(
-//         children: [
-//           Container(
-//             margin: EdgeInsets.all(12),
-//             alignment: Alignment.topCenter,
-//             child: Container(
-//               child: ToggleButtons(
-//                 fillColor: Theme.of(context).primaryColor,
-//                 selectedColor: Colors.white,
-//                 color: Theme.of(context).primaryColor,
-//                 highlightColor: Colors.blueGrey,
-//                 isSelected: isSelected,
-//                 renderBorder: false,
-//                 borderRadius: BorderRadius.circular(20),
-//                 children: [
-//                   Padding(
-//                     padding: const EdgeInsets.all(16.0),
-//                     child: Text(
-//                       "POSTS",
-//                       style: TextStyle(fontSize: 16),
-//                     ),
-//                   ),
-//                   Padding(
-//                     padding: const EdgeInsets.all(16.0),
-//                     child: Text(
-//                       "BLOGS",
-//                       style: TextStyle(fontSize: 16),
-//                     ),
-//                   ),
-//                   Padding(
-//                     padding: const EdgeInsets.all(16.0),
-//                     child: Text(
-//                       "PLACES",
-//                       style: TextStyle(fontSize: 16),
-//                     ),
-//                   ),
-//                 ],
-//                 onPressed: (int newIndex) {
-//                   setState(() {
-//                     for (int index = 0; index < isSelected.length; index++) {
-//                       if (index == newIndex) {
-//                         isSelected[index] = true;
-//                       } else {
-//                         isSelected[index] = false;
-//                       }
-//                     }
-//                   });
-//                 },
-//               ),
-//             ),
-//           ),
-//           isSelected[0] == true
-//               ? PostContent(fbuilder, explorePosts)
-//               : isSelected[1] == true
-//                   ? BlogContent(exploreBlogs)
-//                   : PlaceContent(explorePlace),
-//         ],
-//       ),
-//     );
-//   }
-// }
+class SearchData extends SearchDelegate{
+  final suggestionList=['Bikesh', 'Samesh', 'Biraj'];
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(icon:Icon(Icons.clear), onPressed: (){},)
+    ];    
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    // TODO: implement buildLeading
+    throw UnimplementedError();
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    // TODO: implement buildResults
+    throw UnimplementedError();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return ListView.builder(
+      itemCount: suggestionList.length,
+      itemBuilder: (context,index)=>ListTile(title: Text(suggestionList[index])
+      ,),
+    );
+    
+    
+  }
+
+}
+
+
 
 Widget PostContent(Future fbuilder, List<dynamic> explorePosts) {
   return FutureBuilder<void>(
