@@ -34,7 +34,7 @@ class Post(models.Model):
         # return traveller.id
 
     def __str__(self):
-        return f'{self.id} by {self.traveller.username.username}'
+        return f'post({self.id}) by {self.traveller.username.username}'
 
     def is_bookmarked(self, traveller):
         return bool(traveller in self.bookmark_users.all())
@@ -48,6 +48,9 @@ class Comment(models.Model):
     comment = models.TextField(blank = False, null=False)
     comment_time = models.DateTimeField(auto_now_add=True, blank=True )
 
+    def __str__(self):
+        return f"comment({self.id}) by {self.traveller} in {self.post_id}"
+
 class Post_notification(models.Model):
     post_id=models.ForeignKey(Post, on_delete=models.CASCADE)
     is_like = models.BooleanField(default = False, blank = True)
@@ -55,6 +58,8 @@ class Post_notification(models.Model):
     comment_id = models.ForeignKey(
             Comment,
             on_delete = models.CASCADE,
-            null = True 
+            null = True,
+            blank = True,
+
         )
 

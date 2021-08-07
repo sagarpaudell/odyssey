@@ -39,5 +39,6 @@ class Blog_notification(models.Model):
     comment_id = models.ForeignKey(
             BlogComment,
             on_delete = models.CASCADE,
-            null = True
+            null = True,
+            blank = True,
         )
