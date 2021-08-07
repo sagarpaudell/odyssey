@@ -3,23 +3,18 @@ import 'package:odyssey/models/models.dart';
 import 'package:odyssey/data/data.dart';
 import './bookmarks.dart';
 import './chat_screen.dart';
-import './comment_post.dart';
 import '../widgets/fb_loading.dart';
 import '../widgets/post_container.dart';
 import '../widgets/blog_container.dart';
-import './edit_profile_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/posts.dart';
 import '../providers/blog.dart' as blogss;
-import '../providers/auth.dart';
 import 'package:rolling_switch/rolling_switch.dart';
-
 
 // import '../themes/style.dart';
 // import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class FeedsScreen extends StatefulWidget {
-
   static const routeName = '/feeds';
 
   @override
@@ -27,7 +22,6 @@ class FeedsScreen extends StatefulWidget {
 }
 
 class _FeedsScreenState extends State<FeedsScreen> {
-  
   List<dynamic> userPosts;
   List<dynamic> allBlogs;
   bool isPosts = true;
@@ -41,7 +35,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
 
   fetchUserPosts() {
     Future fbuilder;
-    fbuilder = getUserPosts();
+    fbuilder = getAllPosts();
   }
 
   @override
@@ -50,8 +44,8 @@ class _FeedsScreenState extends State<FeedsScreen> {
     super.initState();
   }
 
-  Future<void> getUserPosts() async {
-    var temp = await Provider.of<Posts>(context, listen: false).getPosts();
+  Future<void> getAllPosts() async {
+    var temp = await Provider.of<Posts>(context, listen: false).getPosts(false);
     setState(() {
       userPosts = temp;
     });
@@ -67,7 +61,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Color buttonColor=Theme.of(context).primaryColor;
+    Color buttonColor = Theme.of(context).primaryColor;
     if (!isPosts) {
       getAllTheBlogs();
     }
@@ -75,7 +69,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            toolbarHeight: MediaQuery.of(context).size.height*0.09,
+            toolbarHeight: MediaQuery.of(context).size.height * 0.09,
             brightness: Brightness.light,
             backgroundColor: Colors.white,
             floating: true,
@@ -95,8 +89,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
                   ),
                 ),
                 Container(
-          
-                  height: MediaQuery.of(context).size.height*0.07,
+                  height: MediaQuery.of(context).size.height * 0.07,
                   child: RollingSwitch.icon(
                     onChanged: (bool state) {
                       setState(() {
@@ -104,16 +97,22 @@ class _FeedsScreenState extends State<FeedsScreen> {
                       });
                     },
                     rollingInfoRight: const RollingIconInfo(
-                      backgroundColor:Color(0xFF1C2E4A),
-                      
+                      backgroundColor: Color(0xFF1C2E4A),
                       icon: Icons.post_add,
-                      text: Text('BLOGS', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-                    
+                      text: Text(
+                        'BLOGS',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
                     ),
                     rollingInfoLeft: const RollingIconInfo(
                       icon: Icons.home,
                       backgroundColor: Colors.grey,
-                      text: Text('POSTS', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                      text: Text(
+                        'POSTS',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
                     ),
                   ),
                 ),

@@ -40,7 +40,7 @@ class _ExploreState extends State<Explore> {
   }
 
   Future<void> getBPosts() async {
-    var temp = await Provider.of<Posts>(context, listen: false).getPosts();
+    var temp = await Provider.of<Posts>(context, listen: false).getPosts(true);
     setState(() {
       explorePosts = temp;
     });
@@ -238,7 +238,14 @@ Widget BlogContent(List<dynamic> exploreBlogs) {
 
 Widget PlaceContent(List<dynamic> explorePlace) {
   return explorePlace == null
-      ? FbLoading()
+      ? SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return FbLoading();
+            },
+            childCount: 1,
+          ),
+        )
       : SliverList(
           delegate: SliverChildBuilderDelegate(
           (context, index) {

@@ -400,7 +400,7 @@ Widget _PostButtons(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(Icons.location_on_outlined),
-                      Text('Langtang'),
+                      Text(post['place']['name']),
                     ],
                   ),
                 ),
