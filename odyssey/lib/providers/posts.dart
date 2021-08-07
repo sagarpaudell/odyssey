@@ -33,8 +33,13 @@ class Posts with ChangeNotifier {
   }
 
   // List<Map<String, dynamic>>
-  Future<List<dynamic>> getPosts() async {
-    const url = 'https://travellum.herokuapp.com/post-api/newsfeed';
+  Future<List<dynamic>> getPosts(bool explore) async {
+    String url;
+    if (explore) {
+      url = 'https://travellum.herokuapp.com/post-api/explore';
+    } else {
+      url = 'https://travellum.herokuapp.com/post-api/newsfeed';
+    }
     final token = 'Bearer ' + authToken;
     try {
       final userDataResponse = await http.get(

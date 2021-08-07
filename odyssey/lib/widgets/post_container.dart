@@ -353,7 +353,25 @@ Widget _PostButtons(
               ],
             ),
           ),
-          const SizedBox(width: 8.0),
+          // const SizedBox(width: 2.0),
+          IconButton(
+            onPressed: () {
+              Provider.of<Posts>(context, listen: false)
+                  .toogleBookmarkedPost(post['id'].toString());
+              toggleB(false);
+            },
+            icon: _is_bookmarked
+                ? Icon(
+                    Icons.bookmark,
+                    color: Theme.of(context).primaryColor,
+                    size: 20,
+                  )
+                : Icon(
+                    Icons.bookmark_border_outlined,
+                    size: 24,
+                  ),
+          ),
+
           // const Icon(
           //   Icons.share_outlined,
           //   size: 24.0,
@@ -370,22 +388,21 @@ Widget _PostButtons(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  onPressed: () {
-                    Provider.of<Posts>(context, listen: false)
-                        .toogleBookmarkedPost(post['id'].toString());
-                    toggleB(false);
-                  },
-                  icon: _is_bookmarked
-                      ? Icon(
-                          Icons.bookmark,
-                          color: Theme.of(context).primaryColor,
-                          size: 24,
-                        )
-                      : Icon(
-                          Icons.bookmark_border_outlined,
-                          size: 24,
-                        ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 2, 15, 2),
+                  decoration: BoxDecoration(
+                    // color: Theme.of(context).primaryColor.withOpacity(0.2),
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(Icons.location_on_outlined),
+                      Text(post['place']['name']),
+                    ],
+                  ),
                 ),
               ],
             ),
