@@ -103,9 +103,11 @@ class BlogLikeView(APIView):
         traveller = Traveller.objects.get(username=request.user)
         if traveller in blog.like_users.all():
             blog.like_users.remove(traveller)
+            notification(traveller=traveller, blog=blog, remove=True)
             message = "Unliked blog"
         else:
             blog.like_users.add(traveller)
+            notification(traveller=traveller, blog=blog)
             message = "Liked blog"
         blog.save()
         return Response({"success":message}, status = status.HTTP_200_OK)
@@ -217,7 +219,7 @@ def notification(blog=None, comment=None, traveller = None, remove = False):
 
     notification, _create = Notification.objects.get_or_create(
                 sender = traveller,
-                receipent = blog.traveller,
+                receipent = blog.author,
                 noti_type = noti_type
             )
     if remove:

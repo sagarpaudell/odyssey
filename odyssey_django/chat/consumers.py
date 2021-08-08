@@ -5,6 +5,7 @@ from channels.db import database_sync_to_async
 from django.contrib.auth.models import User
 from traveller_api.models import Traveller
 from chat.models import Chat
+from notification.models import Notification, Notification_type
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -39,6 +40,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         #save message
         chat_time = await self.save_messages( message )
         #send message to room
+
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -52,7 +54,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         """ Sends message to the corresponding client """
         await self.send(json.dumps(event))
-        print(f'{event["sender"]}-> {self.scope["user"].username} text_data={event["message"]}')
+        print((f'{event["sender"]}-> {self.scope["user"].username}'
+               f' text_data={event["message"]}'))
 
     @database_sync_to_async
     def save_messages(self, message):
@@ -71,3 +74,4 @@ def get_traveller(username):
     x = User.objects.get(username=username)
     traveller = Traveller.objects.get(username=x)
     return traveller
+
