@@ -35,7 +35,7 @@ class _AuthCardState extends State<AuthCard>
   final _confirmPassFocusNode = FocusNode();
   final _passwordController = TextEditingController();
   var _isLoading = false;
-
+  bool rememberMe = true;
   AuthMode _authMode = AuthMode.Login;
   Map<String, String> _authData = {
     'email': '',
@@ -101,8 +101,8 @@ class _AuthCardState extends State<AuthCard>
         await Provider.of<Auth>(context, listen: false).login(
           _authData['userName'],
           _authData['password'],
+          rememberMe,
         );
-        setState(() {});
       } else {
         // Sign user up
         await Provider.of<Auth>(context, listen: false).signup(
@@ -379,7 +379,7 @@ class _AuthCardState extends State<AuthCard>
                               ]),
                             )
                           : Container(
-                              height: (deviceSize.height - 200) * 0.30,
+                              height: (deviceSize.height - 200) * 0.40,
                               padding: EdgeInsets.only(left: 30, right: 30),
                               child: ListView(
                                 children: [
@@ -457,6 +457,19 @@ class _AuthCardState extends State<AuthCard>
                                       },
                                     ),
                                   ),
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                          value: rememberMe,
+                                          onChanged: (_) {
+                                            print('object $_');
+                                            setState(() {
+                                              rememberMe = !rememberMe;
+                                            });
+                                          }),
+                                      Text('Remember me'),
+                                    ],
+                                  )
                                 ],
                               ),
                             ),

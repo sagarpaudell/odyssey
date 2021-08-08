@@ -17,7 +17,7 @@ class _SelfProfileState extends State<SelfProfile> {
   static const choices = ['editprofile', 'opensettings', 'logout'];
   //List<dynamic> selfPosts;
   Map<String, dynamic> selfProfileData;
-
+  bool _isLoading = false;
   Future _fbuilder;
   @override
   void initState() {
@@ -54,7 +54,9 @@ class _SelfProfileState extends State<SelfProfile> {
         actions: [
           TextButton(
             child: Text("Cancel"),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
           TextButton(
             child: Text(
@@ -63,12 +65,15 @@ class _SelfProfileState extends State<SelfProfile> {
                 color: Colors.red[400],
               ),
             ),
-            onPressed: () {
+            onPressed: () async {
               Navigator.of(context).pop();
+              setState(() {
+                _isLoading = true;
+              });
+
+              await Provider.of<Auth>(context, listen: false).logout();
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false);
-              setState(
-                  () => Provider.of<Auth>(context, listen: false).logout());
             },
           ),
         ],
@@ -81,6 +86,7 @@ class _SelfProfileState extends State<SelfProfile> {
         },
       );
     }
+
     //end of confirmatin box
 
     void choiceAction(String choice) {
@@ -112,92 +118,122 @@ class _SelfProfileState extends State<SelfProfile> {
       }
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: true,
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        actions: [
-          PopupMenuButton(
-            child: Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: Icon(
-                Icons.menu_rounded,
-                color: Theme.of(context).primaryColor,
-                size: 28,
+    return _isLoading
+        ? Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                color: Colors.white,
               ),
-            ),
-            onSelected: choiceAction,
-            itemBuilder: (BuildContext context) {
-              return choices.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Row(
-                    children: [
-                      Icon(
-                        iconValue(choice),
-                        color: choice == 'logout'
-                            ? Colors.red[400]
-                            : Theme.of(context).primaryColor,
+              margin: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.25),
+              alignment: Alignment.center,
+              height: MediaQuery.of(context).size.height * 0.35,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(14.0),
+                      child: Text(
+                        'Logging out. Please wait',
+                        style: TextStyle(fontSize: 20),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Text(
-                          textValue(choice),
-                          style: TextStyle(
+                    )
+                  ]),
+            ),
+          )
+        : Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.white,
+              automaticallyImplyLeading: true,
+              leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+              actions: [
+                PopupMenuButton(
+                  child: Padding(
+                    padding: const EdgeInsets.all(14.0),
+                    child: Icon(
+                      Icons.menu_rounded,
+                      color: Theme.of(context).primaryColor,
+                      size: 28,
+                    ),
+                  ),
+                  onSelected: choiceAction,
+                  itemBuilder: (BuildContext context) {
+                    return choices.map((String choice) {
+                      return PopupMenuItem<String>(
+                        value: choice,
+                        child: Row(
+                          children: [
+                            Icon(
+                              iconValue(choice),
                               color: choice == 'logout'
                                   ? Colors.red[400]
                                   : Theme.of(context).primaryColor,
-                              fontWeight: FontWeight.w600),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Text(
+                                textValue(choice),
+                                style: TextStyle(
+                                    color: choice == 'logout'
+                                        ? Colors.red[400]
+                                        : Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList();
-            },
-          )
-        ],
-      ),
-      body: FutureBuilder<void>(
-        future: _fbuilder, // a previously-obtained Future<String> or null
-        builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : CustomScrollView(slivers: [
-                    SliverToBoxAdapter(
-                      child: ProfileContainer(selfProfileData),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        return PostContainer(
-                            post: selfProfileData['posts'][index]);
-                      }, childCount: selfProfileData['posts'].length),
-                    ),
-                  ]),
-      ),
+                      );
+                    }).toList();
+                  },
+                )
+              ],
+            ),
+            body: FutureBuilder<void>(
+              future: _fbuilder, // a previously-obtained Future<String> or null
+              builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
+                  snapshot.connectionState == ConnectionState.waiting
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : CustomScrollView(slivers: [
+                          SliverToBoxAdapter(
+                            child: ProfileContainer(selfProfileData),
+                          ),
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                                (BuildContext context, int index) {
+                              return PostContainer(
+                                  post: selfProfileData['posts'][index]);
+                            }, childCount: selfProfileData['posts'].length),
+                          ),
+                        ]),
+            ),
 
-      //  CustomScrollView(slivers: [
-      //   SliverToBoxAdapter(
-      //     child: ProfileContainer(selfProfileInfo),
-      //   ),
-      //   selfPosts == null
-      //       ? SliverToBoxAdapter(child: CircularProgressIndicator())
-      //       : SliverList(
-      //           delegate: SliverChildBuilderDelegate(
-      //               (BuildContext context, int index) {
-      //             return PostContainer(post: selfPosts[index]);
-      //           }, childCount: selfPosts.length),
-      //         ),
-      // ]),
-    );
+            //  CustomScrollView(slivers: [
+            //   SliverToBoxAdapter(
+            //     child: ProfileContainer(selfProfileInfo),
+            //   ),
+            //   selfPosts == null
+            //       ? SliverToBoxAdapter(child: CircularProgressIndicator())
+            //       : SliverList(
+            //           delegate: SliverChildBuilderDelegate(
+            //               (BuildContext context, int index) {
+            //             return PostContainer(post: selfPosts[index]);
+            //           }, childCount: selfPosts.length),
+            //         ),
+            // ]),
+          );
   }
 }
