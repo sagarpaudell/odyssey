@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -162,3 +163,14 @@ def notification(sender, receipent, remove = False):
     if remove:
         return follow_notification.noti_type.delete()
     return follow_notification
+
+class SearchTraveller(APIView):
+    def get(self, request):
+        searchtag = request.GET.get("traveller")
+        travellers = Traveller.objects.filter(
+                Q(first_name__icontains=searchtag) |
+                Q(last_name__icontains=searchtag) |
+                Q(username__username__icontains=searchtag)
+            )
+        serializer = TravellerSerializerPublic(travellers, many = True)
+        return Response(serializer.data)

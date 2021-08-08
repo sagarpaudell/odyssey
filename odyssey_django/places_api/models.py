@@ -11,6 +11,7 @@ class Place(models.Model):
     photo_3 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
     photo_4 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
     description = models.TextField(blank=True)
+    keywords = models.TextField(blank=True)
 
     def __str__(self):
         return self.name

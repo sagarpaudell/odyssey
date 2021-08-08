@@ -6,6 +6,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:odyssey/providers/posts.dart';
 import 'package:odyssey/providers/profile.dart';
 import 'package:provider/provider.dart';
+import 'package:textfield_tags/textfield_tags.dart';
 
 class Create extends StatefulWidget {
   @override
@@ -14,10 +15,26 @@ class Create extends StatefulWidget {
 
 class _CreateState extends State<Create> {
   File _imageFile;
+  bool isSwitched = false;
   bool showImage = false;
   var isPost = true;
   String caption;
   String dropdownValue = 'Nepal';
+  void toggleSwitch(bool value) {
+    if (isSwitched == false) {
+      setState(() {
+        isSwitched = true;
+      });
+      print('Switch Button is ON');
+    } else {
+      setState(() {
+        isSwitched = false;
+      });
+      print('Switch Button is OFF');
+    }
+  }
+
+  final _PlaceNameController = TextEditingController();
   final _captionController = TextEditingController();
   Future<void> _pickImage(ImageSource source) async {
     final selected = await ImagePicker().pickImage(source: source);
@@ -174,48 +191,179 @@ class _CreateState extends State<Create> {
                     ),
                   )
                 : SizedBox(),
-            isPost
-                ? SizedBox(
-                    height: 20,
-                  )
-                : SizedBox(),
+            SizedBox(
+              height: 20,
+            ),
             Row(
               children: [
                 SizedBox(
                   width: 7,
                 ),
                 Text(
-                  'PLACE',
-                  style: TextStyle(letterSpacing: 1.5),
+                  'CREATE A NEW PLACE',
+                  style: TextStyle(letterSpacing: 1.3),
                 ),
                 SizedBox(
-                  width: 30,
+                  width: 5,
                 ),
-                DropdownButton<String>(
-                  value: dropdownValue,
-                  icon: const Icon(Icons.arrow_drop_down),
-                  iconSize: 24,
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.black),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.black,
-                  ),
-                  onChanged: (String newValue) {
-                    setState(() {
-                      dropdownValue = newValue;
-                    });
-                  },
-                  items: <String>['Nepal', 'Kathmandu', 'Pokhara', 'Bhaktapur']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
+                Switch(
+                  onChanged: toggleSwitch,
+                  value: isSwitched,
+                  activeColor: Theme.of(context).primaryColor,
+                  // activeTrackColor: Colors.yellow,
+                  inactiveThumbColor: Colors.grey[300],
+                  inactiveTrackColor: Colors.grey[350],
+                )
               ],
             ),
+            isPost
+                ? SizedBox(
+                    height: 20,
+                  )
+                : SizedBox(),
+            !isSwitched
+                ? Row(
+                    children: [
+                      SizedBox(
+                        width: 7,
+                      ),
+                      Text(
+                        'PLACE',
+                        style: TextStyle(letterSpacing: 1.5),
+                      ),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      DropdownButton<String>(
+                        value: dropdownValue,
+                        icon: const Icon(Icons.arrow_drop_down),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: const TextStyle(color: Colors.black),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.black,
+                        ),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            dropdownValue = newValue;
+                          });
+                        },
+                        items: <String>[
+                          'Nepal',
+                          'Kathmandu',
+                          'Pokhara',
+                          'Bhaktapur'
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  )
+                : Column(
+                    children: [
+                      TextField(
+                        maxLines: null,
+                        textInputAction: TextInputAction.next,
+                        controller: _PlaceNameController,
+                        maxLength: 100,
+                        decoration: InputDecoration(
+                          labelText: 'NAME OF THE PLACE',
+                          labelStyle: TextStyle(
+                            letterSpacing: 1.5,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                        ),
+                      ),
+                      TextField(
+                        maxLines: 5,
+                        textInputAction: TextInputAction.next,
+                        maxLength: 2000,
+                        decoration: InputDecoration(
+                          labelText: 'DESCRITPION OF THE PLACE',
+                          alignLabelWithHint: true,
+                          labelStyle: TextStyle(
+                            letterSpacing: 1.5,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                        ),
+                      )
+                    ],
+                  ),
+            SizedBox(
+              height: 20,
+            ),
+            TextFieldTags(
+                initialTags: <String>[
+                  // List of tags
+                  // Provide a list of initial tags to initialize it
+                ],
+                textFieldStyler: TextFieldStyler(
+                  //These are properties you can tweek for customization
+
+                  textFieldFilled: true,
+                  // Icon icon,
+                  // String helperText = 'Enter tags',
+                  helperStyle: TextStyle(
+                    // letterSpacing: 1.5,
+                    fontSize: 14,
+                    // fontWeight: FontWeight.bold,
+                  ),
+                  hintText: 'FOR EG: Mountain, Nature',
+                  hintStyle: TextStyle(
+                    letterSpacing: 1.5,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  // EdgeInsets contentPadding,
+                  textFieldFilledColor: Colors.grey[100],
+                  isDense: false,
+                  textFieldEnabled: true,
+                  textFieldBorder: InputBorder.none,
+                  textFieldFocusedBorder: InputBorder.none,
+                  textFieldDisabledBorder: InputBorder.none,
+                  textFieldEnabledBorder: InputBorder.none,
+                ),
+                tagsStyler: TagsStyler(
+                  //These are properties you can tweek for customization
+
+                  showHashtag: true,
+                  // EdgeInsets tagPadding = const EdgeInsets.all(4.0),
+                  // EdgeInsets tagMargin = const EdgeInsets.symmetric(horizontal: 4.0),
+                  tagDecoration: BoxDecoration(color: Colors.grey[200]),
+                  // TextStyle tagTextStyle,
+                  tagCancelIcon:
+                      Icon(Icons.cancel, size: 18.0, color: Colors.red[400]),
+                ),
+                onTag: (tag) {
+                  //This give you the tag that was entered
+                  //print(tag)
+                },
+                onDelete: (tag) {
+                  //This gives you the tag that was deleted
+                  //print(tag)
+                },
+                validator: (tag) {
+                  if (tag.length > 15) {
+                    return "Max Length: 15";
+                  }
+                  return null;
+                }
+                //tagsDistanceFromBorderEnd: 0.725,
+                //scrollableTagsMargin: EdgeInsets.only(left: 9),
+                //scrollableTagsPadding: EdgeInsets.only(left: 9),
+                ),
             SizedBox(
               height: 30,
             ),

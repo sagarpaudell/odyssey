@@ -100,20 +100,6 @@ class _MyAppState extends State<MyApp> {
             auth.token,
           ),
         ),
-        ChangeNotifierProxyProvider<Auth, noti.Notification>(
-          create: (ctx) => noti.Notification(),
-          update: (ctx, auth, _) => noti.Notification(
-            auth.userId,
-            auth.token,
-          ),
-        ),
-        ChangeNotifierProxyProvider<Auth, Search>(
-          create: (ctx) => Search(),
-          update: (ctx, auth, _) => Search(
-            auth.userId,
-            auth.token,
-          ),
-        ),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
@@ -195,7 +181,6 @@ class _MyAppState extends State<MyApp> {
             ChatScreen.routeName: (ctx) => ChatScreen(),
             SelfProfile.routeName: (ctx) => SelfProfile(),
             Bookmark.routeName: (ctx) => Bookmark(),
-            Notifications.routeName: (ctx) => Notifications(),
             SignupVerification.routeName: (ctx) => SignupVerification(),
           },
         ),
