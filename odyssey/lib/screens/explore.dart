@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:flutter/material.dart';
 import '../providers/posts.dart';
 import '../providers/blog.dart' as blogss;
@@ -53,7 +51,6 @@ class _ExploreState extends State<Explore> {
       exploreBlogs = tempblogs;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     if (isSelected[1]) {
@@ -128,8 +125,18 @@ class _ExploreState extends State<Explore> {
               return Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: TextField(
-                  onTap: (){showSearch(context: context, delegate: SearchData()
-                  );
+                  // controller: _textEditingController,
+                  onChanged: (text){
+                    text=text.toLowerCase();
+                    
+                    setState(() {
+                      explorePlace=explorePlace.where((explore){
+                        var title= explore.title.toLowercase();
+                        return title.contains(text);
+                      }
+                      ).toList();                                          
+                                        });
+                    
                   },
                   decoration: InputDecoration(
                     hintText: "Search by Places/People",
@@ -157,39 +164,6 @@ class _ExploreState extends State<Explore> {
       ),
     );
   }
-}
-class SearchData extends SearchDelegate{
-  final suggestionList=['Bikesh', 'Samesh', 'Biraj'];
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(icon:Icon(Icons.clear), onPressed: (){},)
-    ];    
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    // TODO: implement buildLeading
-    throw UnimplementedError();
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
-    throw UnimplementedError();
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return ListView.builder(
-      itemCount: suggestionList.length,
-      itemBuilder: (context,index)=>ListTile(title: Text(suggestionList[index])
-      ,),
-    );
-    
-    
-  }
-
 }
 
 
