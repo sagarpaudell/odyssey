@@ -1,12 +1,12 @@
-from django.shortcuts import render
+from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import BlogSerializer,BlogCommentSerializer
-from .models import Blog,BlogComment
+from .models import Blog,BlogComment, Blog_notification
+from notification.models import Notification, Notification_type
 from traveller_api.models import Traveller
 from places_api.models import Place
-from django.db.models import Q
 
 class MyBlogs(APIView):
     def get(self,request):
@@ -30,7 +30,7 @@ class NewsfeedBlogs(APIView):
 class ViewBlogs(APIView):
     def get(self,request):
         user = Traveller.objects.get(username = self.request.user)
-        blogs = Blog.objects.all()
+        blogs = Blog.objects.filter(public_post = True)
         serializer = BlogSerializer(
                 blogs,
                 context = {"traveller":user},
@@ -86,8 +86,31 @@ class AddBlog(APIView):
         photo2 = request.data["photo2"]
         photo3 = request.data["photo3"]
         photo4 = request.data["photo4"]
-        blog = Blog.objects.create(title=title , author=user, place=place, description=description, photo1=photo1, photo2=photo2, photo3=photo3, photo4=photo4)
+        blog = Blog.objects.create(title=title, author=user, place=place, description=description, photo1=photo1, photo2=photo2, photo3=photo3, photo4=photo4)
         return Response(BlogSerializer(blog).data)
+
+class BlogLikeView(APIView):
+    def put(self, request, id):
+        blog = Blog.objects.get(id=id)
+        if not blog:
+            return Response(
+                    {
+                        "error": True,
+                        "error_msg": "Blog not found"
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        traveller = Traveller.objects.get(username=request.user)
+        if traveller in blog.like_users.all():
+            blog.like_users.remove(traveller)
+            notification(traveller=traveller, blog=blog, remove=True)
+            message = "Unliked blog"
+        else:
+            blog.like_users.add(traveller)
+            notification(traveller=traveller, blog=blog)
+            message = "Liked blog"
+        blog.save()
+        return Response({"success":message}, status = status.HTTP_200_OK)
 
 # class ViewBlogComment(APIView):                 #view all the comments of a blog
 #     def get(self, request, id):
@@ -110,16 +133,23 @@ class BlogCommentDetail(APIView):
 
     def put(self, request , id):
         blog_comment = self.get_object(id)
-        serializer = BlogCommentSerializer(blog_comment, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        current_user = Traveller.objects.get(username = request.user)
+        if (current_user == blog_comment.user):
+            serializer = BlogCommentSerializer(blog_comment, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
         blog_comment = self.get_object(id)
-        blog_comment.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        current_user = Traveller.objects.get(username = request.user)
+        if (current_user == blog_comment.user):
+            blog_comment.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class AddBlogComment(APIView):
     def post(self, request, id):
@@ -128,6 +158,7 @@ class AddBlogComment(APIView):
         comment = request.data["comment"]
         blog_comment = BlogComment.objects.create(blog=blog, user=user, comment=comment)
         return Response(BlogCommentSerializer(blog_comment).data)
+
 
 class BookMarkView(APIView):
     def put(self, request, id):
@@ -171,3 +202,27 @@ def get_blog(id):
     except Blog.DoesNotExist:
         return False
     return blog
+
+def notification(blog=None, comment=None, traveller = None, remove = False):
+    is_comment = bool(comment)
+    is_like = not is_comment
+    blog_notification, _created = Blog_notification.objects.get_or_create(
+                        blog_id = blog,
+                        is_like = is_like,
+                        is_comment = is_comment,
+                        comment_id = comment
+                    )
+    noti_type, _created = Notification_type.objects.get_or_create(
+                        category = "BLOG",
+                        blog_noti = blog_notification
+                    )
+
+    notification, _create = Notification.objects.get_or_create(
+                sender = traveller,
+                receipent = blog.author,
+                noti_type = noti_type
+            )
+    if remove:
+        return notification.noti_type.blog_noti.delete()
+    return notification
+
