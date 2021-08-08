@@ -42,13 +42,7 @@ class _NotificationsState extends State<Notifications> {
             brightness: Brightness.light,
             backgroundColor: Colors.white,
             floating: true,
-            title: Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    // alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.all(14),
+            title:Container(
                     child: Text(
                       "Notifications",
                       textAlign: TextAlign.center,
@@ -58,18 +52,7 @@ class _NotificationsState extends State<Notifications> {
                           fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Container(
-                      child: Text(
-                    "mark as read",
-                    style: TextStyle(
-                        fontSize: 15,
-                        decoration: TextDecoration.underline,
-                        color: Colors.amber),
-                  ))
-                ],
-              ),
             ),
-          ),
           FutureBuilder<void>(
             future: _fbuilder, // a previously-obtained Future<String> or null
             builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
@@ -108,7 +91,7 @@ class _NotificationsState extends State<Notifications> {
                             return Row(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                                   child: CircleAvatar(
                                       radius: 18.0,
                                       backgroundColor: Colors.grey[200],
@@ -128,14 +111,14 @@ class _NotificationsState extends State<Notifications> {
                                       allNotifications[index]['noti_type']
                                                   ['category'] ==
                                               'FOLLOW'
-                                          ? ' $senderName started following  you'
+                                          ? '$senderName started following  you'
                                           : allNotifications[index]['noti_type']
                                                       ['category'] ==
                                                   'CHAT'
                                               ? '$senderName messaged you '
                                               : "$senderName  liked your ${allNotifications[index]['noti_type']['category'].toLowerCase()} ",
                                       style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 17,
                                           fontWeight: FontWeight.w400),
                                     )),
                                 Container(
@@ -155,7 +138,8 @@ class _NotificationsState extends State<Notifications> {
                                               .fromNow(),
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w600,
-                                            fontSize: 10,
+                                            color: Colors.grey,
+                                            fontSize: 12,
                                           ),
                                         )
                                       : Text(

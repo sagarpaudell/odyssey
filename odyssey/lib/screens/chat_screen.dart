@@ -3,6 +3,7 @@ import './profile_self.dart';
 import '../widgets/chat_list.dart';
 import '../providers/auth.dart';
 import 'package:provider/provider.dart';
+import './main_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -42,8 +43,13 @@ class _ChatScreenState extends State<ChatScreen> {
           ],
           automaticallyImplyLeading: true,
           leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColor,),
-              onPressed: () => Navigator.pop(context, false)),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Theme.of(context).primaryColor,
+            ),
+            onPressed: () =>
+                Navigator.popAndPushNamed(context, MainScreen.routeName),
+          ),
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -51,7 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 'Messages',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color:  Theme.of(context).primaryColor,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ],
