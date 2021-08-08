@@ -109,6 +109,7 @@ class BlogLikeView(APIView):
             message = "Liked blog"
         blog.save()
         return Response({"success":message}, status = status.HTTP_200_OK)
+
 # class ViewBlogComment(APIView):                 #view all the comments of a blog
 #     def get(self, request, id):
 #         blog = Blog.objects.get(id = id)
@@ -130,16 +131,22 @@ class BlogCommentDetail(APIView):
 
     def put(self, request , id):
         blog_comment = self.get_object(id)
-        serializer = BlogCommentSerializer(blog_comment, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        current_user = Traveller.objects.get(username = request.user)
+        if (current_user == blog_comment.user):
+            serializer = BlogCommentSerializer(blog_comment, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
         blog_comment = self.get_object(id)
-        blog_comment.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        current_user = Traveller.objects.get(username = request.user)
+        if (current_user == blog_comment.user):
+            blog_comment.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class AddBlogComment(APIView):
     def post(self, request, id):
