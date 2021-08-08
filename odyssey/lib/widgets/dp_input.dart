@@ -44,8 +44,8 @@ class _DpInputState extends State<DpInput> {
         Provider.of<Auth>(context, listen: false).userProfileInfo['photo_main'];
     Size deviceSize = MediaQuery.of(context).size;
     return SizedBox(
-      height: deviceSize.width * 0.45,
-      width: deviceSize.width * 0.45,
+      height: deviceSize.width * 0.3,
+      width: deviceSize.width * 0.3,
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
