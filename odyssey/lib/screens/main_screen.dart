@@ -4,6 +4,9 @@ import 'package:odyssey/screens/explore.dart';
 import 'package:odyssey/screens/screens.dart';
 import 'package:odyssey/widgets/custom_tab_bar.dart';
 import './profile_self.dart';
+import 'notifications.dart';
+import 'package:provider/provider.dart' as pro;
+import '../providers/notification.dart' as noti;
 
 class MainScreen extends StatefulWidget {
   static const routeName = '/mainscreen';
@@ -12,6 +15,24 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  List<dynamic> newNoti = [];
+
+  Future _fbuilder;
+  @override
+  void initState() {
+    _fbuilder = checkNoti();
+    super.initState();
+  }
+
+  Future<void> checkNoti() async {
+    var temp = await pro.Provider.of<noti.Notification>(context, listen: false)
+        .checkNewNotifications();
+    setState(() {
+      newNoti = temp;
+      print('newNoti $newNoti');
+    });
+  }
+
   final List<Widget> _screens = [
     FeedsScreen(),
     Explore(),
@@ -19,11 +40,19 @@ class _MainScreenState extends State<MainScreen> {
     Notifications(),
     SelfProfile(),
   ];
-  final List<IconData> _icons = const [
+
+  List<IconData> _icons = [
     Icons.home,
     Icons.explore,
     Icons.add_a_photo_outlined,
     Icons.notifications,
+    Icons.person,
+  ];
+  List<IconData> _iconsN = [
+    Icons.home,
+    Icons.explore,
+    Icons.add_a_photo_outlined,
+    Icons.notifications_on,
     Icons.person,
   ];
   int _selectedIndex = 0;
@@ -41,9 +70,12 @@ class _MainScreenState extends State<MainScreen> {
           padding: const EdgeInsets.only(bottom: 12.0),
           color: Colors.white,
           child: CustomTabBar(
-            icons: _icons,
+            icons: newNoti.isEmpty ? _icons : _iconsN,
             selectedIndex: _selectedIndex,
-            onTap: (index) => setState(() => _selectedIndex = index),
+            onTap: (index) async {
+              setState(() => _selectedIndex = index);
+              await checkNoti();
+            },
           ),
         ),
       ),

@@ -13,6 +13,7 @@ class Blog(models.Model):
     photo2 = models.ImageField(upload_to='photos/%Y/%m/%d/',blank=True)
     photo3 = models.ImageField(upload_to='photos/%Y/%m/%d/',blank=True)
     photo4 = models.ImageField(upload_to='photos/%Y/%m/%d/',blank=True)
+    public_post = models.BooleanField(default=True, blank=False)
     date = models.DateTimeField(auto_now_add=True)
     like_users = models.ManyToManyField(Traveller, related_name='likedblog', blank=True)
     bookmark_users = models.ManyToManyField(Traveller, related_name='bookmarked_blogs', blank=True)
@@ -28,8 +29,6 @@ class BlogComment(models.Model):
     blog = models.ForeignKey(Blog, on_delete = models.CASCADE, related_name='comments')
     user = models.ForeignKey(Traveller, on_delete = models.CASCADE,)
     comment = models.TextField()
-    liked_users = models.ManyToManyField(Traveller, related_name='likedcomments', blank=True)
-    disliked_users = models.ManyToManyField(Traveller, related_name='dislikedcomments', blank=True)
     comment_time = models.DateTimeField(auto_now_add=True)
 
 class Blog_notification(models.Model):

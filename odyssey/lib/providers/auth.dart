@@ -185,7 +185,7 @@ class Auth with ChangeNotifier {
             }));
       }
       final responseData = json.decode(response.body);
-      print('this is ${responseData}');
+
       return (responseData);
     } catch (error) {
       print(json.decode(error.body).toString());
