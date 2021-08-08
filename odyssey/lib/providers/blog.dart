@@ -11,8 +11,13 @@ class Blog with ChangeNotifier {
 
   Blog([this.username, this.userId, this.authToken]);
 
-  Future<List<dynamic>> getAllBlogs() async {
-    final _url = 'https://travellum.herokuapp.com/blogs-api';
+  Future<List<dynamic>> getAllBlogs(bool explore) async {
+    String _url;
+    if (explore) {
+      _url = 'https://travellum.herokuapp.com/blogs-api';
+    } else {
+      _url = 'https://travellum.herokuapp.com/blogs-api/feedblogs';
+    }
     try {
       final response = await http.get(
         Uri.parse(_url),
