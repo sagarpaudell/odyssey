@@ -1,8 +1,10 @@
-from django.shortcuts import render
+from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status,generics
-from .serializers import MajorAttractionSerializer, PlaceSerializer
+from .serializers import (
+        MajorAttractionSerializer, PlaceSerializer, PlaceSerializerNewsFeed
+    )
 from .models import Place,Major_Attraction
 
 class AllPlaceView(APIView):
@@ -66,3 +68,14 @@ class MajorAttractionView(generics.ListCreateAPIView):
     #     major_attractions = Major_Attraction.objects.get(place=place)
     #     major_attractions.delete()
     #     return Response(status=status.HTTP_204_NO_CONTENT)
+
+class SearchPlace(APIView):
+    def get(self, request):
+        searchtag = request.GET.get("place")
+        places = Place.objects.filter(
+                Q(name__icontains=searchtag) | Q(city__icontains=searchtag) |
+                Q(country__icontains=searchtag)| Q(description__icontains=searchtag)
+            )
+        print(places)
+        serializer = PlaceSerializerNewsFeed(places, many = True)
+        return Response(serializer.data)

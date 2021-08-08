@@ -335,7 +335,7 @@ Widget _PostButtons(
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => Comment(),
+                builder: (_) => Comment(post['comments']),
               ),
             ),
             child: Row(

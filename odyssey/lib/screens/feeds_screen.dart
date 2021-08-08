@@ -53,7 +53,8 @@ class _FeedsScreenState extends State<FeedsScreen> {
 
   Future<void> getAllTheBlogs() async {
     List<dynamic> tempblogs =
-        await Provider.of<blogss.Blog>(context, listen: false).getAllBlogs();
+        await Provider.of<blogss.Blog>(context, listen: false)
+            .getAllBlogs(false);
     setState(() {
       allBlogs = tempblogs;
     });
@@ -117,7 +118,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => Navigator.push(
+                  onTap: () => Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (_) => ChatScreen(),

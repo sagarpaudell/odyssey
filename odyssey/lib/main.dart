@@ -13,6 +13,8 @@ import './screens/bookmarks.dart';
 import './screens/single_blog_screen.dart';
 import './widgets/fb_loading.dart';
 import './providers/blog.dart';
+import './providers/search.dart';
+
 import './screens/notifications.dart';
 import './providers/notification.dart' as noti;
 import 'package:provider/provider.dart';
@@ -83,6 +85,13 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProxyProvider<Auth, noti.Notification>(
           create: (ctx) => noti.Notification(),
           update: (ctx, auth, _) => noti.Notification(
+            auth.userId,
+            auth.token,
+          ),
+        ),
+        ChangeNotifierProxyProvider<Auth, Search>(
+          create: (ctx) => Search(),
+          update: (ctx, auth, _) => Search(
             auth.userId,
             auth.token,
           ),
