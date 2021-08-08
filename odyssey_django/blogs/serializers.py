@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from traveller_api.serializers import TravellerSerializerPublic
-from places_api.serializers import PlaceSerializer
+from places_api.serializers import PlaceSerializer, PlaceSerializerNewsFeed
 from .models import Blog, BlogComment
 
 class BlogCommentSerializer(serializers.ModelSerializer):
@@ -13,8 +13,12 @@ class BlogCommentSerializer(serializers.ModelSerializer):
 class BlogSerializer(serializers.ModelSerializer):
     is_bookmarked = serializers.SerializerMethodField('check_bookmark')
     author = TravellerSerializerPublic(read_only=True)
-    place = PlaceSerializer(read_only=True)
+    place = PlaceSerializerNewsFeed(read_only=True)
     comments = BlogCommentSerializer(read_only=True, many=True)
+    like_users = serializers.StringRelatedField(
+            read_only=True,
+            many = True
+        )
     def check_bookmark(self, obj):
         traveller = self.context.get("traveller")
         if traveller:
