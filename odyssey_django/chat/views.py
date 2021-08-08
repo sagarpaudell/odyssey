@@ -19,7 +19,7 @@ class ChatView(APIView):
                 Q(receiver = friend_user) | Q(sender = friend_user)
             ).order_by('message_time')
         if chat:
-            if chat.first().sender == friend_user:
+            if chat.last().sender == friend_user:
                 chat.update(message_seen = True)
             serializer = ChatSerializer(
                     chat,
@@ -62,6 +62,19 @@ class ChatView(APIView):
                 status = status.HTTP_404_NOT_FOUND
             )
 
+class CheckNewMessageView(APIView):
+    def get(self, request):
+        login_user = Traveller.objects.get(username = self.request.user)
+        all_unread_chat= Chat.objects.filter(
+                receiver = login_user, message_seen = True
+            )
+        print(all_unread_chat)
+        if all_unread_chat:
+            return Response({"unread_message": True})
+        return Response({"unread_message": False})
+
+
+
 class AllConversationsView(APIView):
     def get(self, request):
         """ returns the message of the authenticated user with username"""
@@ -79,7 +92,7 @@ class AllConversationsView(APIView):
         for friend in friends_set:
             last_message = all_chat.filter(
                     Q(sender=friend) | Q(receiver=friend)
-                ).last()
+                ).order_by('message_time').last()
             chat_list.append(last_message)
         chat_list = sorted(chat_list, key=lambda x: x.message_time.isoformat())
         chat = ChatSerializer(chat_list, many=True)

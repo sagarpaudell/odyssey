@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../providers/posts.dart';
+import '../providers/search.dart';
+
 import '../providers/blog.dart' as blogss;
 import 'package:provider/provider.dart';
 import '../widgets/fb_loading.dart';
@@ -15,6 +17,10 @@ class Explore extends StatefulWidget {
 
 class _ExploreState extends State<Explore> {
   List<bool> isSelected = [true, false, false];
+  var _searchController = TextEditingController();
+  bool _isSearch = false;
+  List<dynamic> searchResults = [];
+  bool _isLoading = false;
   List<dynamic> explorePosts;
   List<dynamic> exploreBlogs;
   List<dynamic> explorePlace = [
@@ -46,10 +52,17 @@ class _ExploreState extends State<Explore> {
 
   Future<void> getexploreBlogs() async {
     List<dynamic> tempblogs =
-        await Provider.of<blogss.Blog>(context, listen: false).getAllBlogs();
+        await Provider.of<blogss.Blog>(context, listen: false)
+            .getAllBlogs(true);
     setState(() {
       exploreBlogs = tempblogs;
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -66,7 +79,6 @@ class _ExploreState extends State<Explore> {
             floating: true,
             title: Column(
               children: [
-                
                 Container(
                   margin: EdgeInsets.all(12),
                   alignment: Alignment.topCenter,
@@ -104,7 +116,9 @@ class _ExploreState extends State<Explore> {
                       ],
                       onPressed: (int newIndex) {
                         setState(() {
-                          for (int index = 0; index < isSelected.length; index++) {
+                          for (int index = 0;
+                              index < isSelected.length;
+                              index++) {
                             if (index == newIndex) {
                               isSelected[index] = true;
                             } else {
@@ -121,99 +135,61 @@ class _ExploreState extends State<Explore> {
             centerTitle: true,
           ),
           SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: "Search by Places/People",
-                    filled: true,
-                    fillColor: Color(0xffF5F5F5),               
-                    prefixIcon: Icon(Icons.search),
-                    border:OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
-                    )
-
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: TextField(
+                    onTap: () => setState(() {
+                      _isSearch = !_isSearch;
+                    }),
+                    controller: _searchController,
+                    onChanged: (_) async {
+                      if (_searchController.text.length > 2) {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        searchResults =
+                            await Provider.of<Search>(context, listen: false)
+                                .search(_searchController.text);
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      }
+                    },
+                    onSubmitted: (_) => setState(() {
+                      _searchController.text = '';
+                      _isSearch = !_isSearch;
+                    }),
+                    decoration: InputDecoration(
+                        hintText: isSelected[2] == true
+                            ? "Search by Places"
+                            : "Search by People",
+                        filled: true,
+                        fillColor: Color(0xffF5F5F5),
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        )),
                   ),
-                ),
-              );
-            },
-            childCount: 1,
+                );
+              },
+              childCount: 1,
+            ),
           ),
-          ),
-          isSelected[0] == true
-              ? PostContent(fbuilder, explorePosts)
-              : isSelected[1] == true
-                  ? BlogContent(exploreBlogs)
-                  : PlaceContent(explorePlace)
+          !_isSearch
+              ? isSelected[0] == true
+                  ? PostContent(fbuilder, explorePosts)
+                  : isSelected[1] == true
+                      ? BlogContent(exploreBlogs)
+                      : PlaceContent(explorePlace)
+              : SearchContext(_isLoading, searchResults)
         ],
       ),
     );
   }
 }
-//       body: ListView(
-//         children: [
-//           Container(
-//             margin: EdgeInsets.all(12),
-//             alignment: Alignment.topCenter,
-//             child: Container(
-//               child: ToggleButtons(
-//                 fillColor: Theme.of(context).primaryColor,
-//                 selectedColor: Colors.white,
-//                 color: Theme.of(context).primaryColor,
-//                 highlightColor: Colors.blueGrey,
-//                 isSelected: isSelected,
-//                 renderBorder: false,
-//                 borderRadius: BorderRadius.circular(20),
-//                 children: [
-//                   Padding(
-//                     padding: const EdgeInsets.all(16.0),
-//                     child: Text(
-//                       "POSTS",
-//                       style: TextStyle(fontSize: 16),
-//                     ),
-//                   ),
-//                   Padding(
-//                     padding: const EdgeInsets.all(16.0),
-//                     child: Text(
-//                       "BLOGS",
-//                       style: TextStyle(fontSize: 16),
-//                     ),
-//                   ),
-//                   Padding(
-//                     padding: const EdgeInsets.all(16.0),
-//                     child: Text(
-//                       "PLACES",
-//                       style: TextStyle(fontSize: 16),
-//                     ),
-//                   ),
-//                 ],
-//                 onPressed: (int newIndex) {
-//                   setState(() {
-//                     for (int index = 0; index < isSelected.length; index++) {
-//                       if (index == newIndex) {
-//                         isSelected[index] = true;
-//                       } else {
-//                         isSelected[index] = false;
-//                       }
-//                     }
-//                   });
-//                 },
-//               ),
-//             ),
-//           ),
-//           isSelected[0] == true
-//               ? PostContent(fbuilder, explorePosts)
-//               : isSelected[1] == true
-//                   ? BlogContent(exploreBlogs)
-//                   : PlaceContent(explorePlace),
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 Widget PostContent(Future fbuilder, List<dynamic> explorePosts) {
   return FutureBuilder<void>(
@@ -255,6 +231,28 @@ Widget BlogContent(List<dynamic> exploreBlogs) {
           },
           childCount: exploreBlogs.length,
         ));
+}
+
+Widget SearchContext(bool _isLoading, List<dynamic> searchResults) {
+  return _isLoading
+      ? SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+            childCount: 1,
+          ),
+        )
+      : SliverList(
+          delegate: SliverChildBuilderDelegate((context, index) {
+          return ListTile(
+            title: Text(searchResults.isEmpty
+                ? 'Sorry, No results found'
+                : searchResults[index]['name']),
+          );
+        }, childCount: searchResults.length));
 }
 
 Widget PlaceContent(List<dynamic> explorePlace) {
