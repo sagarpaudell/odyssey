@@ -2,13 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import '../functions/dateformatter.dart';
 
 class Comment extends StatelessWidget {
-  bool comments = true;
+  List<dynamic> commentData;
+  Comment(this.commentData);
+
   @override
   Widget build(BuildContext context) {
+    print(commentData);
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: true,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -30,74 +35,82 @@ class Comment extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: comments ? Comments() : NoComments(),
-          ),
-          PostComment(),
-        ],
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: commentData.isEmpty ? NoComments() : Comments(commentData),
+            ),
+            PostComment(),
+          ],
+        ),
       ),
     );
   }
 }
 
 class Comments extends StatelessWidget {
-  const Comments({
-    Key key,
-  }) : super(key: key);
+  List<dynamic> commentData;
+  Comments(this.commentData);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 12,
-        ),
-        FocusedMenuHolder(
-          onPressed: (){},
-          menuItems: [
-            FocusedMenuItem(
-              title: Text('Delete Comment'),
-              trailingIcon: Icon(Icons.delete),
-              onPressed: () {},
-            ),
-          ],
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.grey[100],
-            ),
-            child: Column(
+    return ListView.builder(
+        itemBuilder: (ctx, index) => Column(
               children: [
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        'https://source.unsplash.com/random/50x50'),
-                  ),
-                  title: Text(
-                    'Samesh Bajracharya',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text('1 hour ago'),
+                SizedBox(
+                  height: 12,
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                  child: Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit',
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      height: 1.5,
+                FocusedMenuHolder(
+                  onPressed: () {},
+                  menuItems: [
+                    FocusedMenuItem(
+                      title: Text('Delete Comment'),
+                      trailingIcon: Icon(Icons.delete),
+                      onPressed: () {},
+                    ),
+                  ],
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.grey[100],
+                    ),
+                    child: Column(
+                      children: [
+                        ListTile(
+                            leading: CircleAvatar(
+                                backgroundImage: NetworkImage(commentData[index]
+                                    ['traveller']['photo_main']),
+                                onBackgroundImageError:
+                                    (Object exception, StackTrace stackTrace) {
+                                  return Image.asset(
+                                      './assets/images/guptaji.jpg');
+                                }),
+                            title: Text(
+                              '${commentData[index]['traveller']['first_name']} ${commentData[index]['traveller']['last_name']}',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: DateFormatter(
+                                commentData[index]['comment_time'])),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                          child: Text(
+                            commentData[index]['comment'],
+                            style: TextStyle(
+                              color: Colors.grey[800],
+                              height: 1.5,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-        ),
-      ],
-    );
+        itemCount: commentData.length);
   }
 }
 
