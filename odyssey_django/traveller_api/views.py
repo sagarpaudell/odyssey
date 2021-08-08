@@ -11,7 +11,7 @@ from .serializers_profile import (
         TravellerSerializerProfileViewPublic
     )
 from .models import Traveller, TravellerFollowing
-
+from notification.models import Notification, Notification_type
 
 class TravellerView(APIView):
     parser_classes = [MultiPartParser]
@@ -96,6 +96,7 @@ class FollowView(APIView):
                         following_traveller_id = new_following
                     )
                 following.delete()
+                notification(user, new_following, remove = True)
                 message = False
             else:
                 following =TravellerFollowing(
@@ -103,6 +104,7 @@ class FollowView(APIView):
                         following_traveller_id = new_following
                     )
                 following.save()
+                notification(user, new_following)
                 message = True
             return Response(
                     {
@@ -147,3 +149,16 @@ def get_object(request):
         #return Traveller.objects.get(username=user)
     except Traveller.DoesNotExist:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+def notification(sender, receipent, remove = False):
+    noti_type, _created = Notification_type.objects.get_or_create(
+                        category = "FOLLOW",
+                    )
+    follow_notification, _create = Notification.objects.get_or_create(
+                sender = sender,
+                receipent = receipent,
+                noti_type = noti_type
+            )
+    if remove:
+        return follow_notification.noti_type.delete()
+    return follow_notification

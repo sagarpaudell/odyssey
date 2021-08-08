@@ -41,7 +41,6 @@ class _SelfProfileState extends State<SelfProfile> {
     try {
       selfProfileData = await Provider.of<Profile>(context, listen: false)
           .getFriendProfile(uname);
-      print('this is selfdata $selfProfileData');
     } on Exception catch (e) {
       print(e);
     }

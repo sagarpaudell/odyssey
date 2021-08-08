@@ -291,11 +291,14 @@ class _MessageState extends State<Message> {
         ],
         automaticallyImplyLeading: true,
         leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Theme.of(context).primaryColor,
-            ),
-            onPressed: () => Navigator.pop(context, false)),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).primaryColor,
+          ),
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+        ),
         title: Row(
           children: [
             Container(
