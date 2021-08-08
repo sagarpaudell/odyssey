@@ -177,6 +177,7 @@ class _ExploreState extends State<Explore> {
               childCount: 1,
             ),
           ),
+
           !_isSearch
               ? isSelected[0] == true
                   ? PostContent(fbuilder, explorePosts)
@@ -246,10 +247,33 @@ Widget SearchContext(bool _isLoading, List<dynamic> searchResults) {
         )
       : SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
-          return ListTile(
-            title: Text(searchResults.isEmpty
-                ? 'Sorry, No results found'
-                : searchResults[index]['name']),
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12,),
+            child: ListTile(
+              title: Column(
+                children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Icon(Icons.search, color: Colors.grey[400],),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width*0.6,
+                        child: Text(searchResults.isEmpty
+                            ? 'Sorry, No results found'
+                            : searchResults[index]['name'],
+                            style: TextStyle(fontSize: 18,
+                            fontWeight: FontWeight.w500),),
+                      ),
+                    ],
+                  ),
+                  Divider(
+                    thickness: 1,                   
+                  )
+                ],
+              ),
+            ),
           );
         }, childCount: searchResults.length));
 }
