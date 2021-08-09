@@ -50,63 +50,60 @@ class _PlaceScreenState extends State<PlaceScreen> {
             brightness: Brightness.light,
             backgroundColor: Colors.white,
             floating: true,
-            title: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.all(12),
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      child: ToggleButtons(
-                        fillColor: Theme.of(context).primaryColor,
-                        selectedColor: Colors.white,
-                        color: Theme.of(context).primaryColor,
-                        highlightColor: Colors.blueGrey,
-                        isSelected: isSelected,
-                        renderBorder: false,
-                        borderRadius: BorderRadius.circular(10),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              "INFO",
-                              style: TextStyle(fontSize: 16),
-                            ),
+            title: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.all(12),
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    child: ToggleButtons(
+                      fillColor: Theme.of(context).primaryColor,
+                      selectedColor: Colors.white,
+                      color: Theme.of(context).primaryColor,
+                      highlightColor: Colors.blueGrey,
+                      isSelected: isSelected,
+                      renderBorder: false,
+                      borderRadius: BorderRadius.circular(10),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            "INFO",
+                            style: TextStyle(fontSize: 16),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              "BLOGS",
-                              style: TextStyle(fontSize: 16),
-                            ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            "BLOGS",
+                            style: TextStyle(fontSize: 16),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              "POSTS",
-                              style: TextStyle(fontSize: 16),
-                            ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            "POSTS",
+                            style: TextStyle(fontSize: 16),
                           ),
-                        ],
-                        onPressed: (int newIndex) {
-                          setState(() {
-                            for (int index = 0;
-                                index < isSelected.length;
-                                index++) {
-                              if (index == newIndex) {
-                                isSelected[index] = true;
-                              } else {
-                                isSelected[index] = false;
-                              }
+                        ),
+                      ],
+                      onPressed: (int newIndex) {
+                        setState(() {
+                          for (int index = 0;
+                              index < isSelected.length;
+                              index++) {
+                            if (index == newIndex) {
+                              isSelected[index] = true;
+                            } else {
+                              isSelected[index] = false;
                             }
-                          });
-                        },
-                      ),
+                          }
+                        });
+                      },
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             centerTitle: true,
           ),
