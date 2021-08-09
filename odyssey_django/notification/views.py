@@ -11,6 +11,7 @@ class NotificationView(APIView):
         notifications = traveller.received_notifications.all()
         notifications.update(is_new = False)
         serializer = NotificationSerializer(notifications, many = True)
+        print("fu")
         return Response(serializer.data)
 
 

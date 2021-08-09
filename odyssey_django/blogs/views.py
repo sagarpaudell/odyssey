@@ -223,6 +223,20 @@ class BookMarkBlogView(APIView):
                 )
         return Response(serializer.data,status=status.HTTP_200_OK)
 
+
+class BlogByPlaceView(APIView):
+    def get(self, request, id):
+        blog = Blog.objects.filter(place_id__id = id, public_blog=True)
+        if blog:
+            serializer = BlogSerializer(blog, many=True)
+            return Response(serializer.data, status = status.HTTP_200_OK )
+        return Response(
+                {
+                    "error":True,
+                    "error_msg": "Blog not found"
+                },
+                status = status.HTTP_404_NOT_FOUND
+            )
 def get_blog(id):
     try:
         blog = Blog.objects.get(id = id)
@@ -244,12 +258,12 @@ def notification(blog=None, comment=None, traveller = None, remove = False):
                         blog_noti = blog_notification
                     )
 
-    notification, _create = Notification.objects.get_or_create(
+    notification_obj, _create = Notification.objects.get_or_create(
                 sender = traveller,
                 receipent = blog.author,
                 noti_type = noti_type
             )
     if remove:
-        return notification.noti_type.blog_noti.delete()
-    return notification
+        return notification_obj.noti_type.blog_noti.delete()
+    return notification_obj
 

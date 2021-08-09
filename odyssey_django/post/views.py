@@ -288,6 +288,21 @@ class BookMarkPostView(APIView):
                 status=status.HTTP_200_OK
             )
 
+class PostByPlaceView(APIView):
+    def get(self, request, id):
+        post = Post.objects.filter(place_id__id = id, public_post=True)
+        if post:
+            serializer = PostSerializer(post, many=True)
+            return Response(serializer.data, status = status.HTTP_200_OK )
+        return Response(
+                {
+                    "error":True,
+                    "error_msg": "post not found"
+                },
+                status = status.HTTP_404_NOT_FOUND
+            )
+
+
 def get_post(id):
     try:
         post = Post.objects.get(id = id)
@@ -309,14 +324,15 @@ def notification(post=None, comment=None, traveller = None, remove = False):
                         post_noti = post_notification
                     )
 
-    notification, _create = Notification.objects.get_or_create(
+    notification_obj, _create = Notification.objects.get_or_create(
                 sender = traveller,
                 receipent = post.traveller,
                 noti_type = noti_type
             )
     if remove:
-        return notification.noti_type.post_noti.delete()
-    return notification
+        return notification_obj.noti_type.post_noti.delete()
+    return notification_obj
+
 
 def get_or_create_place_from_request(request):
     request.data._mutable = True
