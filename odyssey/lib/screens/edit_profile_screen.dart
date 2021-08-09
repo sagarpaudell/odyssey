@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
@@ -24,7 +26,7 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  PickedFile _pickedImage;
+  File _pickedImage;
   final GlobalKey<FormState> _form = GlobalKey();
   final _lastNameFocusNode = FocusNode();
   final _phoneFocusNode = FocusNode();
@@ -69,7 +71,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  void _selectImage(PickedFile pickedImg) {
+  void _selectImage(File pickedImg) {
     _pickedImage = pickedImg;
   }
 
@@ -162,6 +164,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         lastname: _profileData['lastname'],
         profilePic: _pickedImage,
         gender: genderText,
+        phone: _profileData['phone'],
         country: _profileData['country'],
         city: _profileData['city'],
         travellerId: null,
@@ -172,6 +175,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         firstname: _profileData['firstname'],
         lastname: _profileData['lastname'],
         gender: genderText,
+        phone: _profileData['phone'],
         profilePic: null,
         country: _profileData['country'],
         city: _profileData['city'],
@@ -197,8 +201,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // _profileTraveller =
     selfInfo = Provider.of<Auth>(context, listen: false).userProfileInfo;
+
+    // _profileTraveller =
     Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -360,7 +365,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         height: deviceSize.height * 0.07,
                         margin: EdgeInsets.only(bottom: 16),
                         child: TextFormField(
-                          initialValue: selfInfo['phone'],
+                          initialValue: selfInfo['contact_no'],
                           decoration: InputDecoration(
                             labelText: 'Phone',
                             enabledBorder: OutlineInputBorder(

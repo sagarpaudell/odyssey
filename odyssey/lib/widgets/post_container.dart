@@ -20,8 +20,12 @@ class PostContainer extends StatefulWidget {
   final Map<String, dynamic> post;
   final Function fun;
   final Function fetchUserPosts;
-  PostContainer({Key key, @required this.post, this.fun, this.fetchUserPosts})
-      : super(key: key);
+  PostContainer({
+    Key key,
+    @required this.post,
+    this.fun,
+    this.fetchUserPosts,
+  }) : super(key: key);
 
   @override
   _PostContainerState createState() => _PostContainerState();
@@ -50,13 +54,15 @@ class _PostContainerState extends State<PostContainer> {
     await Provider.of<Posts>(context, listen: false)
         .toggleLike(widget.post['id']);
     await widget.fetchUserPosts();
-    // print(widget.post['like_users']);
+    print(widget.post);
+    print(widget.post['like_users']);
 
     final authData = Provider.of<Auth>(context, listen: false);
     bool flag = await (widget.post['like_users'].toList().length != 0)
         ? widget.post['like_users']
             .toList()
-            .contains('id=${authData.userId}, ${authData.userName}')
+            // .contains('id=${authData.userId}, ${authData.userName}')
+            .contains('${authData.userName}(${authData.userId})')
         : false;
     if (flag) {
       setState(() {
@@ -95,7 +101,7 @@ class _PostContainerState extends State<PostContainer> {
     is_liked = (widget.post['like_users'].toList().length != 0)
         ? widget.post['like_users']
             .toList()
-            .contains('id=${authData.userId}, ${authData.userName}')
+            .contains('${authData.userName}(${authData.userId})')
         : false;
 
     final String selfUserName = Provider.of<Auth>(
