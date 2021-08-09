@@ -31,7 +31,7 @@ class NewsfeedBlogs(APIView):
 class ViewBlogs(APIView):
     def get(self,request):
         user = Traveller.objects.get(username = self.request.user)
-        blogs = Blog.objects.filter(public_post = True)
+        blogs = Blog.objects.filter(public_blog = True)
         serializer = BlogSerializer(
                 blogs,
                 context = {"traveller":user},
