@@ -66,15 +66,17 @@ class _MainScreenState extends State<MainScreen> {
     return DefaultTabController(
       length: _icons.length,
       child: Scaffold(
-        body: FutureBuilder(
-          future: checkNoti(),
-          builder: (ctx, AsyncSnapshot snapshot) =>
-              snapshot.connectionState == ConnectionState.waiting
-                  ? Center(child: CircularProgressIndicator())
-                  : IndexedStack(
-                      index: _selectedIndex,
-                      children: _screens,
-                    ),
+        body:
+            //  FutureBuilder(
+            //   future: checkNoti(),
+            //   builder: (ctx, AsyncSnapshot snapshot) =>
+            //       snapshot.connectionState == ConnectionState.waiting
+            //           ? Center(child: CircularProgressIndicator())
+            //           :
+
+            IndexedStack(
+          index: _selectedIndex,
+          children: _screens,
         ),
         bottomNavigationBar: Container(
           padding: const EdgeInsets.only(bottom: 12.0),
@@ -83,8 +85,8 @@ class _MainScreenState extends State<MainScreen> {
             icons: newNoti.isEmpty ? _icons : _iconsN,
             selectedIndex: _selectedIndex,
             onTap: (index) async {
-              setState(() => _selectedIndex = index);
               await checkNoti();
+              setState(() => _selectedIndex = index);
             },
           ),
         ),

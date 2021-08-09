@@ -7,6 +7,7 @@ from .models import Blog,BlogComment, Blog_notification
 from notification.models import Notification, Notification_type
 from traveller_api.models import Traveller
 from places_api.models import Place
+from post.views import get_or_create_place_from_request
 
 class MyBlogs(APIView):
     def get(self,request):
@@ -25,12 +26,12 @@ class NewsfeedBlogs(APIView):
         following = traveller.get_following()
         blogs = Blog.objects.filter(Q(author__in = following) | Q(author = traveller))
         blog_serialized = BlogSerializer(blogs, many=True, context={"traveller": traveller})
-        return Response(blog_serialized.data)       
+        return Response(blog_serialized.data)
 
 class ViewBlogs(APIView):
     def get(self,request):
         user = Traveller.objects.get(username = self.request.user)
-        blogs = Blog.objects.filter(public_post = True)
+        blogs = Blog.objects.filter(public_blog = True)
         serializer = BlogSerializer(
                 blogs,
                 context = {"traveller":user},
@@ -78,16 +79,42 @@ class BlogDetail(APIView):
 
 class AddBlog(APIView):
     def post(self, request):
-        user = Traveller.objects.get(username = self.request.user)
-        place = Place.objects.get(id = request.data["place"])      #send place id in API request
-        title = request.data["title"]
-        description = request.data["description"]
-        photo1 = request.data["photo1"]
-        photo2 = request.data["photo2"]
-        photo3 = request.data["photo3"]
-        photo4 = request.data["photo4"]
-        blog = Blog.objects.create(title=title, author=user, place=place, description=description, photo1=photo1, photo2=photo2, photo3=photo3, photo4=photo4)
-        return Response(BlogSerializer(blog).data)
+        traveller = Traveller.objects.get(username = self.request.user)
+        place = get_or_create_place_from_request(request)
+        if not place:
+            return Response(
+                    {
+                        "error": True,
+                        "error_msg": "invalid place id"
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+        serializer = BlogSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=ValueError):
+            serializer.save(place = place, author=traveller)
+            return Response(
+                    serializer.data,
+                    status=status.HTTP_201_CREATED,
+                )
+        return Response(
+               {
+                   "error":True,
+                   "error_msg": serializer.error_messages,
+               },
+               status=status.HTTP_400_BAD_REQUEST
+               )
+
+        # user = Traveller.objects.get(username = self.request.user)
+        # place = Place.objects.get(id = request.data["place"])      #send place id in API request
+        # title = request.data["title"]
+        # description = request.data["description"]
+        # photo1 = request.data["photo1"]
+        # photo2 = request.data["photo2"]
+        # photo3 = request.data["photo3"]
+        # photo4 = request.data["photo4"]
+        # blog = Blog.objects.create(title=title, author=user, place=place, description=description, photo1=photo1, photo2=photo2, photo3=photo3, photo4=photo4)
+        # return Response(BlogSerializer(blog).data)
 
 class BlogLikeView(APIView):
     def put(self, request, id):
@@ -196,6 +223,20 @@ class BookMarkBlogView(APIView):
                 )
         return Response(serializer.data,status=status.HTTP_200_OK)
 
+
+class BlogByPlaceView(APIView):
+    def get(self, request, id):
+        blog = Blog.objects.filter(place_id__id = id, public_blog=True)
+        if blog:
+            serializer = BlogSerializer(blog, many=True)
+            return Response(serializer.data, status = status.HTTP_200_OK )
+        return Response(
+                {
+                    "error":True,
+                    "error_msg": "Blog not found"
+                },
+                status = status.HTTP_404_NOT_FOUND
+            )
 def get_blog(id):
     try:
         blog = Blog.objects.get(id = id)
@@ -217,12 +258,12 @@ def notification(blog=None, comment=None, traveller = None, remove = False):
                         blog_noti = blog_notification
                     )
 
-    notification, _create = Notification.objects.get_or_create(
+    notification_obj, _create = Notification.objects.get_or_create(
                 sender = traveller,
                 receipent = blog.author,
                 noti_type = noti_type
             )
     if remove:
-        return notification.noti_type.blog_noti.delete()
-    return notification
+        return notification_obj.noti_type.blog_noti.delete()
+    return notification_obj
 

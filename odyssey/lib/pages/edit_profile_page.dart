@@ -33,7 +33,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final _genderFocusNode = FocusNode();
 
   var _profileTraveller = Traveller(
-    username: '',
     firstname: '',
     lastname: '',
     profilePic: null,
@@ -112,7 +111,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         'lastname': _profileTraveller.lastname,
         'country': _profileTraveller.country,
         'city': _profileTraveller.city,
-        'username': _profileTraveller.username,
       };
       print(_profileData['firstname']);
     } catch (error) {
@@ -156,7 +154,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
     _form.currentState.save();
     _profileTraveller = Traveller(
-      username: '',
       firstname: _profileData['firstname'],
       lastname: _profileData['lastname'],
       profilePic: _pickedImage,
@@ -191,6 +188,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context, false)),
@@ -250,7 +249,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                             ),
                                           ),
                                           subtitle: Text(
-                                            _profileData['username'],
+                                            'uname',
                                           ),
                                         ),
                                       ),

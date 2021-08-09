@@ -19,19 +19,17 @@ class Profile with ChangeNotifier {
     final token = 'Bearer ' + authToken;
 
     Map<String, String> headers = {"Authorization": token};
-    if (profile.profilePic == null) {
-      // try{
-      //   final response = http.put(Uri.parse(url), headers: headers,  )
-      // }catch(e){throw e;}
-    } else {
-      //final bytes = await profile.profilePic.readAsBytes();
-      try {
-        final request = new http.MultipartRequest('PUT', Uri.parse(url));
-        request.fields['first_name'] = profile.firstname;
-        request.fields['last_name'] = profile.lastname;
-        request.fields['country'] = profile.country;
-        request.fields['city'] = profile.city;
-        request.fields['first_name'] = profile.firstname;
+
+    //final bytes = await profile.profilePic.readAsBytes();
+    try {
+      final request = new http.MultipartRequest('PUT', Uri.parse(url));
+      request.fields['first_name'] = profile.firstname;
+      request.fields['last_name'] = profile.lastname;
+      request.fields['country'] = profile.country;
+      request.fields['city'] = profile.city;
+      request.fields['contact_no'] = profile.phone;
+      if (profile.profilePic != null) {
+        print('here');
         request.files.add(
           http.MultipartFile.fromBytes(
             'photo_main',
@@ -39,15 +37,15 @@ class Profile with ChangeNotifier {
             filename: '$userId.jpg',
           ),
         );
-        request.headers.addAll(headers);
-
-        var response = await request.send();
-        print(response.statusCode);
-        notifyListeners();
-      } catch (error) {
-        print(error);
-        throw error;
       }
+      request.headers.addAll(headers);
+
+      var response = await request.send();
+      print(response.statusCode);
+      notifyListeners();
+    } catch (error) {
+      print(error);
+      throw error;
     }
   }
 
@@ -87,7 +85,6 @@ class Profile with ChangeNotifier {
       final userData = json.decode(userDataResponse.body);
 
       final userProfile = Traveller(
-        username: userData['username'],
         firstname: userData['first_name'],
         lastname: userData['last_name'],
         country: userData['country'],

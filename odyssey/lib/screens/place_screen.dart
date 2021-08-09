@@ -1,42 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:provider/provider.dart';
+import '../providers/place.dart';
 
 class PlaceScreen extends StatefulWidget {
-  final Map<String, dynamic> singlePlace;
-
-  const PlaceScreen(this.singlePlace);
+  final Map<String, dynamic> _singlePlace;
+  final int id;
+  const PlaceScreen([this._singlePlace, this.id]);
   @override
   _PlaceScreenState createState() => _PlaceScreenState();
 }
 
 class _PlaceScreenState extends State<PlaceScreen> {
+  Map<String, dynamic> singlePlace;
   List<bool> isSelected = [true, false, false];
+  Future<void> getSinglePlaceFun() async {
+    if (widget._singlePlace != null) {
+      singlePlace = widget._singlePlace;
+      return;
+    }
+    singlePlace =
+        await Provider.of<Place>(context, listen: false).getSinglePlace(
+      widget.id.toString(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    // if (widget._singlePlace != null) {
+    //   singlePlace = widget._singlePlace;
+    // }
     return Scaffold(
-      // appBar: AppBar(
-      //   leading: IconButton(
-      //     icon: Icon(
-      //       Icons.arrow_back,
-      //       color: Theme.of(context).primaryColor,
-      //     ),
-      //     onPressed: () => Navigator.pop(context, false),
-      //   ),
-      //   backgroundColor: Colors.white,
-      //   title: Row(
-      //     children: [
-      //       Text(
-      //         'Place Name',
-      //         style: TextStyle(
-      //           fontWeight: FontWeight.w600,
-      //           color: Theme.of(context).primaryColor,
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      //   centerTitle: true,
-      // ),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -107,110 +101,137 @@ class _PlaceScreenState extends State<PlaceScreen> {
             ),
             centerTitle: true,
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return Column(
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    ImageSlideshow(
-                      width: double.infinity,
-                      height: 300,
-                      initialPage: 0,
-                      indicatorColor: Theme.of(context).primaryColor,
-                      indicatorBackgroundColor: Colors.grey[600],
-                      autoPlayInterval: 0,
-                      isLoop: true,
-                      children: [
-                        widget.singlePlace["photo_1"] != null
-                            ? Image(
-                                image: NetworkImage(
-                                  widget.singlePlace["photo_1"],
+          FutureBuilder<void>(
+            future: getSinglePlaceFun(),
+            builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
+                snapshot.connectionState == ConnectionState.waiting
+                    ? SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                          childCount: 1,
+                        ),
+                      )
+                    : SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return Column(
+                              children: [
+                                SizedBox(
+                                  height: 10,
                                 ),
-                                errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace stackTrace) {
-                                  return Image.asset(
-                                      './assets/images/mana.jpg');
-                                },
-                              )
-                            : Center(
-                                child: Text(
-                                'Photo Unavailable',
-                                style: TextStyle(
-                                  fontSize: 20,
+                                ImageSlideshow(
+                                  width: double.infinity,
+                                  height: 300,
+                                  initialPage: 0,
+                                  indicatorColor:
+                                      Theme.of(context).primaryColor,
+                                  indicatorBackgroundColor: Colors.grey[600],
+                                  autoPlayInterval: 0,
+                                  isLoop: true,
+                                  children: [
+                                    singlePlace["photo_1"] != null
+                                        ? Image(
+                                            image: NetworkImage(
+                                              singlePlace["photo_1"],
+                                            ),
+                                            errorBuilder: (BuildContext context,
+                                                Object exception,
+                                                StackTrace stackTrace) {
+                                              return Image.asset(
+                                                  './assets/images/mana.jpg');
+                                            },
+                                          )
+                                        : Center(
+                                            child: Text(
+                                            'Photo Unavailable',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                            ),
+                                          )),
+                                    singlePlace["photo_2"] != null
+                                        ? Image(
+                                            image: NetworkImage(
+                                              singlePlace["photo_2"],
+                                            ),
+                                            errorBuilder: (BuildContext context,
+                                                Object exception,
+                                                StackTrace stackTrace) {
+                                              return Image.asset(
+                                                  './assets/images/mana.jpg');
+                                            },
+                                          )
+                                        : Center(
+                                            child: Text(
+                                              'Photo Unavailable',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                          ),
+                                    singlePlace["photo_3"] != null
+                                        ? Image(
+                                            image: NetworkImage(
+                                              singlePlace["photo_3"],
+                                            ),
+                                            errorBuilder: (BuildContext context,
+                                                Object exception,
+                                                StackTrace stackTrace) {
+                                              return Image.asset(
+                                                  './assets/images/mana.jpg');
+                                            },
+                                          )
+                                        : Center(
+                                            child: Text(
+                                              'Photo Unavailable',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                          ),
+                                  ],
                                 ),
-                              )),
-                        widget.singlePlace["photo_2"] != null
-                            ? Image(
-                                image: NetworkImage(
-                                  widget.singlePlace["photo_2"],
+                                SizedBox(height: 6),
+                                Container(
+                                  padding: EdgeInsets.all(15),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 6),
+                                      Row(children: [
+                                        Text(
+                                          singlePlace['name'],
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 28,
+                                            height: 1.5,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                      ]),
+                                      SizedBox(height: 20),
+                                      Text(
+                                        singlePlace['description'],
+                                        textAlign: TextAlign.justify,
+                                        style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 20,
+                                          height: 1.5,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ),
+                                      SizedBox(height: 20),
+                                    ],
+                                  ),
                                 ),
-                                errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace stackTrace) {
-                                  return Image.asset(
-                                      './assets/images/mana.jpg');
-                                },
-                              )
-                            : SizedBox(
-                                height: 0,
-                                width: 0,
-                              ),
-                        widget.singlePlace["photo_3"] != null
-                            ? Image(
-                                image: NetworkImage(
-                                  widget.singlePlace["photo_3"],
-                                ),
-                                errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace stackTrace) {
-                                  return Image.asset(
-                                      './assets/images/mana.jpg');
-                                },
-                              )
-                            : SizedBox(
-                                height: 0,
-                                width: 0,
-                              ),
-                      ],
-                    ),
-                    SizedBox(height: 6),
-                    Container(
-                      padding: EdgeInsets.all(15),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 6),
-                          Row(children: [
-                            Text(
-                              widget.singlePlace['name'],
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 28,
-                                height: 1.5,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ]),
-                          SizedBox(height: 20),
-                          Text(
-                            widget.singlePlace['description'],
-                            textAlign: TextAlign.justify,
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 20,
-                              height: 1.5,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                        ],
+                              ],
+                            );
+                          },
+                          childCount: 1,
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              },
-              childCount: 1,
-            ),
           )
         ],
       ),

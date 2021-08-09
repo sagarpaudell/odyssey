@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:odyssey/main.dart';
 import '../screens/userBlogs_screen.dart';
 import './fofo_list.dart';
 import 'package:provider/provider.dart';
@@ -97,6 +98,12 @@ class _ProfileContainerState extends State<ProfileContainer> {
                                 Container(
                                   height: 28,
                                   margin: EdgeInsets.only(top: 6),
+                                  decoration: _following
+                                      ? BoxDecoration(
+                                          border: Border.all(
+                                              color: Theme.of(context)
+                                                  .primaryColor))
+                                      : BoxDecoration(),
                                   child: ElevatedButton(
                                     onPressed: () async {
                                       setState(() {
@@ -108,8 +115,12 @@ class _ProfileContainerState extends State<ProfileContainer> {
                                               .profileContent['username']);
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      primary: Theme.of(context).primaryColor,
-                                      onPrimary: Colors.white,
+                                      primary: _following
+                                          ? Colors.white
+                                          : Theme.of(context).primaryColor,
+                                      onPrimary: _following
+                                          ? Theme.of(context).primaryColor
+                                          : Colors.white,
                                     ),
                                     child: Text(
                                         _following ? "Following" : "Follow"),

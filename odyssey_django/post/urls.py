@@ -1,7 +1,7 @@
 from django.urls import path
 from post.views import (
         PostView, NewsfeedView, SelfPostView, BookMarkView, BookMarkPostView,
-        LikeView, CommentView, ExploreView
+        LikeView, CommentView, ExploreView, PostByPlaceView
     )
 
 urlpatterns = [
@@ -13,4 +13,5 @@ urlpatterns = [
     path('bookmark/<int:id>', BookMarkView.as_view()),
     path('like/<int:id>', LikeView.as_view()),
     path('comment/<int:id>', CommentView.as_view()),
+    path('place/<int:id>', PostByPlaceView.as_view()),
 ]
