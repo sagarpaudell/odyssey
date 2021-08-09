@@ -17,20 +17,24 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   List<dynamic> newNoti = [];
 
-  Future _fbuilder;
-  @override
-  void initState() {
-    _fbuilder = checkNoti();
-    super.initState();
-  }
+  // Future _fbuilder;
+  // @override
+  // void initState() {
+  //   _fbuilder = checkNoti();
+  //   super.initState();
+  // }
 
+  // Future<void> checkNoti() async {
+  //   var temp = await pro.Provider.of<noti.Notification>(context, listen: false)
+  //       .checkNewNotifications();
+  //   setState(() {
+  //     newNoti = temp;
+  //     print('newNoti $newNoti');
+  //   });
+  // }
   Future<void> checkNoti() async {
-    var temp = await pro.Provider.of<noti.Notification>(context, listen: false)
+    newNoti = await pro.Provider.of<noti.Notification>(context, listen: false)
         .checkNewNotifications();
-    setState(() {
-      newNoti = temp;
-      print('newNoti $newNoti');
-    });
   }
 
   final List<Widget> _screens = [
@@ -62,9 +66,15 @@ class _MainScreenState extends State<MainScreen> {
     return DefaultTabController(
       length: _icons.length,
       child: Scaffold(
-        body: IndexedStack(
-          index: _selectedIndex,
-          children: _screens,
+        body: FutureBuilder(
+          future: checkNoti(),
+          builder: (ctx, AsyncSnapshot snapshot) =>
+              snapshot.connectionState == ConnectionState.waiting
+                  ? Center(child: CircularProgressIndicator())
+                  : IndexedStack(
+                      index: _selectedIndex,
+                      children: _screens,
+                    ),
         ),
         bottomNavigationBar: Container(
           padding: const EdgeInsets.only(bottom: 12.0),

@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:odyssey/providers/chat.dart';
-import 'package:odyssey/providers/auth.dart';
-import 'package:odyssey/providers/profile.dart';
-import 'package:odyssey/providers/posts.dart';
+import './providers/chat.dart';
+import './providers/auth.dart';
+import './providers/profile.dart';
+import './providers/posts.dart';
 import 'package:odyssey/widgets/signup_verification.dart';
 import './screens/profile_self.dart';
-import './screens/profile_user.dart';
+
 import './screens/screens.dart';
 import './screens/bookmarks.dart';
+import './screens/splash_screen.dart';
+import './providers/place.dart';
 
-import './screens/single_blog_screen.dart';
-import './widgets/fb_loading.dart';
 import './providers/blog.dart';
 import './providers/search.dart';
-
-import './screens/notifications.dart';
+import './screens/session_expired_screen.dart';
 import './providers/notification.dart' as noti;
 import 'package:provider/provider.dart';
 
@@ -48,6 +46,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  // bool _isLoading = false;
+
+  // bool tryAuto;
+  // bool persisted;
+
+  // Future<void> checkAutoLogin(BuildContext context) async {
+  //   try {
+  //     persisted =
+  //         await Provider.of<Auth>(context, listen: false).checkDataPersist();
+  //     if (persisted) {
+  //       tryAuto =
+  //           await Provider.of<Auth>(context, listen: false).tryAutoLogin();
+  //     }
+  //   } catch (error) {
+  //     print(error);
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -85,14 +101,21 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProxyProvider<Auth, noti.Notification>(
           create: (ctx) => noti.Notification(),
           update: (ctx, auth, _) => noti.Notification(
-            auth.userId,
+            auth.userName,
             auth.token,
           ),
         ),
         ChangeNotifierProxyProvider<Auth, Search>(
           create: (ctx) => Search(),
           update: (ctx, auth, _) => Search(
-            auth.userId,
+            auth.userName,
+            auth.token,
+          ),
+        ),
+        ChangeNotifierProxyProvider<Auth, Place>(
+          create: (ctx) => Place(),
+          update: (ctx, auth, _) => Place(
+            auth.userName,
             auth.token,
           ),
         ),
@@ -115,21 +138,48 @@ class _MyAppState extends State<MyApp> {
             scaffoldBackgroundColor: Colors.white,
           ),
 
-          //home: auth.isAuth ? ChatScreen() : AuthPage(),
+          // home: auth.isAuth
+          //     ? auth.email_verifed
+          //         ? MainScreen()
+          //         : SignupVerification()
+          //     : AuthPage(),
+
+          // FutureBuilder(
+          //     future: auth.tryAutoLogin(),
+          //     builder: (ctx, authResultSnapshot) =>
+          //         authResultSnapshot.connectionState ==
+          //                 ConnectionState.waiting
+          //             ? SplashPage()
+          //             : SessionScreen(),
+          //   ),
+
           home: auth.isAuth
               ? auth.email_verifed
                   ? MainScreen()
                   : SignupVerification()
-              : AuthPage(),
+              : FutureBuilder(
+                  future: Future.wait([
+                    auth.checkDataPersist(),
+                    auth.tryAutoLogin(),
+                  ]),
+                  builder: (ctx, AsyncSnapshot<List<dynamic>> snapshot) =>
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? SplashPage()
+                          : snapshot.data[0]
+                              ? snapshot.data[1]
+                                  ? SplashPage()
+                                  : SessionScreen()
+                              : AuthPage()),
+
           routes: {
             MainScreen.routeName: (ctx) => MainScreen(),
+            SessionScreen.routeName: (ctx) => SessionScreen(),
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsScreen.routeName: (ctx) => FeedsScreen(),
             EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
             ChatScreen.routeName: (ctx) => ChatScreen(),
             SelfProfile.routeName: (ctx) => SelfProfile(),
             Bookmark.routeName: (ctx) => Bookmark(),
-            Notifications.routeName: (ctx) => Notifications(),
             SignupVerification.routeName: (ctx) => SignupVerification(),
           },
         ),

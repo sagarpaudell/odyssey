@@ -33,106 +33,108 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    const choices = ['blockuser', 'logout'];
+    // const choices = ['blockuser', 'logout'];
 
-    showAlertDialog(BuildContext context) {
-      AlertDialog alert = AlertDialog(
-        content: Text("Are you sure you want to log out?"),
-        actions: [
-          TextButton(
-            child: Text("Cancel"),
-            onPressed: () {},
-          ),
-          TextButton(
-            child: Text(
-              "Log Out",
-              style: TextStyle(
-                color: Colors.red[400],
-              ),
-            ),
-            onPressed: () {},
-          ),
-        ],
-      );
-      // show the dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
-    //end of confirmatin box
+    // showAlertDialog(BuildContext context) {
+    //   AlertDialog alert = AlertDialog(
+    //     content: Text("Are you sure you want to log out?"),
+    //     actions: [
+    //       TextButton(
+    //         child: Text("Cancel"),
+    //         onPressed: () {
+    //           Navigator.of(context).pop();
+    //         },
+    //       ),
+    //       TextButton(
+    //         child: Text(
+    //           "Log Out",
+    //           style: TextStyle(
+    //             color: Colors.red[400],
+    //           ),
+    //         ),
+    //         onPressed: () {},
+    //       ),
+    //     ],
+    //   );
+    //   // show the dialog
+    //   showDialog(
+    //     context: context,
+    //     builder: (BuildContext context) {
+    //       return alert;
+    //     },
+    //   );
+    // }
+    // //end of confirmatin box
 
-    void choiceAction(String choice) {
-      if (choice == 'blockuser') {
-        print('Block');
-      } else if (choice == 'logout') {
-        showAlertDialog(context);
-      }
-    }
+    // void choiceAction(String choice) {
+    //   if (choice == 'blockuser') {
+    //     print('Block');
+    //   } else if (choice == 'logout') {
+    //     showAlertDialog(context);
+    //   }
+    // }
 
-    iconValue(choice) {
-      if (choice == 'blockuser') {
-        return Icons.block_flipped;
-      } else if (choice == 'logout') {
-        return Icons.logout;
-      }
-    }
+    // iconValue(choice) {
+    //   if (choice == 'blockuser') {
+    //     return Icons.block_flipped;
+    //   } else if (choice == 'logout') {
+    //     return Icons.logout;
+    //   }
+    // }
 
-    textValue(choice) {
-      if (choice == 'blockuser') {
-        return 'Block this user';
-      } else if (choice == 'logout') {
-        return 'Log Out';
-      }
-    }
+    // textValue(choice) {
+    //   if (choice == 'blockuser') {
+    //     return 'Block this user';
+    //   } else if (choice == 'logout') {
+    //     return 'Log Out';
+    //   }
+    // }
 
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        actions: [
-          PopupMenuButton(
-            child: Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: Icon(
-                Icons.menu_rounded,
-                color: Theme.of(context).primaryColor,
-                size: 28,
-              ),
-            ),
-            onSelected: choiceAction,
-            itemBuilder: (BuildContext context) {
-              return choices.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Row(
-                    children: [
-                      Icon(
-                        iconValue(choice),
-                        color: choice == 'logout'
-                            ? Colors.red[400]
-                            : Theme.of(context).primaryColor,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Text(
-                          textValue(choice),
-                          style: TextStyle(
-                              color: choice == 'logout'
-                                  ? Colors.red[400]
-                                  : Theme.of(context).primaryColor,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList();
-            },
-          )
-        ],
+        // actions: [
+        //   PopupMenuButton(
+        //     child: Padding(
+        //       padding: const EdgeInsets.all(14.0),
+        //       child: Icon(
+        //         Icons.menu_rounded,
+        //         color: Theme.of(context).primaryColor,
+        //         size: 28,
+        //       ),
+        //     ),
+        //     onSelected: choiceAction,
+        //     itemBuilder: (BuildContext context) {
+        //       return choices.map((String choice) {
+        //         return PopupMenuItem<String>(
+        //           value: choice,
+        //           child: Row(
+        //             children: [
+        //               Icon(
+        //                 iconValue(choice),
+        //                 color: choice == 'logout'
+        //                     ? Colors.red[400]
+        //                     : Theme.of(context).primaryColor,
+        //               ),
+        //               Padding(
+        //                 padding: const EdgeInsets.only(left: 8),
+        //                 child: Text(
+        //                   textValue(choice),
+        //                   style: TextStyle(
+        //                       color: choice == 'logout'
+        //                           ? Colors.red[400]
+        //                           : Theme.of(context).primaryColor,
+        //                       fontWeight: FontWeight.w600),
+        //                 ),
+        //               ),
+        //             ],
+        //           ),
+        //         );
+        //       }).toList();
+        //     },
+        //   )
+        // ],
         automaticallyImplyLeading: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),

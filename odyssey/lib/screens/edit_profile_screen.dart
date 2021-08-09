@@ -203,198 +203,279 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.black,),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        title: Text(
+                    'Update your profile',
+                    style: TextStyle(
+                    color: Theme.of(context).primaryColor.withOpacity(0.9), fontSize: 20, fontWeight: FontWeight.w500),                   
+        ),
+        centerTitle: true,
       ),
+      
       //body:
-      body: FutureBuilder<void>(
-        future: fbuilder, // a previously-obtained Future<String> or null
-        builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Container(
-                    margin: EdgeInsets.all(10),
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 22),
-                    height: deviceSize.height,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              'Let\'s create a profile for you',
-                              style: TextStyle(
-                                  color: Color(0XFF8B8B8B), fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Container(
-                            height: deviceSize.height * 0.2,
-                            width: deviceSize.width * 0.8,
-                            child: Row(
-                              mainAxisAlignment:
+      body:FutureBuilder<void>(
+          future: fbuilder, // a previously-obtained Future<String> or null
+          builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
+              snapshot.connectionState == ConnectionState.waiting
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Container(
+                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 22),
+                      // height: deviceSize.height,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                mainAxisAlignment:
+                                    _profileData['firstname'] == null &&
+                                            _profileData['lastname'] == null
+                                        ? MainAxisAlignment.center
+                                        : MainAxisAlignment.start,
+                                children: [
+                                  DpInput(_selectImage),
                                   _profileData['firstname'] == null &&
                                           _profileData['lastname'] == null
-                                      ? MainAxisAlignment.center
-                                      : MainAxisAlignment.spaceBetween,
-                              children: [
-                                DpInput(_selectImage),
-                                _profileData['firstname'] == null &&
-                                        _profileData['lastname'] == null
-                                    ? SizedBox(
-                                        height: 0,
-                                        width: 0,
-                                      )
-                                    : Container(
-                                        width: deviceSize.width * 0.35,
-                                        child: ListTile(
-                                          title: FittedBox(
-                                            child: Text(
-                                              '${_profileData['firstname']} ${_profileData['lastname']}',
-                                              style: TextStyle(
-                                                  fontSize: 30,
-                                                  fontFamily: 'Lato'),
+                                      ? SizedBox(
+                                          height: 0,
+                                          width: 0,
+                                        )
+                                      : Container(
+                                          width: deviceSize.width * 0.35,
+                                          child: ListTile(
+                                            title: FittedBox(
+                                              child: Text(
+                                                '${_profileData['firstname']} ${_profileData['lastname']}',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,                                              fontSize: 30,
+                                                    fontFamily: 'Lato'),
+                                              ),
+                                            ),
+                                            subtitle: Row(
+                                              children: [
+                                                Text('@'),
+                                                Text(
+                                                  _profileData['username'],
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          subtitle: Text(
-                                            _profileData['username'],
+                                        ),
+                                ],
+
+                              ),
+
+                            ),
+                            
+                            Container(
+                              
+                              width: deviceSize.width,
+                              child: Form(
+                                key: _form,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      height: deviceSize.height * 0.07,
+                                  margin: EdgeInsets.only(bottom: 16, top: 22),
+                                      child: TextFormField(
+                                        initialValue: _profileData['firstname'],
+                                        decoration:
+                                            InputDecoration(labelText: 'First Name',
+                                            enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide.none,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
                                           ),
                                         ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                        ),
+                                        filled: true,
+                                        fillColor: Color(0xffF5F5F5),
+                                        ),
+                                        keyboardType: TextInputType.text,
+                                        textInputAction: TextInputAction.next,
+                                        onFieldSubmitted: (_) {
+                                          FocusScope.of(context)
+                                              .requestFocus(_lastNameFocusNode);
+                                        },
+                                        validator: (value) {
+                                          if (value.isEmpty) {
+                                            return 'Firstname cannot be empty!';
+                                          }
+                                          return null;
+                                        },
+                                        onSaved: (value) {
+                                          _profileData['firstname'] = value;
+                                        },
                                       ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            height: deviceSize.height * 0.55,
-                            width: deviceSize.width,
-                            child: Form(
-                              key: _form,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextFormField(
-                                    initialValue: _profileData['firstname'],
-                                    decoration:
-                                        InputDecoration(labelText: 'Firstname'),
-                                    keyboardType: TextInputType.text,
-                                    textInputAction: TextInputAction.next,
-                                    onFieldSubmitted: (_) {
-                                      FocusScope.of(context)
-                                          .requestFocus(_lastNameFocusNode);
-                                    },
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'Firstname cannot be empty!';
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {
-                                      _profileData['firstname'] = value;
-                                    },
-                                  ),
-                                  TextFormField(
-                                    initialValue: _profileData['lastname'],
-                                    decoration:
-                                        InputDecoration(labelText: 'Lastname'),
-                                    keyboardType: TextInputType.text,
-                                    textInputAction: TextInputAction.next,
-                                    focusNode: _lastNameFocusNode,
-                                    onFieldSubmitted: (_) {
-                                      FocusScope.of(context)
-                                          .requestFocus(_cityFocusNode);
-                                    },
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'Lastname cannot be empty!';
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {
-                                      _profileData['lastname'] = value;
-                                    },
-                                  ),
-                                  TextFormField(
-                                    initialValue: _profileData['city'],
-                                    decoration:
-                                        InputDecoration(labelText: 'City'),
-                                    keyboardType: TextInputType.text,
-                                    focusNode: _cityFocusNode,
-                                    textInputAction: TextInputAction.next,
-                                    onFieldSubmitted: (_) {
-                                      FocusScope.of(context)
-                                          .requestFocus(_countryFocusNode);
-                                    },
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'City cannot be empty!';
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {
-                                      _profileData['city'] = value;
-                                    },
-                                  ),
-                                  TextFormField(
-                                    initialValue: _profileData['country'],
-                                    decoration:
-                                        InputDecoration(labelText: 'Country'),
-                                    keyboardType: TextInputType.text,
-                                    focusNode: _countryFocusNode,
-                                    textInputAction: TextInputAction.next,
-                                    onFieldSubmitted: (_) {
-                                      FocusScope.of(context)
-                                          .requestFocus(_genderFocusNode);
-                                    },
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'Country cannot be empty!';
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {
-                                      _profileData['country'] = value;
-                                    },
-                                  ),
-                                  SizedBox(
-                                    height: deviceSize.height * 0.05,
-                                  ),
-                                  Text(
-                                    'Gender *',
-                                    textAlign: TextAlign.start,
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      genderRadio('Male', Gender.male),
-                                      genderRadio('Female', Gender.female),
-                                      genderRadio('Others', Gender.others),
-                                    ],
-                                  ),
-                                ],
+                                    ),
+                                    Container(
+                                      height: deviceSize.height * 0.07,
+                                      margin: EdgeInsets.only(bottom: 16),
+                                      child: TextFormField(
+                                        initialValue: _profileData['lastname'],
+                                        decoration:
+                                            InputDecoration(labelText: 'Last Name',
+                                            enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide.none,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                        ),
+                                        filled: true,
+                                        fillColor: Color(0xffF5F5F5),
+                                        ),
+                                        keyboardType: TextInputType.text,
+                                        textInputAction: TextInputAction.next,
+                                        focusNode: _lastNameFocusNode,
+                                        onFieldSubmitted: (_) {
+                                          FocusScope.of(context)
+                                              .requestFocus(_cityFocusNode);
+                                        },
+                                        validator: (value) {
+                                          if (value.isEmpty) {
+                                            return 'Lastname cannot be empty!';
+                                          }
+                                          return null;
+                                        },
+                                        onSaved: (value) {
+                                          _profileData['lastname'] = value;
+                                        },
+                                      ),
+                                    ),
+                                    Container(
+                                      height: deviceSize.height * 0.07,
+                                      margin: EdgeInsets.only(bottom: 16),
+                                      child: TextFormField(
+                                        initialValue: _profileData['city'],
+                                        decoration:
+                                            InputDecoration(labelText: 'City',
+                                            enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide.none,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                        ),
+                                        filled: true,
+                                        fillColor: Color(0xffF5F5F5),
+                                        ),
+                                        keyboardType: TextInputType.text,
+                                        focusNode: _cityFocusNode,
+                                        textInputAction: TextInputAction.next,
+                                        onFieldSubmitted: (_) {
+                                          FocusScope.of(context)
+                                              .requestFocus(_countryFocusNode);
+                                        },
+                                        validator: (value) {
+                                          if (value.isEmpty) {
+                                            return 'City cannot be empty!';
+                                          }
+                                          return null;
+                                        },
+                                        onSaved: (value) {
+                                          _profileData['city'] = value;
+                                        },
+                                      ),
+                                    ),
+                                    Container(
+                                      height: deviceSize.height * 0.07,
+                                      margin: EdgeInsets.only(bottom: 16),
+                                      child: TextFormField(
+                                        initialValue: _profileData['country'],
+                                        decoration:
+                                            InputDecoration(labelText: 'Country',
+                                            enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide.none,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                        ),
+                                        filled: true,
+                                        fillColor: Color(0xffF5F5F5),
+                                        ),
+                                        keyboardType: TextInputType.text,
+                                        focusNode: _countryFocusNode,
+                                        textInputAction: TextInputAction.next,
+                                        onFieldSubmitted: (_) {
+                                          FocusScope.of(context)
+                                              .requestFocus(_genderFocusNode);
+                                        },
+                                        validator: (value) {
+                                          if (value.isEmpty) {
+                                            return 'Country cannot be empty!';
+                                          }
+                                          return null;
+                                        },
+                                        onSaved: (value) {
+                                          _profileData['country'] = value;
+                                        },
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: deviceSize.height * 0.01,
+                                    ),
+                                    Text(
+                                      'Gender *',
+                                      textAlign: TextAlign.start,
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        genderRadio('Male', Gender.male),
+                                        genderRadio('Female', Gender.female),
+                                        genderRadio('Others', Gender.others),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: deviceSize.height * 0.05,
-                          ),
-                          _isLoading
-                              ? CircularProgressIndicator()
-                              : ElevatedButton.icon(
-                                  onPressed: _saveForm,
-                                  icon: Icon(Icons.done),
-                                  label: Text(
-                                    'Update Profile',
+                            SizedBox(
+                                      height: deviceSize.height * 0.02,
+                                    ),
+                            
+                            _isLoading
+                                ? CircularProgressIndicator()
+                                : ElevatedButton.icon(
+                                    onPressed: _saveForm,
+                                    icon: Icon(Icons.done),
+                                    label: Text(
+                                      'Update Profile',
+                                    ),
                                   ),
-                                ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-      ),
+        ),
     );
   }
 }

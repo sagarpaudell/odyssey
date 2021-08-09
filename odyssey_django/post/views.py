@@ -7,6 +7,7 @@ from django.db.models import Q
 from traveller_api.models import Traveller
 from notification.models import Notification, Notification_type
 from places_api.models import Place
+from places_api.serializers import PlaceSerializer
 from .serializers import PostSerializer, CommentSerializer
 from .models import ( Post, Comment , Post_notification)
 
@@ -35,13 +36,20 @@ class SelfPostView(APIView):
     parser_classes = [MultiPartParser]
     def post(self, request):
         traveller = Traveller.objects.get(username = self.request.user)
+        print(request.data)
         request.data._mutable = True
-        place_id = request.data.pop("place_id", False)
-        request.data._mutable = False
-        serializer = PostSerializer(data=request.data)
-        if place_id:
+        place_dict = dict()
+        place_dict = {
+                "id": request.data.pop("place_id", [None])[0],
+                "name": request.data.pop("place_name", [None])[0],
+                "description": request.data.pop("place_description", [None])[0],
+                "keywords": request.data.pop("place_keywords", [None])[0],
+                "photo_1": request.data.pop("place_photo1", [None])[0],
+            }
+        print(place_dict)
+        if place_dict["id"]:
             try:
-                place = Place.objects.get(id = place_id[0])
+                place = Place.objects.get(id = place_dict["id"])
             except Place.DoesNotExist:
                 return Response(
                         {
@@ -50,17 +58,17 @@ class SelfPostView(APIView):
                         },
                         status=status.HTTP_404_NOT_FOUND
                         )
-            serializer = PostSerializer(
-                    data = request.data,
-                    context={"traveller":traveller}
-                )
+        else:
+            serializer = PlaceSerializer(data=place_dict)
+            if serializer.is_valid(raise_exception=ValueError):
+                place = serializer.save()
+            print(serializer.data)
 
+        request.data._mutable = False
+
+        serializer = PostSerializer(data=request.data)
         if serializer.is_valid(raise_exception=ValueError):
-            if place_id:
-                serializer.save(place=place, traveller=traveller)
-            else:
-                serializer.save(traveller=traveller)
-
+            serializer.save(place = place, traveller=traveller)
             return Response(
                     serializer.data,
                     status=status.HTTP_201_CREATED,
@@ -329,4 +337,3 @@ def notification(post=None, comment=None, traveller = None, remove = False):
     if remove:
         return notification.noti_type.post_noti.delete()
     return notification
-

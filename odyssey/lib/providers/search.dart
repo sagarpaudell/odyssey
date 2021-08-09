@@ -9,9 +9,15 @@ class Search with ChangeNotifier {
 
   Search([this.username, this.authToken]);
 
-  Future<List<dynamic>> search(String searchText) async {
-    final url =
-        'https://travellum.herokuapp.com/places-api/search?place=$searchText';
+  Future<List<dynamic>> search(String searchText, bool searchPlace) async {
+    String url;
+    if (searchPlace) {
+      url =
+          'https://travellum.herokuapp.com/places-api/search?place=$searchText';
+    } else {
+      url =
+          'https://travellum.herokuapp.com/traveller-api/search?traveller=$searchText';
+    }
     final token = 'Bearer ' + authToken;
     try {
       final response = await http.get(

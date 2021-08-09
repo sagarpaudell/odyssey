@@ -6,7 +6,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        fields = ['id','name','city','country','description','photo_1','photo_2','photo_3','photo_4']
+        fields = ['id','name','city','country','description','photo_1','photo_2','photo_3','photo_4', 'keywords']
 
 class PlaceSerializerNewsFeed(serializers.ModelSerializer):
 
