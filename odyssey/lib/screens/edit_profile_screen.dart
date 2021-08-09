@@ -201,18 +201,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     //final authData = Provider.of<Auth>(context, listen: false);
     Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
-      // appBar: AppBar(
-      //   automaticallyImplyLeading: true,
-      //   backgroundColor: Colors.white,
-      //   elevation: 0,
-      //   leading: IconButton(
-      //     icon: Icon(Icons.arrow_back),
-      //     onPressed: () => Navigator.of(context).pop(),
-      //   ),
-      // ),
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black,),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+                    'Update your profile',
+                    style: TextStyle(
+                    color: Theme.of(context).primaryColor.withOpacity(0.9), fontSize: 20, fontWeight: FontWeight.w500),                   
+        ),
+        centerTitle: true,
+      ),
+      
       //body:
-      body: SafeArea(
-        child: FutureBuilder<void>(
+      body:FutureBuilder<void>(
           future: fbuilder, // a previously-obtained Future<String> or null
           builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
               snapshot.connectionState == ConnectionState.waiting
@@ -220,25 +226,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       child: CircularProgressIndicator(),
                     )
                   : Container(
-                      margin: EdgeInsets.all(10),
+                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                       width: double.infinity,
                       padding: EdgeInsets.symmetric(vertical: 15, horizontal: 22),
                       // height: deviceSize.height,
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
+                            
                             Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              child: Text(
-                                'Update your profile',
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor.withOpacity(0.8), fontSize: 22),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            Container(
-                              // height: deviceSize.width * 0.31,
-
                               alignment: Alignment.centerLeft,
                               child: Row(
                                 mainAxisAlignment:
@@ -480,7 +476,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                     ),
         ),
-      ),
     );
   }
 }
