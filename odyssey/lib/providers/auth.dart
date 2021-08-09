@@ -11,7 +11,7 @@ class Auth with ChangeNotifier {
   String userName;
   String fullName;
   String userId;
-  bool dataPersisted;
+  // bool dataPersisted;
   bool email_verifed = false;
   Map<String, dynamic> userProfileInfo;
   DateTime _expiryDate;
@@ -24,11 +24,11 @@ class Auth with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('refreshToken')) {
       print('data is not in device');
-      dataPersisted = false;
-      return dataPersisted;
+
+      return false;
     }
-    dataPersisted = true;
-    return dataPersisted;
+
+    return true;
   }
 
   Future<void> getToken(
@@ -167,7 +167,7 @@ class Auth with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('refreshToken')) {
       print('data is not in device');
-      dataPersisted = false;
+      // dataPersisted = false;
       return false;
     }
     print('data is  in device');
@@ -317,7 +317,7 @@ class Auth with ChangeNotifier {
     fullName = null;
     userId = null;
     userProfileInfo = null;
-    dataPersisted = false;
+    // dataPersisted = false;
     _userRefreshToken = null;
     final prefs = await SharedPreferences.getInstance();
     // prefs.remove('userData');

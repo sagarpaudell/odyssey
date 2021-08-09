@@ -100,6 +100,20 @@ class _MyAppState extends State<MyApp> {
             auth.token,
           ),
         ),
+        ChangeNotifierProxyProvider<Auth, noti.Notification>(
+          create: (ctx) => noti.Notification(),
+          update: (ctx, auth, _) => noti.Notification(
+            auth.userName,
+            auth.token,
+          ),
+        ),
+        ChangeNotifierProxyProvider<Auth, Search>(
+          create: (ctx) => Search(),
+          update: (ctx, auth, _) => Search(
+            auth.userName,
+            auth.token,
+          ),
+        ),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
@@ -118,42 +132,22 @@ class _MyAppState extends State<MyApp> {
             // scaffoldBackgroundColor: Color(0xfff0f2f5),
             scaffoldBackgroundColor: Colors.white,
           ),
-          // home: FutureBuilder(
-          //   future: checkAutoLogin(context),
-          //   builder: (ctx, authResultSnapshot) =>
-          //       authResultSnapshot.connectionState == ConnectionState.waiting
-          //           ? SplashPage()
-          //           : auth.isAuth
-          //               ? auth.email_verifed
-          //                   ? MainScreen()
-          //                   : SignupVerification()
-          //               : persisted
-          //                   ? tryAuto
-          //                       ? SplashPage()
-          //                       : SessionScreen()
-          //                   : AuthPage(),
-          // ),
 
-          //                  FutureBuilder(
-          //         future: auth.tryAutoLogin(),
-          //         builder: (ctx, authResultSnapshot) =>
-          //             authResultSnapshot.connectionState ==
-          //                     ConnectionState.waiting
-          //                 ? SplashPage() : SessionScreen(): auth.isAuth
-          // ? auth.email_verifed
-          //     ? MainScreen()
-          //     : SignupVerification()
-          // : auth.dataPersisted
-          //     ? FutureBuilder(
-          //         future: auth.tryAutoLogin(),
-          //         builder: (ctx, authResultSnapshot) =>
-          //             authResultSnapshot.connectionState ==
-          //                     ConnectionState.waiting
-          //                 ? SplashPage()
-          //                 : SessionScreen(),
-          //       )
+          // home: auth.isAuth
+          //     ? auth.email_verifed
+          //         ? MainScreen()
+          //         : SignupVerification()
           //     : AuthPage(),
-          //home: SessionScreen(),
+
+          // FutureBuilder(
+          //     future: auth.tryAutoLogin(),
+          //     builder: (ctx, authResultSnapshot) =>
+          //         authResultSnapshot.connectionState ==
+          //                 ConnectionState.waiting
+          //             ? SplashPage()
+          //             : SessionScreen(),
+          //   ),
+
           home: auth.isAuth
               ? auth.email_verifed
                   ? MainScreen()
