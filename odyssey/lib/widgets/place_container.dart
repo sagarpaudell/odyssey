@@ -76,11 +76,12 @@ class _PlaceContainerState extends State<PlaceContainer> {
                         )
                       : Center(
                           child: Text(
-                          'Photo Unavailable',
-                          style: TextStyle(
-                            fontSize: 20,
+                            'Photo Unavailable',
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
                           ),
-                        )),
+                        ),
                   widget.singlePlace["photo_2"] != null
                       ? Image(
                           image: NetworkImage(
@@ -91,9 +92,13 @@ class _PlaceContainerState extends State<PlaceContainer> {
                             return Image.asset('./assets/images/mana.jpg');
                           },
                         )
-                      : SizedBox(
-                          height: 0,
-                          width: 0,
+                      : Center(
+                          child: Text(
+                            'Photo Unavailable',
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
                         ),
                   widget.singlePlace["photo_3"] != null
                       ? Image(
@@ -105,9 +110,13 @@ class _PlaceContainerState extends State<PlaceContainer> {
                             return Image.asset('./assets/images/mana.jpg');
                           },
                         )
-                      : SizedBox(
-                          height: 0,
-                          width: 0,
+                      : Center(
+                          child: Text(
+                            'Photo Unavailable',
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
                         ),
                 ],
               ),

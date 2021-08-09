@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import '../providers/posts.dart';
 import '../providers/search.dart';
 import '../providers/place.dart';
-
+import './place_screen.dart';
 import '../providers/blog.dart' as blogss;
 import 'package:provider/provider.dart';
 import '../widgets/fb_loading.dart';
 import '../widgets/post_container.dart';
 import '../widgets/place_container.dart';
-
+import './profile_user.dart';
 import '../widgets/blog_container.dart';
 
 class Explore extends StatefulWidget {
@@ -49,11 +49,22 @@ class _ExploreState extends State<Explore> {
     });
   }
 
+//
+//  widget.id != null? FutureBuilder<void>(
+//     future: getSinglePlaceFun(), // a previously-obtained Future<String> or null
+//     builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
+//         snapshot.connectionState == ConnectionState.waiting
+//             ? SliverList(
+//                 delegate: SliverChildBuilderDelegate(
+//                   (context, index) {
+//                     return Center(child: CircularProgressIndicator(),);
+//                   },
   Future<void> explorePlaces() async {
     List<dynamic> placesList =
         await Provider.of<Place>(context, listen: false).getAllPlaces();
     setState(() {
       explorePlace = placesList;
+      print('explore places $explorePlace');
     });
   }
 
@@ -69,7 +80,6 @@ class _ExploreState extends State<Explore> {
       getexploreBlogs();
     }
     if (isSelected[2]) {
-      print('explore places $explorePlace');
       explorePlaces();
     }
     return Scaffold(
@@ -301,33 +311,52 @@ Widget SearchContext(
                           Container(
                               width: MediaQuery.of(context).size.width * 0.6,
                               child: searchPlace
-                                  ? Text(
-                                      searchResults[index]['name'],
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500),
-                                    )
-                                  : ListTile(
-                                      leading: CircleAvatar(
-                                          radius: 20.0,
-                                          backgroundColor: Colors.grey[200],
-                                          backgroundImage: NetworkImage(
-                                              searchResults[index]
-                                                  ['photo_main']),
-                                          onBackgroundImageError:
-                                              (Object exception,
-                                                  StackTrace stackTrace) {
-                                            return Image.asset(
-                                                './assets/images/guptaji.jpg');
-                                          }),
-                                      title: Text(
-                                        '${searchResults[index]['first_name']} ${searchResults[index]['last_name']}',
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) => PlaceScreen(null,
+                                                  searchResults[index]['id'])),
+                                        );
+                                      },
+                                      child: Text(
+                                        searchResults[index]['name'],
                                         style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w500),
                                       ),
-                                      subtitle: Text(
-                                          '@ ${searchResults[index]['username']}'),
+                                    )
+                                  : GestureDetector(
+                                      onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => UserProfile(
+                                              searchResults[index]['username']),
+                                        ),
+                                      ),
+                                      child: ListTile(
+                                        leading: CircleAvatar(
+                                            radius: 20.0,
+                                            backgroundColor: Colors.grey[200],
+                                            backgroundImage: NetworkImage(
+                                                searchResults[index]
+                                                    ['photo_main']),
+                                            onBackgroundImageError:
+                                                (Object exception,
+                                                    StackTrace stackTrace) {
+                                              return Image.asset(
+                                                  './assets/images/guptaji.jpg');
+                                            }),
+                                        title: Text(
+                                          '${searchResults[index]['first_name']} ${searchResults[index]['last_name']}',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        subtitle: Text(
+                                            '@ ${searchResults[index]['username']}'),
+                                      ),
                                     )),
                         ],
                       ),
