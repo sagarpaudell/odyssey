@@ -207,9 +207,9 @@ class Posts with ChangeNotifier {
     }
   }
 
-  Future<List<dynamic>> getPostsByPlace(String id) async {   
+  Future<List<dynamic>> getPostsByPlace(String id) async {
     final url = 'https://travellum.herokuapp.com/post-api/place/$id';
-    
+
     final token = 'Bearer ' + authToken;
     try {
       final userDataResponse = await http.get(
@@ -224,6 +224,4 @@ class Posts with ChangeNotifier {
       print(e);
     }
   }
-
 }
-
