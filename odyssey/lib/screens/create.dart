@@ -15,11 +15,14 @@ class Create extends StatefulWidget {
 
 class _CreateState extends State<Create> {
   File _imageFile;
+  File _placeImageFile;
   bool isSwitched = false;
   bool showImage = false;
+  bool showPlaceImage = false;
   var isPost = true;
   String caption;
   String dropdownValue = 'Nepal';
+  List tags = [];
   void toggleSwitch(bool value) {
     if (isSwitched == false) {
       setState(() {
@@ -34,7 +37,8 @@ class _CreateState extends State<Create> {
     }
   }
 
-  final _PlaceNameController = TextEditingController();
+  final _placeNameController = TextEditingController();
+  final _placeDescController = TextEditingController();
   final _captionController = TextEditingController();
   Future<void> _pickImage(ImageSource source) async {
     final selected = await ImagePicker().pickImage(source: source);
@@ -42,6 +46,15 @@ class _CreateState extends State<Create> {
 
     setState(() {
       _imageFile = selection;
+    });
+  }
+
+  Future<void> _pickPlaceImage(ImageSource source) async {
+    final selected = await ImagePicker().pickImage(source: source);
+    final selection = File(selected.path);
+
+    setState(() {
+      _placeImageFile = selection;
     });
   }
 
@@ -71,10 +84,43 @@ class _CreateState extends State<Create> {
     });
   }
 
+  Future<void> _cropPlaceImage() async {
+    File cropped = await ImageCropper.cropImage(
+      sourcePath: _placeImageFile.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9,
+      ],
+      androidUiSettings: AndroidUiSettings(
+        toolbarTitle: 'Cropper',
+        toolbarColor: Colors.deepOrange,
+        toolbarWidgetColor: Colors.white,
+        initAspectRatio: CropAspectRatioPreset.original,
+        lockAspectRatio: true,
+        // cropGridRowCount: 2,
+        showCropGrid: true,
+        // cropGridColumnCount: 10,
+      ),
+    );
+
+    setState(() {
+      _placeImageFile = cropped;
+    });
+  }
+
   void _clear() {
     setState(() {
       _imageFile = null;
       showImage = false;
+    });
+  }
+
+  void _clearPlaceImage() {
+    setState(() {
+      _placeImageFile = null;
+      showPlaceImage = false;
     });
   }
 
@@ -268,7 +314,7 @@ class _CreateState extends State<Create> {
                       TextField(
                         maxLines: null,
                         textInputAction: TextInputAction.next,
-                        controller: _PlaceNameController,
+                        controller: _placeNameController,
                         maxLength: 100,
                         decoration: InputDecoration(
                           labelText: 'NAME OF THE PLACE',
@@ -285,6 +331,7 @@ class _CreateState extends State<Create> {
                       TextField(
                         maxLines: 5,
                         textInputAction: TextInputAction.next,
+                        controller: _placeDescController,
                         maxLength: 2000,
                         decoration: InputDecoration(
                           labelText: 'DESCRITPION OF THE PLACE',
@@ -298,72 +345,185 @@ class _CreateState extends State<Create> {
                           filled: true,
                           fillColor: Colors.grey[100],
                         ),
-                      )
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TextFieldTags(
+                          initialTags: <String>[
+                            // List of tags
+                            // Provide a list of initial tags to initialize it
+                          ],
+                          textFieldStyler: TextFieldStyler(
+                            //These are properties you can tweek for customization
+
+                            textFieldFilled: true,
+                            // Icon icon,
+                            // String helperText = 'Enter tags',
+                            helperStyle: TextStyle(
+                              // letterSpacing: 1.5,
+                              fontSize: 14,
+                              // fontWeight: FontWeight.bold,
+                            ),
+                            hintText: 'FOR EG: Mountain, Nature',
+                            hintStyle: TextStyle(
+                              letterSpacing: 1.5,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            // EdgeInsets contentPadding,
+                            textFieldFilledColor: Colors.grey[100],
+                            isDense: false,
+                            textFieldEnabled: true,
+                            textFieldBorder: InputBorder.none,
+                            textFieldFocusedBorder: InputBorder.none,
+                            textFieldDisabledBorder: InputBorder.none,
+                            textFieldEnabledBorder: InputBorder.none,
+                          ),
+                          tagsStyler: TagsStyler(
+                            //These are properties you can tweek for customization
+
+                            showHashtag: true,
+                            // EdgeInsets tagPadding = const EdgeInsets.all(4.0),
+                            // EdgeInsets tagMargin = const EdgeInsets.symmetric(horizontal: 4.0),
+                            tagDecoration:
+                                BoxDecoration(color: Colors.grey[200]),
+                            // TextStyle tagTextStyle,
+                            tagCancelIcon: Icon(Icons.cancel,
+                                size: 18.0, color: Colors.red[400]),
+                          ),
+                          onTag: (tag) {
+                            //This give you the tag that was entered
+                            tags.add(tag);
+                            print(tags);
+                          },
+                          onDelete: (tag) {
+                            //This gives you the tag that was deleted
+                            //print(tag)
+                          },
+                          validator: (tag) {
+                            if (tag.length > 15) {
+                              return "Max Length: 15";
+                            }
+                            return null;
+                          }
+                          //tagsDistanceFromBorderEnd: 0.725,
+                          //scrollableTagsMargin: EdgeInsets.only(left: 9),
+                          //scrollableTagsPadding: EdgeInsets.only(left: 9),
+                          ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.photo_album),
+                          Text('PHOTO OF THE PLACE'),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          showPlaceImage
+                              ? Container(
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Stack(
+                                        alignment: Alignment.topRight,
+                                        children: [
+                                          Image.file(_placeImageFile),
+                                          Container(
+                                            height: 35,
+                                            width: 35,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Colors.black.withOpacity(0.3),
+                                              // color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                            ),
+                                            child: IconButton(
+                                              icon: Icon(Icons.close),
+                                              color:
+                                                  Colors.white.withOpacity(0.8),
+                                              iconSize: 20,
+                                              onPressed: () {
+                                                _clearPlaceImage();
+                                              },
+                                              // icon:Icons.close,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 25,
+                                      ),
+                                    ],
+                                  ),
+                                  // height: 200,
+                                  width: 200,
+                                )
+                              : Row(
+                                  children: [
+                                    Container(
+                                      margin:
+                                          EdgeInsets.fromLTRB(0, 20, 20, 20),
+                                      height: 200,
+                                      width: MediaQuery.of(context).size.width /
+                                          2.4,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                      ),
+                                      child: IconButton(
+                                        onPressed: () async {
+                                          await _pickPlaceImage(
+                                              ImageSource.camera);
+                                          print(_placeImageFile);
+                                          await _cropPlaceImage();
+                                          setState(() {
+                                            showPlaceImage = true;
+                                            print(
+                                              'showPlaceImage: $showPlaceImage',
+                                            );
+                                          });
+                                        },
+                                        icon: Icon(
+                                          Icons.camera,
+                                          color: Colors.indigo,
+                                          size: 35,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 200,
+                                      width: MediaQuery.of(context).size.width /
+                                          2.4,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                      ),
+                                      child: IconButton(
+                                        onPressed: () async {
+                                          await _pickPlaceImage(
+                                              ImageSource.gallery);
+                                          await _cropPlaceImage();
+                                          setState(() {
+                                            showPlaceImage = true;
+                                          });
+                                        },
+                                        icon: Icon(
+                                          Icons.photo,
+                                          color: Colors.teal,
+                                          size: 35,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                        ],
+                      ),
                     ],
                   ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFieldTags(
-                initialTags: <String>[
-                  // List of tags
-                  // Provide a list of initial tags to initialize it
-                ],
-                textFieldStyler: TextFieldStyler(
-                  //These are properties you can tweek for customization
-
-                  textFieldFilled: true,
-                  // Icon icon,
-                  // String helperText = 'Enter tags',
-                  helperStyle: TextStyle(
-                    // letterSpacing: 1.5,
-                    fontSize: 14,
-                    // fontWeight: FontWeight.bold,
-                  ),
-                  hintText: 'FOR EG: Mountain, Nature',
-                  hintStyle: TextStyle(
-                    letterSpacing: 1.5,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  // EdgeInsets contentPadding,
-                  textFieldFilledColor: Colors.grey[100],
-                  isDense: false,
-                  textFieldEnabled: true,
-                  textFieldBorder: InputBorder.none,
-                  textFieldFocusedBorder: InputBorder.none,
-                  textFieldDisabledBorder: InputBorder.none,
-                  textFieldEnabledBorder: InputBorder.none,
-                ),
-                tagsStyler: TagsStyler(
-                  //These are properties you can tweek for customization
-
-                  showHashtag: true,
-                  // EdgeInsets tagPadding = const EdgeInsets.all(4.0),
-                  // EdgeInsets tagMargin = const EdgeInsets.symmetric(horizontal: 4.0),
-                  tagDecoration: BoxDecoration(color: Colors.grey[200]),
-                  // TextStyle tagTextStyle,
-                  tagCancelIcon:
-                      Icon(Icons.cancel, size: 18.0, color: Colors.red[400]),
-                ),
-                onTag: (tag) {
-                  //This give you the tag that was entered
-                  //print(tag)
-                },
-                onDelete: (tag) {
-                  //This gives you the tag that was deleted
-                  //print(tag)
-                },
-                validator: (tag) {
-                  if (tag.length > 15) {
-                    return "Max Length: 15";
-                  }
-                  return null;
-                }
-                //tagsDistanceFromBorderEnd: 0.725,
-                //scrollableTagsMargin: EdgeInsets.only(left: 9),
-                //scrollableTagsPadding: EdgeInsets.only(left: 9),
-                ),
             SizedBox(
               height: 30,
             ),
@@ -470,7 +630,16 @@ class _CreateState extends State<Create> {
                         onPressed: () {
                           print('caption: ${_captionController.text}');
                           Provider.of<Posts>(context, listen: false)
-                              .publishPost(_captionController.text, _imageFile);
+                              .publishPost(
+                            _captionController.text,
+                            _imageFile,
+                            '1',
+                            _placeImageFile,
+                            _placeNameController.text,
+                            _placeDescController.text,
+                            tags,
+                            isSwitched,
+                          );
                         },
                         child: Text('Publish'),
                       )
