@@ -86,19 +86,47 @@ class Posts with ChangeNotifier {
   }
 
   Future<void> publishPost(String caption,
-      [File post_photo, String place_id = null]) async {
-    const url = 'https://travellum.herokuapp.com/post-api/post/';
+      [File post_photo,
+      String place_id = null,
+      File place_photo1,
+      String place_name,
+      String place_desc,
+      List keywords,
+      bool isSwitched = false]) async {
+    const url = 'https://travellum.herokuapp.com/post-api/post';
     final token = 'Bearer ' + authToken;
 
     Map<String, String> headers = {"Authorization": token};
 
-    if (post_photo == null) {
-      try {
-        final request = new http.MultipartRequest('POST', Uri.parse(url));
-        request.fields['caption'] = caption;
-
+    void handlePlaceData(http.MultipartRequest request) {
+      if (isSwitched) {
+        request.fields["place_name"] = place_name;
+        request.fields["place_description"] = place_desc;
+        request.fields["place_keywords"] = keywords.join(' ');
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'place_photo1',
+            place_photo1.readAsBytesSync(),
+            filename: '${DateTime.now().toString()}.jpg',
+          ),
+        );
         request.headers.addAll(headers);
 
+        // print('post published status: ${response.statusCode}');
+        // print(json.decode(response.body));
+      } else {
+        request.fields["place_id"] = place_id;
+        request.headers.addAll(headers);
+      }
+    }
+
+    final request = new http.MultipartRequest('POST', Uri.parse(url));
+    if (post_photo == null) {
+      try {
+        request.fields['caption'] = caption;
+        print('isSwitched $isSwitched');
+        print(place_name + place_desc + keywords.join(' '));
+        handlePlaceData(request);
         var response = await request.send();
         notifyListeners();
       } catch (error) {
@@ -109,7 +137,7 @@ class Posts with ChangeNotifier {
       try {
         final request = new http.MultipartRequest('POST', Uri.parse(url));
         request.fields['caption'] = caption;
-        // request.fields['place_id'] = place_id;
+        handlePlaceData(request);
         request.files.add(
           http.MultipartFile.fromBytes(
             'photo',

@@ -9,7 +9,7 @@ from .models import Place,Major_Attraction
 
 class AllPlaceView(APIView):
     def get(self, request):
-        place = Place.objects.all()
+        place = Place.objects.filter(is_verified=True)
         serializer = PlaceSerializer(place, many=True)
         return Response(serializer.data)
 
@@ -73,11 +73,12 @@ class SearchPlace(APIView):
     def get(self, request):
         searchtag = request.GET.get("place")
         places = Place.objects.filter(
-                Q(name__icontains=searchtag) | 
+                Q(name__icontains=searchtag) |
                 Q(city__icontains=searchtag) |
-                Q(country__icontains=searchtag)| 
-                Q(description__icontains=searchtag) | 
-                Q(keywords__icontains=searchtag)
+                Q(country__icontains=searchtag) |
+                Q(description__icontains=searchtag) |
+                Q(keywords__icontains=searchtag),
+                is_verified = True
             )
         print(places)
         serializer = PlaceSerializerNewsFeed(places, many = True)

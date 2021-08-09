@@ -170,7 +170,8 @@ class SearchTraveller(APIView):
         travellers = Traveller.objects.filter(
                 Q(first_name__icontains=searchtag) |
                 Q(last_name__icontains=searchtag) |
-                Q(username__username__icontains=searchtag)
+                Q(username__username__icontains=searchtag),
+                ~Q(username = request.user)
             )
         serializer = TravellerSerializerPublic(travellers, many = True)
         return Response(serializer.data)

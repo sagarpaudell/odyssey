@@ -8,7 +8,7 @@ class BlogCommentSerializer(serializers.ModelSerializer):
     user = TravellerSerializerPublic(read_only=True)
     class Meta:
         model = BlogComment
-        fields = ['id','user','comment','liked_users','disliked_users','comment_time']
+        fields = ['id','user','comment','comment_time']
 
 class BlogSerializer(serializers.ModelSerializer):
     is_bookmarked = serializers.SerializerMethodField('check_bookmark')
