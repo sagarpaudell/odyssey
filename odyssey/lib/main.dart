@@ -9,10 +9,14 @@ import './screens/profile_self.dart';
 import './screens/profile_user.dart';
 import './screens/screens.dart';
 import './screens/bookmarks.dart';
-
+import './screens/splash_screen.dart';
 import './screens/single_blog_screen.dart';
 import './widgets/fb_loading.dart';
 import './providers/blog.dart';
+import './providers/search.dart';
+import './screens/session_expired_screen.dart';
+import './screens/notifications.dart';
+import './providers/notification.dart' as noti;
 import 'package:provider/provider.dart';
 
 void main() {
@@ -44,6 +48,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  // bool _isLoading = false;
+
+  // bool tryAuto;
+  // bool persisted;
+
+  // Future<void> checkAutoLogin(BuildContext context) async {
+  //   try {
+  //     persisted =
+  //         await Provider.of<Auth>(context, listen: false).checkDataPersist();
+  //     if (persisted) {
+  //       tryAuto =
+  //           await Provider.of<Auth>(context, listen: false).tryAutoLogin();
+  //     }
+  //   } catch (error) {
+  //     print(error);
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -96,15 +118,63 @@ class _MyAppState extends State<MyApp> {
             // scaffoldBackgroundColor: Color(0xfff0f2f5),
             scaffoldBackgroundColor: Colors.white,
           ),
+          // home: FutureBuilder(
+          //   future: checkAutoLogin(context),
+          //   builder: (ctx, authResultSnapshot) =>
+          //       authResultSnapshot.connectionState == ConnectionState.waiting
+          //           ? SplashPage()
+          //           : auth.isAuth
+          //               ? auth.email_verifed
+          //                   ? MainScreen()
+          //                   : SignupVerification()
+          //               : persisted
+          //                   ? tryAuto
+          //                       ? SplashPage()
+          //                       : SessionScreen()
+          //                   : AuthPage(),
+          // ),
 
-          //home: auth.isAuth ? ChatScreen() : AuthPage(),
+          //                  FutureBuilder(
+          //         future: auth.tryAutoLogin(),
+          //         builder: (ctx, authResultSnapshot) =>
+          //             authResultSnapshot.connectionState ==
+          //                     ConnectionState.waiting
+          //                 ? SplashPage() : SessionScreen(): auth.isAuth
+          // ? auth.email_verifed
+          //     ? MainScreen()
+          //     : SignupVerification()
+          // : auth.dataPersisted
+          //     ? FutureBuilder(
+          //         future: auth.tryAutoLogin(),
+          //         builder: (ctx, authResultSnapshot) =>
+          //             authResultSnapshot.connectionState ==
+          //                     ConnectionState.waiting
+          //                 ? SplashPage()
+          //                 : SessionScreen(),
+          //       )
+          //     : AuthPage(),
+          //home: SessionScreen(),
           home: auth.isAuth
               ? auth.email_verifed
                   ? MainScreen()
                   : SignupVerification()
-              : AuthPage(),
+              : FutureBuilder(
+                  future: Future.wait([
+                    auth.checkDataPersist(),
+                    auth.tryAutoLogin(),
+                  ]),
+                  builder: (ctx, AsyncSnapshot<List<dynamic>> snapshot) =>
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? SplashPage()
+                          : snapshot.data[0]
+                              ? snapshot.data[1]
+                                  ? SplashPage()
+                                  : SessionScreen()
+                              : AuthPage()),
+
           routes: {
             MainScreen.routeName: (ctx) => MainScreen(),
+            SessionScreen.routeName: (ctx) => SessionScreen(),
             AuthPage.routeName: (ctx) => AuthPage(),
             FeedsScreen.routeName: (ctx) => FeedsScreen(),
             EditProfileScreen.routeName: (ctx) => EditProfileScreen(),

@@ -3,6 +3,7 @@ import '../models/http_exception.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
   String token;
@@ -10,6 +11,7 @@ class Auth with ChangeNotifier {
   String userName;
   String fullName;
   String userId;
+  bool dataPersisted;
   bool email_verifed = false;
   Map<String, dynamic> userProfileInfo;
   DateTime _expiryDate;
@@ -18,8 +20,21 @@ class Auth with ChangeNotifier {
     return token != null;
   }
 
+  Future<bool> checkDataPersist() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('refreshToken')) {
+      print('data is not in device');
+      dataPersisted = false;
+      return dataPersisted;
+    }
+    dataPersisted = true;
+    return dataPersisted;
+  }
+
   Future<void> getToken(
-      {String username = 'postgres', String password = 'postgres'}) async {
+      {String username = 'postgres',
+      String password = 'postgres',
+      bool rememberMe}) async {
     // const url = 'http://10.0.2.2:8000/accounts-api/get-auth-token/';
     const url =
         'https://travellum.herokuapp.com/accounts-api/get-auth-token/'; //...
@@ -37,63 +52,63 @@ class Auth with ChangeNotifier {
         ),
       );
 
-      print(json.decode(response.statusCode.toString()));
       if (json.decode(response.statusCode.toString()) == 401) {
-        //print(responseData);
-        print('csdvs');
         throw HttpException('Invalid Username or Password');
       }
       if (username == 'postgres') {
-        // print(json.decode(response.body));
         _rootToken = json.decode(response.body)['access'];
-        //print(json.decode(response.body));
       } else {
         token = json.decode(response.body)['access'];
         _userRefreshToken = json.decode(response.body)['refresh'];
-        // const url = 'http://10.0.2.2:8000/accounts-api/user/'; //...
-
-        final tokenHeader = 'Bearer ' + token;
-        const profurl = 'https://travellum.herokuapp.com/traveller-api/';
-
-        try {
-          final userDataResponse = await http.get(
-            Uri.parse(profurl),
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': tokenHeader
-            },
-          );
-          final userData = json.decode(userDataResponse.body);
-          userProfileInfo = userData;
-          userName = userData['username'];
-          fullName = '${userData['first_name ']} ${userData['last_name ']}';
-          userId = userData['id'].toString();
-        } catch (error) {
-          throw error;
-        }
-        userName = username;
-        const verifyUrl =
-            'https://travellum.herokuapp.com/accounts-api/checkverified';
-        try {
-          final verifyResponse = await http.get(
-            Uri.parse(verifyUrl),
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': tokenHeader
-            },
-          );
-          email_verifed = json.decode(verifyResponse.body)['verified_email'];
-          print('the email is $email_verifed');
-        } catch (error) {
-          //throw error;
-          print('here is error');
+        if (rememberMe) {
+          print('true rem me');
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString('refreshToken', _userRefreshToken);
         }
       }
-
+      await authenticate(token);
       notifyListeners();
-      final responseData = json.decode(response.body);
     } catch (e) {
       throw (e);
+    }
+  }
+
+  Future<void> authenticate(String token) async {
+    final tokenHeader = 'Bearer ' + token;
+    const profurl = 'https://travellum.herokuapp.com/traveller-api/';
+
+    try {
+      final userDataResponse = await http.get(
+        Uri.parse(profurl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': tokenHeader
+        },
+      );
+      final userData = json.decode(userDataResponse.body);
+      userProfileInfo = userData;
+      userName = userData['username'];
+      fullName = '${userData['first_name ']} ${userData['last_name ']}';
+      userId = userData['id'].toString();
+    } catch (error) {
+      throw error;
+    }
+
+    const verifyUrl =
+        'https://travellum.herokuapp.com/accounts-api/checkverified';
+    try {
+      final verifyResponse = await http.get(
+        Uri.parse(verifyUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': tokenHeader
+        },
+      );
+      email_verifed = json.decode(verifyResponse.body)['verified_email'];
+      print('the email is $email_verifed');
+    } catch (error) {
+      //throw error;
+      print('here is error');
     }
   }
 
@@ -122,23 +137,14 @@ class Auth with ChangeNotifier {
           },
         ),
       );
-
-      print(json.decode(response.statusCode.toString()));
-      // if (responseData['email']) {
-      //   throw HttpException('email');
-      // }
-      // if (responseData['username'] != null) {
-      //   throw HttpException('username');
-      // }
     } catch (error) {
-      print('blahhh');
-      print(error);
       throw error;
     }
   }
 
-  Future<void> login(String username, String password) async {
-    return getToken(username: username, password: password);
+  Future<void> login(String username, String password, bool rememberMe) async {
+    return getToken(
+        username: username, password: password, rememberMe: rememberMe);
     // const url = 'https://travellum.herokuapp.com/accounts-api/user/'; //...
 
     // final tokenHeader = 'TOKEN ' + token;
@@ -155,6 +161,47 @@ class Auth with ChangeNotifier {
     // } catch (error) {
     //   throw error;
     // }
+  }
+
+  Future<bool> tryAutoLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('refreshToken')) {
+      print('data is not in device');
+      dataPersisted = false;
+      return false;
+    }
+    print('data is  in device');
+    _userRefreshToken = prefs.getString('refreshToken');
+    const url =
+        'https://travellum.herokuapp.com/accounts-api/refresh-auth-token/'; //...
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            "refresh": _userRefreshToken,
+          },
+        ),
+      );
+      Map<String, dynamic> respondeDatam = json.decode(response.body);
+
+      if (respondeDatam.containsKey('code')) {
+        return false;
+      }
+      token = respondeDatam['access'];
+      // print('access $token');
+      await authenticate(token);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      throw e;
+    }
+    // token = extractedUserData['token'];
+
+    // _expiryDate = expiryDate;
   }
 
   Future<Map<String, dynamic>> sendOTP(bool forForgotPass,
@@ -264,15 +311,17 @@ class Auth with ChangeNotifier {
     }
   }
 
-  void logout() {
+  Future<void> logout() async {
     token = null;
     userName = null;
     fullName = null;
     userId = null;
     userProfileInfo = null;
-
+    dataPersisted = false;
     _userRefreshToken = null;
-
+    final prefs = await SharedPreferences.getInstance();
+    // prefs.remove('userData');
+    prefs.clear();
     notifyListeners();
   }
 }
