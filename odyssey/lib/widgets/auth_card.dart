@@ -103,6 +103,7 @@ class _AuthCardState extends State<AuthCard>
           _authData['password'],
           rememberMe,
         );
+        setState(() {});
       } else {
         // Sign user up
         await Provider.of<Auth>(context, listen: false).signup(

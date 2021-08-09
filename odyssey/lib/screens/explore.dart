@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../providers/posts.dart';
 import '../providers/search.dart';
+import '../providers/place.dart';
 
 import '../providers/blog.dart' as blogss;
 import 'package:provider/provider.dart';
@@ -23,18 +24,7 @@ class _ExploreState extends State<Explore> {
   bool _isLoading = false;
   List<dynamic> explorePosts;
   List<dynamic> exploreBlogs;
-  List<dynamic> explorePlace = [
-    {
-      'title': 'Langtang',
-      'photo1':
-          'https://images.unsplash.com/photo-1513614835783-51537729c8ba?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80'
-    },
-    {
-      'title': 'Dhulikhel',
-      'photo1':
-          'https://images.unsplash.com/photo-1628128502571-d890a5974f61?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80',
-    },
-  ];
+  List<dynamic> explorePlace;
 
   Future fbuilder;
   @override
@@ -58,6 +48,15 @@ class _ExploreState extends State<Explore> {
       exploreBlogs = tempblogs;
     });
   }
+
+  Future<void> explorePlaces() async {
+    List<dynamic> placesList =
+        await Provider.of<Place>(context, listen: false).getAllPlaces();
+    setState(() {
+      explorePlace = placesList;
+    });
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -68,6 +67,10 @@ class _ExploreState extends State<Explore> {
   Widget build(BuildContext context) {
     if (isSelected[1]) {
       getexploreBlogs();
+    }
+    if (isSelected[2]) {
+      print('explore places $explorePlace');
+      explorePlaces();
     }
     return Scaffold(
       body: CustomScrollView(
@@ -114,6 +117,8 @@ class _ExploreState extends State<Explore> {
                         ),
                       ],
                       onPressed: (int newIndex) {
+                        searchResults = [];
+                        _searchController.text = '';
                         setState(() {
                           for (int index = 0;
                               index < isSelected.length;
@@ -144,13 +149,13 @@ class _ExploreState extends State<Explore> {
                     }),
                     controller: _searchController,
                     onChanged: (_) async {
-                      if (_searchController.text.length > 2) {
+                      if (_searchController.text.length > 1) {
                         setState(() {
                           _isLoading = true;
                         });
                         searchResults =
                             await Provider.of<Search>(context, listen: false)
-                                .search(_searchController.text);
+                                .search(_searchController.text, isSelected[2]);
                         setState(() {
                           _isLoading = false;
                         });
@@ -177,14 +182,28 @@ class _ExploreState extends State<Explore> {
               childCount: 1,
             ),
           ),
-
           !_isSearch
               ? isSelected[0] == true
                   ? PostContent(fbuilder, explorePosts)
                   : isSelected[1] == true
                       ? BlogContent(exploreBlogs)
                       : PlaceContent(explorePlace)
-              : SearchContext(_isLoading, searchResults)
+              : _searchController.text.length > 1
+                  ? SearchContext(_isLoading, searchResults, isSelected[2])
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return Center(
+                            child: Text(
+                              'Search awesome people and places',
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.w500),
+                            ),
+                          );
+                        },
+                        childCount: 1,
+                      ),
+                    ),
         ],
       ),
     );
@@ -233,7 +252,8 @@ Widget BlogContent(List<dynamic> exploreBlogs) {
         ));
 }
 
-Widget SearchContext(bool _isLoading, List<dynamic> searchResults) {
+Widget SearchContext(
+    bool _isLoading, List<dynamic> searchResults, bool searchPlace) {
   return _isLoading
       ? SliverList(
           delegate: SliverChildBuilderDelegate(
@@ -245,37 +265,80 @@ Widget SearchContext(bool _isLoading, List<dynamic> searchResults) {
             childCount: 1,
           ),
         )
-      : SliverList(
-          delegate: SliverChildBuilderDelegate((context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12,),
-            child: ListTile(
-              title: Column(
-                children: [
-                  Row(
+      : searchResults.isEmpty
+          ? SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return Center(
+                    child: Text(
+                      ' Oops! No result found',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                    ),
+                  );
+                },
+                childCount: 1,
+              ),
+            )
+          : SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                ),
+                child: ListTile(
+                  title: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: Icon(Icons.search, color: Colors.grey[400],),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: Icon(
+                              Icons.search,
+                              color: Colors.grey[400],
+                            ),
+                          ),
+                          Container(
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              child: searchPlace
+                                  ? Text(
+                                      searchResults[index]['name'],
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500),
+                                    )
+                                  : ListTile(
+                                      leading: CircleAvatar(
+                                          radius: 20.0,
+                                          backgroundColor: Colors.grey[200],
+                                          backgroundImage: NetworkImage(
+                                              searchResults[index]
+                                                  ['photo_main']),
+                                          onBackgroundImageError:
+                                              (Object exception,
+                                                  StackTrace stackTrace) {
+                                            return Image.asset(
+                                                './assets/images/guptaji.jpg');
+                                          }),
+                                      title: Text(
+                                        '${searchResults[index]['first_name']} ${searchResults[index]['last_name']}',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      subtitle: Text(
+                                          '@ ${searchResults[index]['username']}'),
+                                    )),
+                        ],
                       ),
-                      Container(
-                        width: MediaQuery.of(context).size.width*0.6,
-                        child: Text(searchResults.isEmpty
-                            ? 'Sorry, No results found'
-                            : searchResults[index]['name'],
-                            style: TextStyle(fontSize: 18,
-                            fontWeight: FontWeight.w500),),
-                      ),
+                      Divider(
+                        thickness: 1,
+                      )
                     ],
                   ),
-                  Divider(
-                    thickness: 1,                   
-                  )
-                ],
-              ),
-            ),
-          );
-        }, childCount: searchResults.length));
+                ),
+              );
+            }, childCount: searchResults.length));
 }
 
 Widget PlaceContent(List<dynamic> explorePlace) {

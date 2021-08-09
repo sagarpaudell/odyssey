@@ -20,12 +20,9 @@ class _PlaceContainerState extends State<PlaceContainer> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('hi');
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (_) => PlaceScreen(),
-          ),
+          MaterialPageRoute(builder: (_) => PlaceScreen(widget.singlePlace)),
         );
       },
       child: Container(
@@ -67,18 +64,51 @@ class _PlaceContainerState extends State<PlaceContainer> {
                 autoPlayInterval: 0,
                 isLoop: true,
                 children: [
-                  Image.network(
-                    'https://source.unsplash.com/random/300x300',
-                    fit: BoxFit.cover,
-                  ),
-                  Image.network(
-                    'https://source.unsplash.com/random/300x300',
-                    fit: BoxFit.cover,
-                  ),
-                  Image.network(
-                    'https://source.unsplash.com/random/300x300',
-                    fit: BoxFit.cover,
-                  ),
+                  widget.singlePlace["photo_1"] != null
+                      ? Image(
+                          image: NetworkImage(
+                            widget.singlePlace["photo_1"],
+                          ),
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace stackTrace) {
+                            return Image.asset('./assets/images/mana.jpg');
+                          },
+                        )
+                      : Center(
+                          child: Text(
+                          'Photo Unavailable',
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        )),
+                  widget.singlePlace["photo_2"] != null
+                      ? Image(
+                          image: NetworkImage(
+                            widget.singlePlace["photo_2"],
+                          ),
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace stackTrace) {
+                            return Image.asset('./assets/images/mana.jpg');
+                          },
+                        )
+                      : SizedBox(
+                          height: 0,
+                          width: 0,
+                        ),
+                  widget.singlePlace["photo_3"] != null
+                      ? Image(
+                          image: NetworkImage(
+                            widget.singlePlace["photo_3"],
+                          ),
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace stackTrace) {
+                            return Image.asset('./assets/images/mana.jpg');
+                          },
+                        )
+                      : SizedBox(
+                          height: 0,
+                          width: 0,
+                        ),
                 ],
               ),
               Padding(
@@ -106,7 +136,7 @@ Widget _PlaceInfo(
         height: 10,
       ),
       Text(
-        singlePlace['title'],
+        singlePlace['name'],
         style: TextStyle(
           fontFamily: 'Arial',
           fontSize: 20,
