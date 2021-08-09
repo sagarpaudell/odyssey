@@ -64,7 +64,6 @@ class _ExploreState extends State<Explore> {
         await Provider.of<Place>(context, listen: false).getAllPlaces();
     setState(() {
       explorePlace = placesList;
-      print('explore places $explorePlace');
     });
   }
 
