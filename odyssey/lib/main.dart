@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:odyssey/providers/chat.dart';
-import 'package:odyssey/providers/auth.dart';
-import 'package:odyssey/providers/profile.dart';
-import 'package:odyssey/providers/posts.dart';
+import './providers/chat.dart';
+import './providers/auth.dart';
+import './providers/profile.dart';
+import './providers/posts.dart';
 import 'package:odyssey/widgets/signup_verification.dart';
 import './screens/profile_self.dart';
-import './screens/profile_user.dart';
+
 import './screens/screens.dart';
 import './screens/bookmarks.dart';
 import './screens/splash_screen.dart';
-import './screens/single_blog_screen.dart';
-import './widgets/fb_loading.dart';
+import './providers/place.dart';
+
 import './providers/blog.dart';
 import './providers/search.dart';
 import './screens/session_expired_screen.dart';
-import './screens/notifications.dart';
 import './providers/notification.dart' as noti;
 import 'package:provider/provider.dart';
 
@@ -110,6 +108,13 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProxyProvider<Auth, Search>(
           create: (ctx) => Search(),
           update: (ctx, auth, _) => Search(
+            auth.userName,
+            auth.token,
+          ),
+        ),
+        ChangeNotifierProxyProvider<Auth, Place>(
+          create: (ctx) => Place(),
+          update: (ctx, auth, _) => Place(
             auth.userName,
             auth.token,
           ),
