@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import '../providers/auth.dart';
 import 'package:provider/provider.dart';
@@ -15,26 +16,63 @@ class DpInput extends StatefulWidget {
 }
 
 class _DpInputState extends State<DpInput> {
-  PickedFile _storedImage;
+  File _storedImage;
   String profilePicUrl;
 
-  Future<void> _takePicture() async {
-    final imageFile = await ImagePicker().getImage(
-      source: ImageSource.camera,
-      maxWidth: 600,
-    );
-    if (imageFile == null) {
-      return;
-    }
+  // Future<void> _takePicture() async {
+  //   final imageFile = await ImagePicker().getImage(
+  //     source: ImageSource.camera,
+  //     maxWidth: 600,
+  //   );
+  //   if (imageFile == null) {
+  //     return;
+  //   }
+
+  //   setState(() {
+  //     _storedImage = imageFile;
+  //   });
+  //   // await Provider.of<Profile>(context, listen: false)
+  //   //     .tempProfile(_storedImage);
+  //   // final appDir = await syspaths.getApplicationDocumentsDirectory();
+  //   // final fileName = path.basename(imageFile.path);
+  //   // final savedImage = await _storedImage.copy('${appDir.path}/$fileName');
+  //   widget.onSelectImg(_storedImage);
+  // }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final selected = await ImagePicker().pickImage(source: source);
+    final selection = File(selected.path);
 
     setState(() {
-      _storedImage = imageFile;
+      _storedImage = selection;
     });
-    // await Provider.of<Profile>(context, listen: false)
-    //     .tempProfile(_storedImage);
-    // final appDir = await syspaths.getApplicationDocumentsDirectory();
-    // final fileName = path.basename(imageFile.path);
-    // final savedImage = await _storedImage.copy('${appDir.path}/$fileName');
+  }
+
+  Future<void> _cropImage() async {
+    File cropped = await ImageCropper.cropImage(
+      sourcePath: _storedImage.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9,
+      ],
+      androidUiSettings: AndroidUiSettings(
+        toolbarTitle: 'Cropper',
+        toolbarColor: Colors.deepOrange,
+        toolbarWidgetColor: Colors.white,
+        initAspectRatio: CropAspectRatioPreset.original,
+        lockAspectRatio: true,
+        // cropGridRowCount: 2,
+        showCropGrid: true,
+        // cropGridColumnCount: 10,
+      ),
+    );
+
+    setState(() {
+      _storedImage = cropped;
+    });
+
     widget.onSelectImg(_storedImage);
   }
 
@@ -75,12 +113,67 @@ class _DpInputState extends State<DpInput> {
                       side: BorderSide(color: Colors.white),
                     ),
                   ),
-
                   //RoundedRectangleBorder(
                   //   borderRadius: BorderRadius.circular(50),
                   //   side: BorderSide(color: Colors.white),
                 ),
-                onPressed: _takePicture,
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                        height: 200,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 20),
+                              height: 200,
+                              width: MediaQuery.of(context).size.width / 2.4,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                              ),
+                              child: IconButton(
+                                onPressed: () async {
+                                  await _pickImage(ImageSource.camera);
+                                  // print(_placeImageFile);
+                                  Navigator.pop(context);
+                                  await _cropImage();
+                                  Navigator.pop(context);
+                                },
+                                icon: Icon(
+                                  Icons.camera,
+                                  color: Colors.indigo,
+                                  size: 35,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 20),
+                              height: 200,
+                              width: MediaQuery.of(context).size.width / 2.4,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                              ),
+                              child: IconButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                  await _pickImage(ImageSource.gallery);
+                                  await _cropImage();
+                                },
+                                icon: Icon(
+                                  Icons.photo,
+                                  color: Colors.teal,
+                                  size: 35,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
                 child: SvgPicture.asset("assets/icons/Camera Icon.svg"),
               ),
             ),

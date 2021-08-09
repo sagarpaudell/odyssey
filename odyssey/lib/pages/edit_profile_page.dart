@@ -156,7 +156,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _profileTraveller = Traveller(
       firstname: _profileData['firstname'],
       lastname: _profileData['lastname'],
-      profilePic: _pickedImage,
+      // profilePic: _pickedImage,
       gender: genderText,
       country: _profileData['country'],
       city: _profileData['city'],

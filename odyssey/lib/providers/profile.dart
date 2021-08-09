@@ -33,7 +33,7 @@ class Profile with ChangeNotifier {
         request.files.add(
           http.MultipartFile.fromBytes(
             'photo_main',
-            File(profile.profilePic.path).readAsBytesSync(),
+            profile.profilePic.readAsBytesSync(),
             filename: '$userId.jpg',
           ),
         );
