@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 
 class Place(models.Model):
     name = models.CharField(max_length=200,blank=True)
-    city = models.CharField(max_length=100,blank=True)
-    country = models.CharField(max_length=100,blank=True)
+    city = models.CharField(max_length=100, null = True, blank=True)
+    country = models.CharField(max_length=100, null = True, blank=True)
     photo_1 = models.ImageField(upload_to='photos/%Y/%m/%d/', null = True, blank=True)
     photo_2 = models.ImageField(upload_to='photos/%Y/%m/%d/', null = True, blank=True)
     photo_3 = models.ImageField(upload_to='photos/%Y/%m/%d/', null = True, blank=True)

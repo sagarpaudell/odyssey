@@ -1,7 +1,4 @@
-from re import T
-from io import BytesIO
 from django.db import models
-from django.core.files import File
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.core.files.storage import default_storage
@@ -9,23 +6,29 @@ from PIL import Image
 
 from traveller_api.utils import image_resize
 from cloudinary.models import CloudinaryField
+
 class Traveller(models.Model):
+    genders = (
+        ("MALE", "male"),
+        ("FEMALE", "female"),
+        ("OTHER", "other"),
+    )
     first_name = models.CharField(max_length=200,blank=True)
     last_name = models.CharField(max_length=200,blank=True)
     username = models.OneToOneField(User, on_delete= models.CASCADE)
-
-    # followers = models.ManyToManyField('self', related_name="following", blank=True)
-    # following = models.ManyToManyField('self', related_name="followers", blank=True)
     address = models.CharField(max_length=200,blank=True)
     city = models.CharField(max_length=100,blank=True)
     country = models.CharField(max_length=100,blank=True)
     bio = models.TextField(blank=True)
     contact_no = models.CharField(max_length=20,blank=True)
-    gender = models.CharField(max_length=10,blank=True)
-    photo_main = models.ImageField(upload_to='profile_photos/%Y/%m/%d/',blank=True)
-    # photo_main = CloudinaryField('image', eager=[{'width': '50', 'height': '50', 'crop':'crop'}], transformation={'width': '100', 'height': '100', 'crop':'fill', 'radius':'20'}, folder='/profile_photos', format="jpeg",)
+    gender = models.CharField(
+            choices =  genders,
+            max_length = 10,
+            blank=True
+        )
+    photo_main = models.ImageField(
+            upload_to='profile_photos/%Y/%m/%d/',blank=True)
     reg_date = models.DateTimeField(auto_now_add=True)
-
 
     def __str__(self):
         id = self.id
@@ -60,10 +63,6 @@ class Traveller(models.Model):
     def get_blogs_count(self):
         return self.blogs.all().count()
 
-    # def save(self, *args, **kwargs):
-        # if self.photo_main:
-            # image_resize(self.photo_main, 400,400)
-        # super().save(*args, **kwargs)
 
 
 class TravellerFollowing(models.Model):

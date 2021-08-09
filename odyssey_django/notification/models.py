@@ -6,13 +6,14 @@ from blogs.models import Blog_notification, Blog
 
 # Create your models here.
 class Notification_type(models.Model):
-    MONTH_CHOICES = (
+    NOTIFICATION_CHOICES = (
         ("CHAT", "chat"),
         ("POST", "post"),
         ("BLOG", "blog"),
         ("FOLLOW", "follow"),
     )
-    category = models.CharField(max_length = 7, choices = MONTH_CHOICES, blank = False)
+    category = models.CharField(max_length = 7, choices = NOTIFICATION_CHOICES, 
+            blank = False)
     blog_noti = models.OneToOneField(
             Blog_notification,
             on_delete = models.CASCADE,

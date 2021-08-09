@@ -13,7 +13,7 @@ class Blog(models.Model):
     photo2 = models.ImageField(upload_to='photos/%Y/%m/%d/',null = True, blank=True)
     photo3 = models.ImageField(upload_to='photos/%Y/%m/%d/',null = True, blank=True)
     photo4 = models.ImageField(upload_to='photos/%Y/%m/%d/',null = True, blank=True)
-    public_post = models.BooleanField(default=True, blank=False)
+    public_blog = models.BooleanField(default=True, blank=False)
     date = models.DateTimeField(auto_now_add=True)
     like_users = models.ManyToManyField(Traveller, related_name='likedblog', blank=True)
     bookmark_users = models.ManyToManyField(Traveller, related_name='bookmarked_blogs', blank=True)
