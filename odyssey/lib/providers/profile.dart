@@ -87,6 +87,8 @@ class Profile with ChangeNotifier {
       final userProfile = Traveller(
         firstname: userData['first_name'],
         lastname: userData['last_name'],
+        username: userData['username'],
+        phone: userData['contact_no'],
         country: userData['country'],
         city: userData['city'],
         profilePicUrl: userData['photo_main'],

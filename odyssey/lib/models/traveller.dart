@@ -6,6 +6,7 @@ class Traveller {
   String firstname;
   String lastname;
   String phone;
+  String username;
   String travellerId;
   String gender;
   String country;
@@ -18,6 +19,7 @@ class Traveller {
     @required this.lastname,
     @required this.phone,
     this.profilePic,
+    @required this.username,
     this.gender,
     @required this.country,
     @required this.city,
