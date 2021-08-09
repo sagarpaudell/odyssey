@@ -46,7 +46,7 @@ class Auth with ChangeNotifier {
       if (username == 'postgres') {
         // print(json.decode(response.body));
         _rootToken = json.decode(response.body)['access'];
-        //print(json.decode(response.body));
+        // print(json.decode(response.body));
       } else {
         token = json.decode(response.body)['access'];
         _userRefreshToken = json.decode(response.body)['refresh'];
