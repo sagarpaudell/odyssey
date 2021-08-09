@@ -42,18 +42,18 @@ class _NotificationsState extends State<Notifications> {
             brightness: Brightness.light,
             backgroundColor: Colors.white,
             floating: true,
-            title:Container(
-                    child: Text(
-                      "Notifications",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
+            title: Container(
+              child: Text(
+                "Notifications",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
-          FutureBuilder<void>(
+          ),
+          FutureBuilder(
             future: _fbuilder, // a previously-obtained Future<String> or null
             builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
                 snapshot.connectionState == ConnectionState.waiting
@@ -91,7 +91,8 @@ class _NotificationsState extends State<Notifications> {
                             return Row(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 14, vertical: 8),
                                   child: CircleAvatar(
                                       radius: 18.0,
                                       backgroundColor: Colors.grey[200],
