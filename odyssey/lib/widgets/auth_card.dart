@@ -29,7 +29,7 @@ class _AuthCardState extends State<AuthCard>
 
   // final _passController = TextEditingController();
   final GlobalKey<FormState> _form = GlobalKey();
-  final _phoneFocusNode = FocusNode();
+  // final _phoneFocusNode = FocusNode();
   final _userNameFocusNode = FocusNode();
   final _passFocusNode = FocusNode();
   final _confirmPassFocusNode = FocusNode();
@@ -39,7 +39,6 @@ class _AuthCardState extends State<AuthCard>
   AuthMode _authMode = AuthMode.Login;
   Map<String, String> _authData = {
     'email': '',
-    'phone': '',
     'userName': '',
     'password': '',
   };
@@ -76,7 +75,7 @@ class _AuthCardState extends State<AuthCard>
 
   @override
   void dispose() {
-    _phoneFocusNode.dispose();
+    //_phoneFocusNode.dispose();
     _userNameFocusNode.dispose();
     _passFocusNode.dispose();
     _confirmPassFocusNode.dispose();
@@ -107,10 +106,7 @@ class _AuthCardState extends State<AuthCard>
       } else {
         // Sign user up
         await Provider.of<Auth>(context, listen: false).signup(
-            _authData['email'],
-            _authData['phone'],
-            _authData['userName'],
-            _authData['password']);
+            _authData['email'], _authData['userName'], _authData['password']);
         Navigator.of(context).popAndPushNamed(AuthPage.routeName);
       }
     } on HttpException catch (error) {
@@ -209,7 +205,7 @@ class _AuthCardState extends State<AuthCard>
                                     textInputAction: TextInputAction.next,
                                     onFieldSubmitted: (_) {
                                       FocusScope.of(context)
-                                          .requestFocus(_phoneFocusNode);
+                                          .requestFocus(_userNameFocusNode);
                                     },
                                     validator: (value) {
                                       // if (value.isEmpty || !value.contains('@')) {
@@ -222,51 +218,51 @@ class _AuthCardState extends State<AuthCard>
                                     },
                                   ),
                                 ),
-                                Container(
-                                  height: deviceSize.height * 0.07,
-                                  margin: EdgeInsets.only(bottom: 14),
-                                  child: TextFormField(
-                                    decoration: InputDecoration(
-                                      labelText: 'Phone',
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide.none,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                      ),
-                                      filled: true,
-                                      fillColor: Color(0xffF5F5F5),
-                                      prefixIcon: Icon(Icons.phone),
-                                    ),
-                                    textInputAction: TextInputAction.next,
-                                    keyboardType: TextInputType.number,
-                                    focusNode: _phoneFocusNode,
-                                    onFieldSubmitted: (_) =>
-                                        FocusScope.of(context)
-                                            .requestFocus(_userNameFocusNode),
-                                    validator: (value) {
-                                      if (value.isEmpty || value.length < 7) {
-                                        return 'Number too short';
-                                      }
-                                      if (double.tryParse(value) == null) {
-                                        return 'Please enter a valid number.';
-                                      }
-                                      if (double.parse(value) <= 0) {
-                                        return 'Please enter a number greater than zero.';
-                                      }
+                                // Container(
+                                //   height: deviceSize.height * 0.07,
+                                //   margin: EdgeInsets.only(bottom: 14),
+                                //   child: TextFormField(
+                                //     decoration: InputDecoration(
+                                //       labelText: 'Phone',
+                                //       enabledBorder: OutlineInputBorder(
+                                //         borderSide: BorderSide.none,
+                                //         borderRadius: BorderRadius.all(
+                                //           Radius.circular(10),
+                                //         ),
+                                //       ),
+                                //       focusedBorder: OutlineInputBorder(
+                                //         borderRadius: BorderRadius.all(
+                                //           Radius.circular(10),
+                                //         ),
+                                //       ),
+                                //       filled: true,
+                                //       fillColor: Color(0xffF5F5F5),
+                                //       prefixIcon: Icon(Icons.phone),
+                                //     ),
+                                //     textInputAction: TextInputAction.next,
+                                //     keyboardType: TextInputType.number,
+                                //     focusNode: _phoneFocusNode,
+                                //     onFieldSubmitted: (_) =>
+                                //         FocusScope.of(context)
+                                //             .requestFocus(_userNameFocusNode),
+                                //     validator: (value) {
+                                //       if (value.isEmpty || value.length < 7) {
+                                //         return 'Number too short';
+                                //       }
+                                //       if (double.tryParse(value) == null) {
+                                //         return 'Please enter a valid number.';
+                                //       }
+                                //       if (double.parse(value) <= 0) {
+                                //         return 'Please enter a number greater than zero.';
+                                //       }
 
-                                      return null;
-                                    },
-                                    onSaved: (value) {
-                                      _authData['phone'] = value;
-                                    },
-                                  ),
-                                ),
+                                //       return null;
+                                //     },
+                                //     onSaved: (value) {
+                                //       _authData['phone'] = value;
+                                //     },
+                                //   ),
+                                // ),
                                 Container(
                                   height: deviceSize.height * 0.07,
                                   margin: EdgeInsets.only(bottom: 14),

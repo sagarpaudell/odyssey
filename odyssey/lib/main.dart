@@ -5,7 +5,7 @@ import './providers/profile.dart';
 import './providers/posts.dart';
 import 'package:odyssey/widgets/signup_verification.dart';
 import './screens/profile_self.dart';
-
+import './pages/edit_profile_page.dart';
 import './screens/screens.dart';
 import './screens/bookmarks.dart';
 import './screens/splash_screen.dart';

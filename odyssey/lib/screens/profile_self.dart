@@ -91,7 +91,7 @@ class _SelfProfileState extends State<SelfProfile> {
 
     void choiceAction(String choice) {
       if (choice == 'editprofile') {
-        Navigator.of(context).pushNamed(EditProfilePage.routeName);
+        Navigator.of(context).pushNamed(EditProfileScreen.routeName);
       } else if (choice == 'opensettings') {
       } else if (choice == 'logout') {
         showAlertDialog(context);

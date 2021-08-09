@@ -114,7 +114,6 @@ class Auth with ChangeNotifier {
 
   Future<void> signup(
     String email,
-    String phone,
     String userName,
     String password,
   ) async {
