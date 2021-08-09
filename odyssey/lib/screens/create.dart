@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:odyssey/providers/place.dart';
 import 'package:odyssey/providers/posts.dart';
 import 'package:odyssey/providers/profile.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,42 @@ class _CreateState extends State<Create> {
   String caption;
   String dropdownValue = 'Nepal';
   List tags = [];
+  List places = [];
+  List<String> placesList = [];
+  String place_id;
+
+  Future<void> getAllPlaces() async {
+    var temp = await Provider.of<Place>(context, listen: false).getAllPlaces();
+    setState(() {
+      // print('placeList: $temp');
+      temp.forEach((element) {
+        places.add(element);
+        placesList.add(element['name']);
+      });
+    });
+  }
+
+  fetchAllPlaces() {
+    Future fbuilder;
+    fbuilder = getAllPlaces();
+  }
+
+  void getPlaceId() {
+    // print(places);
+    places.forEach((element) {
+      if (dropdownValue == element['name'].toString()) {
+        place_id = element['id'].toString();
+        print('place id in the chat: $place_id');
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    fetchAllPlaces();
+    super.initState();
+  }
+
   void toggleSwitch(bool value) {
     if (isSwitched == false) {
       setState(() {
@@ -295,12 +332,8 @@ class _CreateState extends State<Create> {
                             dropdownValue = newValue;
                           });
                         },
-                        items: <String>[
-                          'Nepal',
-                          'Kathmandu',
-                          'Pokhara',
-                          'Bhaktapur'
-                        ].map<DropdownMenuItem<String>>((String value) {
+                        items: placesList
+                            .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),
@@ -395,11 +428,12 @@ class _CreateState extends State<Create> {
                           onTag: (tag) {
                             //This give you the tag that was entered
                             tags.add(tag);
-                            print(tags);
+                            // print(tags);
                           },
                           onDelete: (tag) {
                             //This gives you the tag that was deleted
-                            //print(tag)
+                            tags.remove(tag);
+                            // print(tags);
                           },
                           validator: (tag) {
                             if (tag.length > 15) {
@@ -479,13 +513,13 @@ class _CreateState extends State<Create> {
                                         onPressed: () async {
                                           await _pickPlaceImage(
                                               ImageSource.camera);
-                                          print(_placeImageFile);
+                                          // print(_placeImageFile);
                                           await _cropPlaceImage();
                                           setState(() {
                                             showPlaceImage = true;
-                                            print(
-                                              'showPlaceImage: $showPlaceImage',
-                                            );
+                                            // print(
+                                            //   'showPlaceImage: $showPlaceImage',
+                                            // );
                                           });
                                         },
                                         icon: Icon(
@@ -628,12 +662,13 @@ class _CreateState extends State<Create> {
                     // Publish Post
                     ? ElevatedButton(
                         onPressed: () {
-                          print('caption: ${_captionController.text}');
+                          // print('caption: ${_captionController.text}');
+                          getPlaceId();
                           Provider.of<Posts>(context, listen: false)
                               .publishPost(
                             _captionController.text,
                             _imageFile,
-                            '1',
+                            place_id,
                             _placeImageFile,
                             _placeNameController.text,
                             _placeDescController.text,

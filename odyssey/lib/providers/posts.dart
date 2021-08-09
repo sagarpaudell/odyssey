@@ -100,9 +100,12 @@ class Posts with ChangeNotifier {
 
     void handlePlaceData(http.MultipartRequest request) {
       if (isSwitched) {
+        print('1');
         request.fields["place_name"] = place_name;
         request.fields["place_description"] = place_desc;
         request.fields["place_keywords"] = keywords.join(' ');
+        request.fields['place_city'] = 'Kathmandu';
+        request.fields['place_country'] = 'Nepal';
         request.files.add(
           http.MultipartFile.fromBytes(
             'place_photo1',
@@ -110,6 +113,7 @@ class Posts with ChangeNotifier {
             filename: '${DateTime.now().toString()}.jpg',
           ),
         );
+        print('2');
         request.headers.addAll(headers);
 
         // print('post published status: ${response.statusCode}');
@@ -122,12 +126,23 @@ class Posts with ChangeNotifier {
 
     final request = new http.MultipartRequest('POST', Uri.parse(url));
     if (post_photo == null) {
+      print('no photo for post');
       try {
         request.fields['caption'] = caption;
+
+        print(caption);
         print('isSwitched $isSwitched');
         print(place_name + place_desc + keywords.join(' '));
         handlePlaceData(request);
         var response = await request.send();
+        print('3');
+        print('Publish post Status Code: ${response.statusCode}');
+
+        response.stream.transform(utf8.decoder).listen((value) {
+          print(value);
+        });
+        print('4');
+
         notifyListeners();
       } catch (error) {
         print(error);
@@ -137,7 +152,7 @@ class Posts with ChangeNotifier {
       try {
         final request = new http.MultipartRequest('POST', Uri.parse(url));
         request.fields['caption'] = caption;
-        handlePlaceData(request);
+        // handlePlaceData(request);
         request.files.add(
           http.MultipartFile.fromBytes(
             'photo',
@@ -148,6 +163,8 @@ class Posts with ChangeNotifier {
         request.headers.addAll(headers);
 
         var response = await request.send();
+
+        print('Publish post Status Code: $response.statusCode');
         notifyListeners();
       } catch (error) {
         print(error);
