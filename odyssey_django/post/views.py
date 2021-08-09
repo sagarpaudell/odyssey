@@ -337,4 +337,3 @@ def notification(post=None, comment=None, traveller = None, remove = False):
     if remove:
         return notification.noti_type.post_noti.delete()
     return notification
-
