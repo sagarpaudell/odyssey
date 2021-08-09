@@ -42,7 +42,9 @@ class SelfPostView(APIView):
         place_dict = {
                 "id": request.data.pop("place_id", [None])[0],
                 "name": request.data.pop("place_name", [None])[0],
-                "photo_1": request.data.pop("place_photo", [None])[0],
+                "description": request.data.pop("place_description", [None])[0],
+                "keywords": request.data.pop("place_keywords", [None])[0],
+                "photo_1": request.data.pop("place_photo1", [None])[0],
             }
         print(place_dict)
         if place_dict["id"]:

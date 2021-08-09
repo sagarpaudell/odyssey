@@ -73,8 +73,11 @@ class SearchPlace(APIView):
     def get(self, request):
         searchtag = request.GET.get("place")
         places = Place.objects.filter(
-                Q(name__icontains=searchtag) | Q(city__icontains=searchtag) |
-                Q(country__icontains=searchtag)| Q(description__icontains=searchtag)
+                Q(name__icontains=searchtag) | 
+                Q(city__icontains=searchtag) |
+                Q(country__icontains=searchtag)| 
+                Q(description__icontains=searchtag) | 
+                Q(keywords__icontains=searchtag)
             )
         print(places)
         serializer = PlaceSerializerNewsFeed(places, many = True)
