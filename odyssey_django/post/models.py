@@ -8,7 +8,7 @@ class Post(models.Model):
             related_name='posts')
     caption = models.TextField(blank = True, null = False)
     photo = models.ImageField(upload_to='post/%Y/%m/%d/', blank=True)
-    place = models.ForeignKey(Place, on_delete=models.DO_NOTHING,
+    place = models.ForeignKey(Place, on_delete=models.SET_NULL,
             related_name='posts', blank=True, null=True)
     like_users = models.ManyToManyField(Traveller,
             related_name='likedposts', blank=True)

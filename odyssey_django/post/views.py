@@ -36,35 +36,15 @@ class SelfPostView(APIView):
     parser_classes = [MultiPartParser]
     def post(self, request):
         traveller = Traveller.objects.get(username = self.request.user)
-        print(request.data)
-        request.data._mutable = True
-        place_dict = dict()
-        place_dict = {
-                "id": request.data.pop("place_id", [None])[0],
-                "name": request.data.pop("place_name", [None])[0],
-                "description": request.data.pop("place_description", [None])[0],
-                "keywords": request.data.pop("place_keywords", [None])[0],
-                "photo_1": request.data.pop("place_photo1", [None])[0],
-            }
-        print(place_dict)
-        if place_dict["id"]:
-            try:
-                place = Place.objects.get(id = place_dict["id"])
-            except Place.DoesNotExist:
-                return Response(
-                        {
-                            "error": True,
-                            "error_msg": "invalid place id"
-                        },
-                        status=status.HTTP_404_NOT_FOUND
-                        )
-        else:
-            serializer = PlaceSerializer(data=place_dict)
-            if serializer.is_valid(raise_exception=ValueError):
-                place = serializer.save()
-            print(serializer.data)
-
-        request.data._mutable = False
+        place = get_or_create_place_from_request(request)
+        if not place:
+            return Response(
+                    {
+                        "error": True,
+                        "error_msg": "invalid place id"
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                )
 
         serializer = PostSerializer(data=request.data)
         if serializer.is_valid(raise_exception=ValueError):
@@ -337,3 +317,32 @@ def notification(post=None, comment=None, traveller = None, remove = False):
     if remove:
         return notification.noti_type.post_noti.delete()
     return notification
+
+def get_or_create_place_from_request(request):
+    request.data._mutable = True
+    place_dict = dict()
+    place_dict = {
+            "id": request.data.pop("place_id", [None])[0],
+            "name": request.data.pop("place_name", [None])[0],
+            "city": request.data.pop("place_city", [None])[0],
+            "country": request.data.pop("place_country", [None])[0],
+            "photo_1": request.data.pop("place_photo1", [None])[0],
+            "photo_2": request.data.pop("place_photo2", [None])[0],
+            "photo_3": request.data.pop("place_photo3", [None])[0],
+            "photo_4": request.data.pop("place_photo4", [None])[0],
+            "description": request.data.pop("place_description", [None])[0],
+            "keywords": request.data.pop("place_keywords", [None])[0],
+        }
+    print(place_dict)
+    if place_dict["id"]:
+        try:
+            place = Place.objects.get(id = place_dict["id"])
+        except Place.DoesNotExist:
+            return  False
+    else:
+        serializer = PlaceSerializer(data=place_dict)
+        if serializer.is_valid(raise_exception=ValueError):
+            place = serializer.save()
+
+    return place
+    request.data._mutable = False

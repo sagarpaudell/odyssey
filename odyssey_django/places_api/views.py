@@ -9,7 +9,7 @@ from .models import Place,Major_Attraction
 
 class AllPlaceView(APIView):
     def get(self, request):
-        place = Place.objects.all()
+        place = Place.objects.filter(is_verified=True)
         serializer = PlaceSerializer(place, many=True)
         return Response(serializer.data)
 
