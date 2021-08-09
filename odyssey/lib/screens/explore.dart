@@ -206,7 +206,8 @@ class _ExploreState extends State<Explore> {
                             child: Text(
                               'Search awesome people and places',
                               style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w500),
+                                  fontSize: 16, fontWeight: FontWeight.w500,
+                                  color: Colors.grey),
                             ),
                           );
                         },

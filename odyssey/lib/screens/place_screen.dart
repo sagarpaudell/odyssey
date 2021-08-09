@@ -24,7 +24,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
       widget.id.toString(),
     );
   }
-
+  
   @override
   Widget build(BuildContext context) {
     // if (widget._singlePlace != null) {
@@ -47,8 +47,9 @@ class _PlaceScreenState extends State<PlaceScreen> {
             title: Column(
               children: [
                 Container(
+                  
                   margin: EdgeInsets.all(12),
-                  alignment: Alignment.topCenter,
+                  alignment: Alignment.centerLeft,
                   child: Container(
                     child: ToggleButtons(
                       fillColor: Theme.of(context).primaryColor,
@@ -99,10 +100,11 @@ class _PlaceScreenState extends State<PlaceScreen> {
                 ),
               ],
             ),
-            centerTitle: true,
+            
           ),
           FutureBuilder<void>(
             future: getSinglePlaceFun(),
+            
             builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
                 snapshot.connectionState == ConnectionState.waiting
                     ? SliverList(
@@ -195,11 +197,16 @@ class _PlaceScreenState extends State<PlaceScreen> {
                                   ],
                                 ),
                                 SizedBox(height: 6),
+                                Divider(
+                                        thickness: 0.9,
+                                        height: 10,
+                                        
+                                      ),
                                 Container(
-                                  padding: EdgeInsets.all(15),
+                                  padding: EdgeInsets.symmetric(horizontal: 18),
                                   child: Column(
                                     children: [
-                                      SizedBox(height: 6),
+                                      
                                       Row(children: [
                                         Text(
                                           singlePlace['name'],
@@ -211,15 +218,62 @@ class _PlaceScreenState extends State<PlaceScreen> {
                                           ),
                                         ),
                                       ]),
-                                      SizedBox(height: 20),
-                                      Text(
-                                        singlePlace['description'],
-                                        textAlign: TextAlign.justify,
-                                        style: TextStyle(
-                                          color: Colors.black54,
-                                          fontSize: 20,
-                                          height: 1.5,
-                                          fontWeight: FontWeight.normal,
+                                      Divider(
+                                        thickness: 0.9,
+                                        height: 10,
+                                        endIndent: MediaQuery.of(context).size.width*0.1
+                                      ),
+                                      
+                                      Wrap(
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                                'Keywords:',
+                                                style: TextStyle(
+                                                  color: Colors.black87,
+                                                  fontSize: 18,
+                                                  height: 1.5,
+                                                  fontWeight: FontWeight.normal,
+                                                ),
+                                            ),
+                                          ),
+                                          returnKeywords(singlePlace),
+                                        ],
+                                      ),
+                                      Divider(
+                                        thickness: 0.9,
+                                        height: 10,
+                                        endIndent: MediaQuery.of(context).size.width*0.1
+                                      ),
+                                      
+                                      // SizedBox(height: 20),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                            'Place description:',
+                                            style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 24,
+                                              height: 1.5,
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          ),
+                                      ),
+                                        SizedBox(height: 2),
+
+
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 0),
+                                        child: Text(
+                                          singlePlace['description'],
+                                          textAlign: TextAlign.justify,
+                                          style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 20,
+                                            height: 1.5,
+                                            fontWeight: FontWeight.normal,
+                                          ),
                                         ),
                                       ),
                                       SizedBox(height: 20),
@@ -236,5 +290,25 @@ class _PlaceScreenState extends State<PlaceScreen> {
         ],
       ),
     );
+  }
+
+  returnKeywords(singlePlace) {
+  var keywordList=singlePlace['keywords'].split(" ");
+      return Container(  
+        alignment: Alignment.centerLeft,      
+        child: Wrap(
+        children: <Widget>[
+          for (var key in keywordList) Text('#'+ '$key'+' ',
+          style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 18,
+                    height: 1.5,
+                    fontWeight: FontWeight.normal,
+                  ),
+                  )
+          ],
+        ),
+      );
+
   }
 }
