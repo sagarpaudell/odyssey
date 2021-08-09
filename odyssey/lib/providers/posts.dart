@@ -202,4 +202,24 @@ class Posts with ChangeNotifier {
       throw error;
     }
   }
+
+  Future<List<dynamic>> getPostsByPlace(String id) async {   
+    final url = 'https://travellum.herokuapp.com/post-api/place/$id';
+    
+    final token = 'Bearer ' + authToken;
+    try {
+      final userDataResponse = await http.get(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+      final postData = json.decode(userDataResponse.body);
+      print(postData);
+      notifyListeners();
+      return postData;
+    } catch (e) {
+      print(e);
+    }
+  }
+
 }
+
