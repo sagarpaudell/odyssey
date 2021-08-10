@@ -91,7 +91,8 @@ class Posts with ChangeNotifier {
       String place_name,
       String place_desc,
       List keywords,
-      bool isSwitched = false]) async {
+      bool isSwitched = false,
+      bool isPublic]) async {
     const url = 'https://travellum.herokuapp.com/post-api/post';
     final token = 'Bearer ' + authToken;
 
@@ -126,7 +127,8 @@ class Posts with ChangeNotifier {
       print('no photo for post');
       try {
         request.fields['caption'] = caption;
-
+        print(isPublic);
+        request.fields['public_post'] = isPublic.toString();
         // print(caption);
         // print('isSwitched $isSwitched');
         // print(place_name + place_desc + keywords.join(' '));
@@ -147,6 +149,8 @@ class Posts with ChangeNotifier {
       try {
         final request = new http.MultipartRequest('POST', Uri.parse(url));
         request.fields['caption'] = caption;
+        request.fields['public_post'] = isPublic.toString();
+
         handlePlaceData(request);
         request.files.add(
           http.MultipartFile.fromBytes(
