@@ -303,6 +303,8 @@ def get_post(id):
     return post
 
 def notification(post=None, comment=None, traveller = None, remove = False):
+    if traveller == post.traveller:
+        return False
     is_comment = bool(comment)
     is_like = not is_comment
     post_notification, _created = Post_notification.objects.get_or_create(
@@ -322,6 +324,8 @@ def notification(post=None, comment=None, traveller = None, remove = False):
                 noti_type = noti_type
             )
     if remove:
+        if noti_type.notification.count() > 1:
+            return notification_obj.delete()
         return notification_obj.noti_type.post_noti.delete()
     return notification_obj
 

@@ -7,14 +7,17 @@ class MessageContainer extends StatefulWidget {
   @override
   final Map<String, dynamic> msg;
   final String selfUserName;
-  const MessageContainer(this.selfUserName, this.msg, key) : super(key: key);
+  final ImageProvider friendImage;
+
+  const MessageContainer(this.selfUserName, this.msg, this.friendImage, key)
+      : super(key: key);
   //MessageContainer(this.selfUserName, this.msg);
   _MessageContainerState createState() => _MessageContainerState();
 }
 
 class _MessageContainerState extends State<MessageContainer> {
   @override
-  Color senderColor= Color(0xffF0F0F0);
+  Color senderColor = Color(0xffF0F0F0);
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 8),
@@ -31,8 +34,9 @@ class _MessageContainerState extends State<MessageContainer> {
                       padding: EdgeInsets.only(left: 8, right: 8),
                       child: CircleAvatar(
                         radius: 12,
-                        backgroundImage:
-                            AssetImage('./assets/images/guptaji.jpg'),
+                        backgroundImage: widget.friendImage == null
+                            ? AssetImage('./assets/images/guptaji.jpg')
+                            : widget.friendImage,
                       ),
                     ),
                     Container(
@@ -46,36 +50,38 @@ class _MessageContainerState extends State<MessageContainer> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            // height: 40,
-                            // width: 40,
-                            // child: StreamBuilder(
-                            //   stream: channel.stream,
-                            //   builder: (context, snapshot) {
-                            //     return snapshot.hasError
-                            //         ? Text(
-                            //             snapshot.error.toString(),
-                            //             style: TextStyle(
-                            //                 color: Theme.of(context).primaryColor,
-                            //                 fontSize: 8),
-                            //           )
-                            //         : Text(
-                            //             snapshot.hasData
-                            //                 ? json.decode(
-                            //                             snapshot.data)['sender'] !=
-                            //                         "ketone"
-                            //                     ? json.decode(
-                            //                         snapshot.data)['message']
-                            //                     : 'Text'
-                            //                 : '',
-                            //             style: TextStyle(
-                            //                 color: Theme.of(context).primaryColor,
-                            //                 fontSize: 15),
-                            //           );
-                            //   },
-                            // ),
-                          ),
+                              // height: 40,
+                              // width: 40,
+                              // child: StreamBuilder(
+                              //   stream: channel.stream,
+                              //   builder: (context, snapshot) {
+                              //     return snapshot.hasError
+                              //         ? Text(
+                              //             snapshot.error.toString(),
+                              //             style: TextStyle(
+                              //                 color: Theme.of(context).primaryColor,
+                              //                 fontSize: 8),
+                              //           )
+                              //         : Text(
+                              //             snapshot.hasData
+                              //                 ? json.decode(
+                              //                             snapshot.data)['sender'] !=
+                              //                         "ketone"
+                              //                     ? json.decode(
+                              //                         snapshot.data)['message']
+                              //                     : 'Text'
+                              //                 : '',
+                              //             style: TextStyle(
+                              //                 color: Theme.of(context).primaryColor,
+                              //                 fontSize: 15),
+                              //           );
+                              //   },
+                              // ),
+                              ),
                           Container(
-                            constraints: BoxConstraints(maxWidth:MediaQuery.of(context).size.width*0.55),
+                            constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width * 0.55),
                             child: Text(
                               widget.msg['message_text'],
                               style: TextStyle(
@@ -145,7 +151,8 @@ class _MessageContainerState extends State<MessageContainer> {
                       // ),
                       // ),
                       Container(
-                        constraints: BoxConstraints(maxWidth:MediaQuery.of(context).size.width*0.55),
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.55),
                         child: Text(
                           // "Hello! How are you doing? hehehehehe",
                           widget.msg['message_text'],

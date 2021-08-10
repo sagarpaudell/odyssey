@@ -112,14 +112,15 @@ class _ChatListState extends State<ChatList> {
                       // Provider.of<Chat>(context, listen: false).friendUserName =
                       //     getFriendUserName(chatOverview[index]);
 
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (_) => Message(
                                 selectedFriendName,
                                 getFriendUserName(chatOverview[index]),
                                 getFriendId(chatOverview[index]),
-                                friendImage)),
+                                friendImage,
+                                false)),
                       );
                     },
                     child: Column(

@@ -97,4 +97,17 @@ class Chat with ChangeNotifier {
       throw error;
     }
   }
+
+  Future<void> deleteChat(String friendUserName) async {
+    final _url = 'https://travellum.herokuapp.com/chat-api/$friendUserName';
+    try {
+      final response = await http.delete(
+        Uri.parse(_url),
+        headers: <String, String>{'Authorization': 'Bearer $authToken'},
+      );
+    } catch (error) {
+      print(error);
+      throw error;
+    }
+  }
 }

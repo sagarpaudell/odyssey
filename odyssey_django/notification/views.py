@@ -4,11 +4,14 @@ from rest_framework import status
 from traveller_api.models import Traveller
 from .models import Notification
 from .serializer import NotificationSerializer
+from django.db.models import Q
 
 class NotificationView(APIView):
     def get(self, request):
         traveller = Traveller.objects.get(username=request.user)
-        notifications = traveller.received_notifications.all()
+        notifications = traveller.received_notifications.all().filter(
+                ~Q( sender = traveller)
+            )
         notifications.update(is_new = False)
         serializer = NotificationSerializer(notifications, many = True)
         print("fu")
@@ -47,13 +50,12 @@ class NotificationReadView(APIView):
                     },
                         status = status.HTTP_200_OK
                 )
-        else:
-            return Response( {
-                        "error": True,
-                        "error_msg": "Not your notification"
-                    },
-                    status=status.HTTP_401_UNAUTHORIZED
-                )
+        return Response( {
+                    "error": True,
+                    "error_msg": "Not your notification"
+                },
+                status=status.HTTP_401_UNAUTHORIZED
+            )
 
 class CheckNotification(APIView):
     def get(self, request):
@@ -66,10 +68,3 @@ class CheckNotification(APIView):
         count = new_notifications.count()
         serializer = NotificationSerializer(new_notifications, many = True)
         return Response(serializer.data)
-
-
-
-
-
-
-

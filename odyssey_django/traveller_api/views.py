@@ -6,27 +6,31 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 from post.serializers import PostSerializer
 from blogs.serializers import BlogSerializer
+from notification.models import Notification, Notification_type
 from .serializers import TravellerSerializer, TravellerSerializerPublic
 from .serializers_profile import (
         TravellerSerializerProfileViewPrivate,
         TravellerSerializerProfileViewPublic
     )
 from .models import Traveller, TravellerFollowing
-from notification.models import Notification, Notification_type
+import time
 
 class TravellerView(APIView):
-    parser_classes = [MultiPartParser]
+    parser_classes = [MultiPartParser] 
 
     def get(self, request):
         traveller = get_object(request)
         traveller_email = request.user.email
-        print(traveller_email)
         serializer = TravellerSerializer(traveller).data
         serializer.update({'email':traveller_email})
         return Response(serializer)
 
     def put(self, request):
         traveller = get_object(request)
+        request.data._mutable = True
+        request.data["first_name"] = request.data["first_name"].title()
+        request.data["last_name"] = request.data["last_name"].title()
+        request.data._mutable = False
         serializer = TravellerSerializer(traveller, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -152,6 +156,8 @@ def get_object(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 def notification(sender, receipent, remove = False):
+    if sender == receipent:
+        return False
     noti_type, _created = Notification_type.objects.get_or_create(
                         category = "FOLLOW",
                     )
@@ -161,7 +167,11 @@ def notification(sender, receipent, remove = False):
                 noti_type = noti_type
             )
     if remove:
+        print(noti_type.notification)
+        if noti_type.notification.count() > 1:
+            return follow_notification.delete()
         return follow_notification.noti_type.delete()
+
     return follow_notification
 
 class SearchTraveller(APIView):

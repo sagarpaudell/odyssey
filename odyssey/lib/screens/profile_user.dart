@@ -26,7 +26,6 @@ class _UserProfileState extends State<UserProfile> {
     try {
       friendProfileData = await Provider.of<Profile>(context, listen: false)
           .getFriendProfile(widget.friendUserName);
-      print('this is buddhe data $friendProfileData');
     } catch (error) {
       print(error);
     }
