@@ -3,6 +3,7 @@ import './providers/chat.dart';
 import './providers/auth.dart';
 import './providers/profile.dart';
 import './providers/posts.dart';
+import './providers/comments.dart' as com;
 import 'package:odyssey/widgets/signup_verification.dart';
 import './screens/profile_self.dart';
 import './screens/screens.dart';
@@ -85,6 +86,12 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProxyProvider<Auth, Posts>(
           create: (ctx) => Posts(),
           update: (ctx, auth, _) => Posts(
+            auth.token,
+          ),
+        ),
+        ChangeNotifierProxyProvider<Auth, com.Comments>(
+          create: (ctx) => com.Comments(),
+          update: (ctx, auth, _) => com.Comments(
             auth.token,
           ),
         ),

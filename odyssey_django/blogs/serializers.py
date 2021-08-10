@@ -28,4 +28,4 @@ class BlogSerializer(serializers.ModelSerializer):
         model = Blog
         fields = ('id','title','author','place','description','date',
                 'like_users','photo1','photo2','photo3','photo4','comments',
-                'is_bookmarked')
+                'is_bookmarked', 'public_blog')

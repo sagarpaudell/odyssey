@@ -43,7 +43,7 @@ class Notification(models.Model):
             related_name = "sent_notifications", null = True)
     receipent = models.ForeignKey(Traveller, on_delete = models.SET_NULL,
             related_name = "received_notifications", null = True)
-    noti_type = models.OneToOneField(Notification_type, on_delete = models.CASCADE,
+    noti_type = models.ForeignKey(Notification_type, on_delete = models.CASCADE,
             related_name = "notification", null = False)
     time = models.DateTimeField(auto_now_add = True)
     is_new = models.BooleanField(default = True)
