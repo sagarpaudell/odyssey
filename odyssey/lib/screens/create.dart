@@ -166,6 +166,14 @@ class _CreateState extends State<Create> {
     });
   }
 
+  String validateFields(String value) {
+    if (value.isEmpty) {
+      return "This field is compulsory";
+    }
+    return null;
+  }
+
+  bool validationError = false;
   @override
   Widget build(BuildContext context) {
     Color getColor(Set<MaterialState> states) {
@@ -212,6 +220,9 @@ class _CreateState extends State<Create> {
                 border: InputBorder.none,
                 filled: true,
                 fillColor: Colors.grey[100],
+                errorText: validationError
+                    ? validateFields(_captionController.text)
+                    : null,
               ),
             ),
             SizedBox(height: 20),
@@ -289,6 +300,9 @@ class _CreateState extends State<Create> {
                       border: InputBorder.none,
                       filled: true,
                       fillColor: Colors.grey[100],
+                      errorText: validationError
+                          ? validateFields(_blogDescriptionController.text)
+                          : null,
                     ),
                   )
                 : SizedBox(),
@@ -377,6 +391,9 @@ class _CreateState extends State<Create> {
                           border: InputBorder.none,
                           filled: true,
                           fillColor: Colors.grey[100],
+                          errorText: validationError
+                              ? validateFields(_placeNameController.text)
+                              : null,
                         ),
                       ),
                       TextField(
@@ -395,6 +412,9 @@ class _CreateState extends State<Create> {
                           border: InputBorder.none,
                           filled: true,
                           fillColor: Colors.grey[100],
+                          errorText: validationError
+                              ? validateFields(_placeDescController.text)
+                              : null,
                         ),
                       ),
                       SizedBox(
@@ -417,6 +437,7 @@ class _CreateState extends State<Create> {
                               // fontWeight: FontWeight.bold,
                             ),
                             hintText: 'FOR EG: Mountain, Nature',
+
                             hintStyle: TextStyle(
                               letterSpacing: 1.5,
                               fontSize: 14,
@@ -707,6 +728,43 @@ class _CreateState extends State<Create> {
                     // Publish Post
                     ? ElevatedButton(
                         onPressed: () async {
+                          if (_captionController.text.isEmpty) {
+                            setState(() {
+                              validationError = true;
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Caption cannot be empty'),
+                                backgroundColor: Theme.of(context).errorColor,
+                              ),
+                            );
+                            return;
+                          }
+                          if (isSwitched) {
+                            if (_placeNameController.text.isEmpty ||
+                                _placeDescController.text.isEmpty) {
+                              setState(() {
+                                validationError = true;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content:
+                                      Text('Please fill compulsory fields'),
+                                  backgroundColor: Theme.of(context).errorColor,
+                                ),
+                              );
+                              return;
+                            }
+                          }
+                          if (_placeImageFile == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Please pick an image'),
+                                backgroundColor: Theme.of(context).errorColor,
+                              ),
+                            );
+                            return;
+                          }
                           // print('caption: ${_captionController.text}');
                           setState(() {
                             publishingPost = true;
@@ -728,6 +786,9 @@ class _CreateState extends State<Create> {
                           );
                           await setState(() {
                             publishingPost = false;
+                            validationError = false;
+                            showImage = false;
+                            showPlaceImage = false;
                             _placeNameController.clear();
                             _placeDescController.clear();
                             _captionController.clear();
@@ -741,7 +802,6 @@ class _CreateState extends State<Create> {
                               backgroundColor: Colors.green,
                             ),
                           );
-                          print('done');
                           Future.delayed(const Duration(milliseconds: 500), () {
                             setState(() {});
                           });
@@ -753,6 +813,65 @@ class _CreateState extends State<Create> {
                     // Publish Blog
                     : ElevatedButton(
                         onPressed: () async {
+                          if (_captionController.text.isEmpty) {
+                            setState(() {
+                              validationError = true;
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Title cannot be empty'),
+                                backgroundColor: Theme.of(context).errorColor,
+                              ),
+                            );
+                            return;
+                          }
+                          if (_blogDescriptionController.text.isEmpty) {
+                            setState(() {
+                              validationError = true;
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Description cannot be empty'),
+                                backgroundColor: Theme.of(context).errorColor,
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (_imageFile == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Please pick an image'),
+                                backgroundColor: Theme.of(context).errorColor,
+                              ),
+                            );
+                            return;
+                          }
+                          if (isSwitched) {
+                            if (_placeNameController.text.isEmpty ||
+                                _placeDescController.text.isEmpty) {
+                              setState(() {
+                                validationError = true;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content:
+                                      Text('Please fill compulsory fields'),
+                                  backgroundColor: Theme.of(context).errorColor,
+                                ),
+                              );
+                              return;
+                            }
+                            if (_placeImageFile == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Please pick an image'),
+                                  backgroundColor: Theme.of(context).errorColor,
+                                ),
+                              );
+                              return;
+                            }
+                          }
                           getPlaceId();
                           setState(() {
                             publishingBlog = true;
@@ -775,6 +894,10 @@ class _CreateState extends State<Create> {
                           );
                           setState(() {
                             publishingBlog = false;
+                            validationError = false;
+                            showImage = false;
+                            showPlaceImage = false;
+
                             _placeNameController.clear();
                             _placeDescController.clear();
                             _captionController.clear();
