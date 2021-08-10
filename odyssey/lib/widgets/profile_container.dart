@@ -133,15 +133,16 @@ class _ProfileContainerState extends State<ProfileContainer> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (_) => Message(
-                                                '${widget.profileContent['first_name']} ${widget.profileContent['last_name']}',
-                                                widget
-                                                    .profileContent['username'],
-                                                widget.profileContent['id']
-                                                    .toString(),
-                                                NetworkImage(
-                                                    widget.profileContent[
-                                                        'photo_main']))),
+                                          builder: (_) => Message(
+                                              '${widget.profileContent['first_name']} ${widget.profileContent['last_name']}',
+                                              widget.profileContent['username'],
+                                              widget.profileContent['id']
+                                                  .toString(),
+                                              NetworkImage(
+                                                  widget.profileContent[
+                                                      'photo_main']),
+                                              true),
+                                        ),
                                       );
                                     },
                                     icon: Icon(Icons.message),

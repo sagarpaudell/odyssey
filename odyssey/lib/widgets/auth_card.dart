@@ -117,7 +117,7 @@ class _AuthCardState extends State<AuthCard>
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Account Created Successfully'),
-              backgroundColor: Theme.of(context).errorColor,
+              backgroundColor: Theme.of(context).primaryColor,
             ),
           );
           Navigator.of(context).popAndPushNamed(AuthPage.routeName);

@@ -13,7 +13,7 @@ class SelfProfile extends StatefulWidget {
 }
 
 class _SelfProfileState extends State<SelfProfile> {
-  static const choices = ['editprofile', 'opensettings', 'logout'];
+  static const choices = ['editprofile', 'logout'];
   //List<dynamic> selfPosts;
   Map<String, dynamic> selfProfileData;
   bool _isLoading = false;
@@ -100,9 +100,7 @@ class _SelfProfileState extends State<SelfProfile> {
     iconValue(choice) {
       if (choice == 'editprofile') {
         return Icons.mode_edit;
-      } else if (choice == 'opensettings') {
-        return Icons.settings;
-      } else if (choice == 'logout') {
+      } else {
         return Icons.logout;
       }
     }
@@ -110,9 +108,7 @@ class _SelfProfileState extends State<SelfProfile> {
     textValue(choice) {
       if (choice == 'editprofile') {
         return 'Edit Profile';
-      } else if (choice == 'opensettings') {
-        return 'Open Settings';
-      } else if (choice == 'logout') {
+      } else {
         return 'Log Out';
       }
     }
@@ -219,20 +215,6 @@ class _SelfProfileState extends State<SelfProfile> {
                           ),
                         ]),
             ),
-
-            //  CustomScrollView(slivers: [
-            //   SliverToBoxAdapter(
-            //     child: ProfileContainer(selfProfileInfo),
-            //   ),
-            //   selfPosts == null
-            //       ? SliverToBoxAdapter(child: CircularProgressIndicator())
-            //       : SliverList(
-            //           delegate: SliverChildBuilderDelegate(
-            //               (BuildContext context, int index) {
-            //             return PostContainer(post: selfPosts[index]);
-            //           }, childCount: selfPosts.length),
-            //         ),
-            // ]),
           );
   }
 }

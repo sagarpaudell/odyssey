@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:odyssey/screens/chat_screen.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:provider/provider.dart';
@@ -17,9 +18,10 @@ class Message extends StatefulWidget {
   final String friendUserName;
   final String friendName;
   final String friendId;
+  final bool pop;
   final ImageProvider friendImage;
-  Message(
-      this.friendName, this.friendUserName, this.friendId, this.friendImage);
+  Message(this.friendName, this.friendUserName, this.friendId, this.friendImage,
+      this.pop);
   @override
   _MessageState createState() => _MessageState();
 }
@@ -185,7 +187,7 @@ class _MessageState extends State<Message> {
   @override
   Widget build(BuildContext context) {
     selfUserName = Provider.of<Auth>(context).userName;
-    const choices = ['viewprofile', 'blockuser', 'deleteconversation'];
+    const choices = ['viewprofile', 'deleteconversation'];
 
     showAlertDialog(BuildContext context) {
       AlertDialog alert = AlertDialog(
@@ -193,7 +195,9 @@ class _MessageState extends State<Message> {
         actions: [
           TextButton(
             child: Text("Cancel"),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
           TextButton(
             child: Text(
@@ -202,7 +206,14 @@ class _MessageState extends State<Message> {
                 color: Colors.red[400],
               ),
             ),
-            onPressed: () {},
+            onPressed: () async {
+              await Provider.of<Chat>(context, listen: false)
+                  .deleteChat(widget.friendUserName);
+              int count = 0;
+              widget.pop
+                  ? Navigator.of(context).popUntil((_) => count++ >= 2)
+                  : Navigator.of(context).pushNamed(ChatScreen.routeName);
+            },
           ),
         ],
       );
@@ -218,7 +229,12 @@ class _MessageState extends State<Message> {
 
     void choiceAction(String choice) {
       if (choice == 'viewprofile') {
-        print('View profile');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => UserProfile(widget.friendUserName),
+          ),
+        );
       } else if (choice == 'blockuser') {
         print("blocked user");
       } else if (choice == 'deleteconversation') {
@@ -385,6 +401,7 @@ class _MessageState extends State<Message> {
                                         return MessageContainer(
                                             selfUserName,
                                             chat.chatMessages[index],
+                                            widget.friendImage,
                                             UniqueKey());
                                       }, childCount: chat.chatMessages.length),
                                     ),
@@ -400,9 +417,15 @@ class _MessageState extends State<Message> {
                                 // return _messageBuilder(DateTime.parse(
                                 //     messageData[index]['message_time']));
 
-                                return MessageContainer(selfUserName,
-                                    messageData[index], UniqueKey());
-                              }, childCount: messageData.length),
+                                return MessageContainer(
+                                    selfUserName,
+                                    messageData[index],
+                                    widget.friendImage,
+                                    UniqueKey());
+                              },
+                                  childCount: messageData == null
+                                      ? 0
+                                      : messageData.length),
                             ),
                           ),
                           //return null;

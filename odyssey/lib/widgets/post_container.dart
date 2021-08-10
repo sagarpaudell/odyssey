@@ -227,7 +227,7 @@ Widget _PostHeader(Map<String, dynamic> post, String selfUserName,
           if (post['traveller']['username'] == selfUserName) {
             Navigator.of(context).pushNamed(SelfProfile.routeName);
           } else {
-            Navigator.pushReplacement(
+            Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) => UserProfile(post['traveller']['username']),
