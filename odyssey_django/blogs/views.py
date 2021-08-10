@@ -238,6 +238,8 @@ def get_blog(id):
     return blog
 
 def notification(blog=None, comment=None, traveller = None, remove = False):
+    if traveller == blog.author:
+        return False
     is_comment = bool(comment)
     is_like = not is_comment
     blog_notification, _created = Blog_notification.objects.get_or_create(
