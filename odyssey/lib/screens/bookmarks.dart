@@ -20,12 +20,15 @@ class Bookmark extends StatefulWidget {
 }
 
 class _BookmarkState extends State<Bookmark> {
-  List<bool> isSelected=[true,false];
-  bool isPosts = true;
+  List<bool> isSelected;
   List<dynamic> bookmarkedPosts;
-  List<dynamic> bookmarkedBlogs;
+  // List<dynamic> bookmarkedBlogs;
+  bool isPosts;
+
   void refreshBookmark([bool selectBlog]) {
     if (selectBlog) {
+      print('reloading blogs');
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -33,6 +36,7 @@ class _BookmarkState extends State<Bookmark> {
         ),
       );
     } else {
+      print('reloading posts');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -46,6 +50,7 @@ class _BookmarkState extends State<Bookmark> {
   @override
   void initState() {
     isSelected = [widget.selectPost, !widget.selectPost];
+    isPosts = widget.selectPost;
     fbuilder = getBPosts();
     super.initState();
   }
@@ -53,93 +58,95 @@ class _BookmarkState extends State<Bookmark> {
   Future<void> getBPosts() async {
     var temp =
         await Provider.of<Posts>(context, listen: false).getBookmarkedPosts();
+
     setState(() {
       bookmarkedPosts = temp;
     });
   }
 
-  Future<void> getBookmarkedBlogs() async {
-    List<dynamic> tempblogs =
-        await Provider.of<blogss.Blog>(context, listen: false)
-            .getBookmarkedBlogs();
-    setState(() {
-      bookmarkedBlogs = tempblogs;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (!isPosts) {
-      getBookmarkedBlogs();
-    }
+    // if (!isPosts) {
+    //   getBookmarkedBlogs();
+    // }
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Bookmarks'),
-        centerTitle: true,
-        automaticallyImplyLeading: true,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-          ),
-          onPressed: () =>
-              Navigator.popAndPushNamed(context, MainScreen.routeName),
-        ),
-      ),
-      body: ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: ToggleButtons(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      'Posts',style: 
-                    TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text('Blogs',style: 
-                    TextStyle(fontSize: 16),),
-                  )
-                ],
-              fillColor: Theme.of(context).primaryColor,
-              selectedColor: Colors.white,
-              color: Theme.of(context).primaryColor,
-              highlightColor: Colors.blueGrey,
-              isSelected: isSelected,
-              renderBorder: false,
-              borderRadius: BorderRadius.circular(20),
-                onPressed: (int index) {
-                  setState(() {
-                    for (int indexBtn = 0;
-                        indexBtn < isSelected.length;
-                        indexBtn++) {
-                      if (indexBtn == index) {
-                        isSelected[indexBtn] = true;
-                          if(index==0){
-                            isPosts = true;
-                          }
-                          else{
-                            isPosts=false;
-                          }
-                      }
-                      else {
-                        isSelected[indexBtn] = false;
-                      }
-                    }
-                    
-                    
-                  });
-                },
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            toolbarHeight: MediaQuery.of(context).size.height * 0.08,
+
+            floating: true,
+            // appBar: AppBar(
+            title: Text('Bookmarks'),
+            centerTitle: true,
+            automaticallyImplyLeading: true,
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
               ),
+              onPressed: () =>
+                  Navigator.popAndPushNamed(context, MainScreen.routeName),
             ),
           ),
+          SliverList(
+              delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: ToggleButtons(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          'Posts',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          'Blogs',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      )
+                    ],
+                    fillColor: Theme.of(context).primaryColor,
+                    selectedColor: Colors.white,
+                    color: Theme.of(context).primaryColor,
+                    highlightColor: Colors.blueGrey,
+                    isSelected: isSelected,
+                    renderBorder: false,
+                    borderRadius: BorderRadius.circular(20),
+                    onPressed: (int index) {
+                      setState(() {
+                        isPosts = !isPosts;
+                        for (int indexBtn = 0;
+                            indexBtn < isSelected.length;
+                            indexBtn++) {
+                          if (indexBtn == index) {
+                            isSelected[indexBtn] = true;
+
+                            if (index == 0) {
+                              isPosts = true;
+                            } else {
+                              isPosts = false;
+                            }
+                          } else {
+                            isSelected[indexBtn] = false;
+                          }
+                        }
+                      });
+                    },
+                  ),
+                ),
+              );
+            },
+            childCount: 1,
+          )),
           isPosts
               ? PostContent(fbuilder, bookmarkedPosts, refreshBookmark)
-              : BlogContent(bookmarkedBlogs, refreshBookmark)
+              : BlogContent(context, refreshBookmark)
         ],
       ),
     );
@@ -152,37 +159,71 @@ Widget PostContent(
     future: fbuilder, // a previously-obtained Future<String> or null
     builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
         snapshot.connectionState == ConnectionState.waiting
-            ? FbLoading()
+            ? SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return FbLoading();
+                  },
+                  childCount: 1,
+                ),
+              )
             : bookmarkedPosts.isEmpty
-                ? Center(
-                    child: Text("You haven't bookmarked any posts."),
+                ? SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      return Center(
+                        child: Text("You haven't bookmarked any Posts."),
+                      );
+                    }, childCount: 1),
                   )
-                : Expanded(
-                    child: ListView.builder(
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
+                : SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                    (context, index) {
                       return PostContainer(
                           post: bookmarkedPosts[index], fun: refreshBookmark);
                     },
-                    itemCount: bookmarkedPosts.length,
+                    childCount: bookmarkedPosts.length,
                   )),
   );
 }
 
-Widget BlogContent(List<dynamic> bookmarkedBlogs, Function refreshBookmark) {
-  return bookmarkedBlogs == null
-      ? FbLoading()
-      : bookmarkedBlogs.isEmpty
-          ? Center(
-              child: Text("You haven't bookmarked any Blogs."),
-            )
-          : Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return BlogContainer(bookmarkedBlogs[index], refreshBookmark);
-                },
-                itemCount: bookmarkedBlogs.length,
-              ),
-            );
+Widget BlogContent(BuildContext context, Function refreshBookmark) {
+  List<dynamic> bookmarkedBlogs;
+
+  Future<void> getBookmarkedBlogs() async {
+    bookmarkedBlogs = await Provider.of<blogss.Blog>(context, listen: false)
+        .getBookmarkedBlogs();
+  }
+
+  ;
+
+  return FutureBuilder<void>(
+    future: getBookmarkedBlogs(),
+    builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
+        snapshot.connectionState == ConnectionState.waiting
+            ? SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return FbLoading();
+                  },
+                  childCount: 1,
+                ),
+              )
+            : bookmarkedBlogs.isEmpty
+                ? SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      return Center(
+                        child: Text("You haven't bookmarked any Blogs."),
+                      );
+                    }, childCount: 1),
+                  )
+                : SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return BlogContainer(
+                            bookmarkedBlogs[index], refreshBookmark);
+                      },
+                      childCount: bookmarkedBlogs.length,
+                    ),
+                  ),
+  );
 }

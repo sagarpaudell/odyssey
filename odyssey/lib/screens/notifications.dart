@@ -28,7 +28,6 @@ class _NotificationsState extends State<Notifications> {
       allNotifications =
           await Provider.of<noti.Notification>(context, listen: false)
               .getAllNotifications();
-      print(allNotifications);
     } on Exception catch (e) {
       print(e);
     }

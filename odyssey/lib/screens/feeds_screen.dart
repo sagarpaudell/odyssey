@@ -82,7 +82,8 @@ class _FeedsScreenState extends State<FeedsScreen> {
                   onTap: () => Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => Bookmark(selectPost: true),
+                      builder: (_) =>
+                          Bookmark(selectPost: isPosts ? true : false),
                     ),
                   ),
                   child: Icon(
@@ -145,19 +146,20 @@ class _FeedsScreenState extends State<FeedsScreen> {
                       ),
                     )
                   : userPosts.isEmpty
-                  ? emptySliver(true)
-                  :SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return PostContainer(
-                            post: userPosts[index],
-                            fetchUserPosts: fetchUserPosts,
-                            authData: Provider.of<Auth>(context, listen: false),
-                          );
-                        },
-                        childCount: userPosts.length,
-                      ),
-                    )
+                      ? emptySliver(true)
+                      : SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              return PostContainer(
+                                post: userPosts[index],
+                                fetchUserPosts: fetchUserPosts,
+                                authData:
+                                    Provider.of<Auth>(context, listen: false),
+                              );
+                            },
+                            childCount: userPosts.length,
+                          ),
+                        )
               : allBlogs == null
                   ? SliverList(
                       delegate: SliverChildBuilderDelegate(
@@ -167,18 +169,18 @@ class _FeedsScreenState extends State<FeedsScreen> {
                         childCount: 1,
                       ),
                     )
-                  :allBlogs.isEmpty
-                  ? emptySliver(true)
-                  : SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return BlogContainer(
-                            allBlogs[index],
-                          );
-                        },
-                        childCount: allBlogs.length,
-                      ),
-                    )
+                  : allBlogs.isEmpty
+                      ? emptySliver(true)
+                      : SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              return BlogContainer(
+                                allBlogs[index],
+                              );
+                            },
+                            childCount: allBlogs.length,
+                          ),
+                        )
         ],
       ),
     );
