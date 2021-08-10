@@ -312,7 +312,7 @@ class _MessageState extends State<Message> {
             color: Theme.of(context).primaryColor,
           ),
           onPressed: () {
-            Navigator.pop(context, false);
+            Navigator.of(context).pushNamed(ChatScreen.routeName);
           },
         ),
         title: Row(
