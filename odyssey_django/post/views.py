@@ -182,7 +182,7 @@ class CommentView(APIView):
         serializer = CommentSerializer(data = request.data)
         if serializer.is_valid(raise_exception = ValueError):
             comment = serializer.save(post_id=post, traveller=traveller)
-            notification(post = post, comment = comment)
+            notification(post = post,traveller=traveller, comment = comment)
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         return Response(
                {
