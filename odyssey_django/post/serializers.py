@@ -36,4 +36,4 @@ class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields=("id", "traveller", "caption", "photo", "place", "like_users",
-                "comments", "post_time", "is_bookmarked")
+                "comments", "post_time", "is_bookmarked", "public_post")

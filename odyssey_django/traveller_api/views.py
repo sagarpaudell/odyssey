@@ -147,6 +147,18 @@ class GetFollowing(APIView):
                 status = status.HTTP_200_OK
             )
 
+class SearchTraveller(APIView):
+    def get(self, request):
+        searchtag = request.GET.get("traveller")
+        travellers = Traveller.objects.filter(
+                Q(first_name__icontains=searchtag) |
+                Q(last_name__icontains=searchtag) |
+                Q(username__username__icontains=searchtag),
+                ~Q(username = request.user)
+            )
+        serializer = TravellerSerializerPublic(travellers, many = True)
+        return Response(serializer.data)
+
 def get_object(request):
     try:
         user = request.user
@@ -174,14 +186,3 @@ def notification(sender, receipent, remove = False):
 
     return follow_notification
 
-class SearchTraveller(APIView):
-    def get(self, request):
-        searchtag = request.GET.get("traveller")
-        travellers = Traveller.objects.filter(
-                Q(first_name__icontains=searchtag) |
-                Q(last_name__icontains=searchtag) |
-                Q(username__username__icontains=searchtag),
-                ~Q(username = request.user)
-            )
-        serializer = TravellerSerializerPublic(travellers, many = True)
-        return Response(serializer.data)

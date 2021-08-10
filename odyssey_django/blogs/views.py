@@ -55,8 +55,9 @@ class BlogDetail(APIView):
     def put(self, request , id):
         blog = self.get_object(id)
         current_user = Traveller.objects.get(username = request.user)
+        print(request.data)
         if current_user==blog.author:
-            place = Place.objects.get(id = request.data["place"])
+            place = Place.objects.get(id = request.data["place_id"])
             blog.place = place
             blog.save()
             serializer = BlogSerializer(
@@ -67,7 +68,14 @@ class BlogDetail(APIView):
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                   {
+                       "error":True,
+                       "error_msg": serializer.error_messages,
+                   },
+                   status=status.HTTP_400_BAD_REQUEST
+               )
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     def delete(self, request, id):
         blog = self.get_object(id)
