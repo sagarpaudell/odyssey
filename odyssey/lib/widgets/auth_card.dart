@@ -120,7 +120,8 @@ class _AuthCardState extends State<AuthCard>
               backgroundColor: Theme.of(context).primaryColor,
             ),
           );
-          Navigator.of(context).popAndPushNamed(AuthPage.routeName);
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/', (Route<dynamic> route) => false);
         } else if (signupResponse.containsKey('email')) {
           _showErrorDialog('The entered email is already used');
         } else {
@@ -203,7 +204,7 @@ class _AuthCardState extends State<AuthCard>
                                   margin: EdgeInsets.only(bottom: 14),
                                   child: TextFormField(
                                     decoration: InputDecoration(
-                                      labelText: 'E-mail',
+                                      hintText: 'E-mail',
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide.none,
                                         borderRadius: BorderRadius.all(
@@ -241,7 +242,7 @@ class _AuthCardState extends State<AuthCard>
                                 //   margin: EdgeInsets.only(bottom: 14),
                                 //   child: TextFormField(
                                 //     decoration: InputDecoration(
-                                //       labelText: 'Phone',
+                                //       hintText: 'Phone',
                                 //       enabledBorder: OutlineInputBorder(
                                 //         borderSide: BorderSide.none,
                                 //         borderRadius: BorderRadius.all(
@@ -286,7 +287,7 @@ class _AuthCardState extends State<AuthCard>
                                   margin: EdgeInsets.only(bottom: 14),
                                   child: TextFormField(
                                     decoration: InputDecoration(
-                                      labelText: 'UserName',
+                                      hintText: 'UserName',
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide.none,
                                         borderRadius: BorderRadius.all(
@@ -324,7 +325,7 @@ class _AuthCardState extends State<AuthCard>
                                   margin: EdgeInsets.only(bottom: 14),
                                   child: TextFormField(
                                     decoration: InputDecoration(
-                                      labelText: 'Password',
+                                      hintText: 'Password',
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide.none,
                                         borderRadius: BorderRadius.all(
@@ -363,7 +364,7 @@ class _AuthCardState extends State<AuthCard>
                                   margin: EdgeInsets.only(bottom: 14),
                                   child: TextFormField(
                                     decoration: InputDecoration(
-                                      labelText: 'Confirm Password',
+                                      hintText: 'Confirm Password',
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide.none,
                                         borderRadius: BorderRadius.all(
@@ -403,7 +404,7 @@ class _AuthCardState extends State<AuthCard>
                                     margin: EdgeInsets.only(bottom: 18),
                                     child: TextFormField(
                                       decoration: InputDecoration(
-                                        labelText: 'Username',
+                                        hintText: 'Username',
                                         enabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide.none,
                                           borderRadius: BorderRadius.all(
@@ -441,7 +442,7 @@ class _AuthCardState extends State<AuthCard>
                                     margin: EdgeInsets.only(bottom: 18),
                                     child: TextFormField(
                                       decoration: InputDecoration(
-                                        labelText: 'Password',
+                                        hintText: 'Password',
                                         enabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide.none,
                                           borderRadius: BorderRadius.all(

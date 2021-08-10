@@ -59,7 +59,7 @@ class Auth with ChangeNotifier {
       if (username == 'postgres') {
         _rootToken = json.decode(response.body)['access'];
       } else {
-        token = json.decode(response.body)['access'];
+        String tempToken = json.decode(response.body)['access'];
         _userRefreshToken = json.decode(response.body)['refresh'];
         if (rememberMe) {
           print('true rem me');
@@ -67,15 +67,15 @@ class Auth with ChangeNotifier {
           prefs.setString('refreshToken', _userRefreshToken);
         }
 
-        await authenticate(token);
+        await authenticate(tempToken);
       }
     } catch (e) {
       throw (e);
     }
   }
 
-  Future<void> authenticate(String token) async {
-    final tokenHeader = 'Bearer ' + token;
+  Future<void> authenticate(String tempToken) async {
+    final tokenHeader = 'Bearer ' + tempToken;
     const profurl = 'https://travellum.herokuapp.com/traveller-api/';
 
     try {
@@ -113,6 +113,8 @@ class Auth with ChangeNotifier {
         print('firstlogin');
         firstLogin = true;
       }
+      token = tempToken;
+      print(isAuth);
       notifyListeners();
     } catch (error) {
       throw error;
