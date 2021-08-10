@@ -15,7 +15,7 @@ Widget emptySliver(bool feeds) {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: Text('Wow! such empty',
+                    child: Text('Oops! such empty',
                 style: TextStyle(fontSize: 30, color: Colors.red),
               ),
                   ),
