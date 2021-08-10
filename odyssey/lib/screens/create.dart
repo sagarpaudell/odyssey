@@ -755,15 +755,16 @@ class _CreateState extends State<Create> {
                               );
                               return;
                             }
-                          }
-                          if (_placeImageFile == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Please pick an image'),
-                                backgroundColor: Theme.of(context).errorColor,
-                              ),
-                            );
-                            return;
+
+                            if (_placeImageFile == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Please pick an image'),
+                                  backgroundColor: Theme.of(context).errorColor,
+                                ),
+                              );
+                              return;
+                            }
                           }
                           // print('caption: ${_captionController.text}');
                           setState(() {
