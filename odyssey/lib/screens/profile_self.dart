@@ -38,8 +38,13 @@ class _SelfProfileState extends State<SelfProfile> {
   Future<void> getSelfData() async {
     final String uname = Provider.of<Auth>(context, listen: false).userName;
     try {
-      selfProfileData = await Provider.of<Profile>(context, listen: false)
-          .getFriendProfile(uname);
+      var tempselfProfileData =
+          await Provider.of<Profile>(context, listen: false)
+              .getFriendProfile(uname);
+      setState(() {
+        selfProfileData = tempselfProfileData;
+      });
+      print('post count ${selfProfileData['posts'].length}');
     } on Exception catch (e) {
       print(e);
     }
@@ -195,25 +200,29 @@ class _SelfProfileState extends State<SelfProfile> {
                 )
               ],
             ),
-            body: FutureBuilder<void>(
-              future: _fbuilder, // a previously-obtained Future<String> or null
-              builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
-                  snapshot.connectionState == ConnectionState.waiting
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : CustomScrollView(slivers: [
-                          SliverToBoxAdapter(
-                            child: ProfileContainer(selfProfileData),
-                          ),
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                              return PostContainer(
-                                  post: selfProfileData['posts'][index]);
-                            }, childCount: selfProfileData['posts'].length),
-                          ),
-                        ]),
+            body: RefreshIndicator(
+              onRefresh: getSelfData,
+              child: FutureBuilder<void>(
+                future:
+                    _fbuilder, // a previously-obtained Future<String> or null
+                builder: (BuildContext context, AsyncSnapshot<void> snapshot) =>
+                    snapshot.connectionState == ConnectionState.waiting
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : CustomScrollView(slivers: [
+                            SliverToBoxAdapter(
+                              child: ProfileContainer(selfProfileData),
+                            ),
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                  (BuildContext context, int index) {
+                                return PostContainer(
+                                    post: selfProfileData['posts'][index]);
+                              }, childCount: selfProfileData['posts'].length),
+                            ),
+                          ]),
+              ),
             ),
           );
   }
