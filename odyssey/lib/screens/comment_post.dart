@@ -96,12 +96,17 @@ class Comments extends StatelessWidget {
                                 commentData[index]['comment_time'])),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                          child: Text(
-                            commentData[index]['comment'],
-                            style: TextStyle(
-                              color: Colors.grey[800],
-                              height: 1.5,
-                            ),
+                          child: Row(
+                            children: [
+                              Text(
+                                commentData[index]['comment'],
+                                // textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  color: Colors.grey[800],
+                                  height: 1.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
