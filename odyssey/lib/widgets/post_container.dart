@@ -276,11 +276,11 @@ Widget _PostHeader(Map<String, dynamic> post, String selfUserName,
               openWithTap: true,
               onPressed: () {},
               menuItems: [
-                FocusedMenuItem(
-                  title: Text('Edit Post'),
-                  trailingIcon: Icon(Icons.edit),
-                  onPressed: () {},
-                ),
+                // FocusedMenuItem(
+                //   title: Text('Edit Post'),
+                //   trailingIcon: Icon(Icons.edit),
+                //   onPressed: () {},
+                // ),
                 FocusedMenuItem(
                   title: Text('Delete Post'),
                   trailingIcon: Icon(Icons.delete),
