@@ -33,9 +33,9 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> getToken(
-      {String username = 'postgres',
+      [String username = 'postgres',
       String password = 'postgres',
-      bool rememberMe}) async {
+      bool rememberMe]) async {
     // const url = 'http://10.0.2.2:8000/accounts-api/get-auth-token/';
     const url =
         'https://travellum.herokuapp.com/accounts-api/get-auth-token/'; //...
@@ -66,8 +66,9 @@ class Auth with ChangeNotifier {
           final prefs = await SharedPreferences.getInstance();
           prefs.setString('refreshToken', _userRefreshToken);
         }
+
+        await authenticate(token);
       }
-      await authenticate(token);
     } catch (e) {
       throw (e);
     }
@@ -126,6 +127,7 @@ class Auth with ChangeNotifier {
     const _url = 'https://travellum.herokuapp.com/accounts-api/user/';
     getToken();
     final authToken = 'Bearer ' + _rootToken;
+    print(authToken);
     try {
       final response = await http.post(
         Uri.parse(_url),
@@ -136,21 +138,24 @@ class Auth with ChangeNotifier {
         body: json.encode(
           {
             'email': email,
-            //'phone': phone,
+            'first_name': '',
+            'last_name': '',
             'username': userName,
             'password': password,
           },
         ),
       );
+      print(json.decode(response.body));
+
       return json.decode(response.body);
     } catch (error) {
+      print('error here');
       throw error;
     }
   }
 
   Future<void> login(String username, String password, bool rememberMe) async {
-    return getToken(
-        username: username, password: password, rememberMe: rememberMe);
+    return getToken(username, password, rememberMe);
     // const url = 'https://travellum.herokuapp.com/accounts-api/user/'; //...
 
     // final tokenHeader = 'TOKEN ' + token;

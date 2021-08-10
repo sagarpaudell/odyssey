@@ -108,6 +108,7 @@ class _AuthCardState extends State<AuthCard>
           rememberMe,
         );
       } else {
+        print('siging up');
         // Sign user up
         signupResponse = await Provider.of<Auth>(context, listen: false).signup(
             _authData['email'], _authData['userName'], _authData['password']);
@@ -115,7 +116,7 @@ class _AuthCardState extends State<AuthCard>
         if (signupResponse.containsKey('success')) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Please select gender'),
+              content: Text('Account Created Successfully'),
               backgroundColor: Theme.of(context).errorColor,
             ),
           );
@@ -425,9 +426,9 @@ class _AuthCardState extends State<AuthCard>
                                             _confirmPassFocusNode);
                                       },
                                       validator: (value) {
-                                        // if (value.isEmpty || !value.contains('@')) {
-                                        //   return 'Invalid email!';
-                                        // }
+                                        if (value.isEmpty) {
+                                          return 'Username cannot be empty';
+                                        }
                                         return null;
                                       },
                                       onSaved: (value) {
@@ -461,7 +462,7 @@ class _AuthCardState extends State<AuthCard>
                                       focusNode: _confirmPassFocusNode,
                                       validator: (value) {
                                         if (value.isEmpty) {
-                                          return 'Passwords is empty';
+                                          return 'Password is empty';
                                         }
 
                                         return null;
