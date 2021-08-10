@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:odyssey/screens/feeds_screen.dart';
 import 'package:odyssey/screens/profile_self.dart';
+import 'package:odyssey/screens/screens.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
 import '../providers/profile.dart';
@@ -34,6 +35,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _cityFocusNode = FocusNode();
   final _countryFocusNode = FocusNode();
   var _isLoading = false;
+  bool firstLogin = false;
+  bool goHome = false;
+  bool appbarLoading = true;
   final _genderFocusNode = FocusNode();
   Map<String, dynamic> profileData;
   var _profileTraveller = Traveller(
@@ -54,22 +58,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     'country': '',
     'profilePicUrl': '',
     'city': '',
-    'username': ''
+    'username': '',
+    'gender': '',
   };
 
   String get genderText {
     switch (gender) {
       case Gender.male:
-        return 'male';
+        return 'MALE';
         break;
       case Gender.female:
-        return 'female';
+        return 'FEMALE';
         break;
       case Gender.others:
-        return 'others';
+        return 'OTHERS';
         break;
       default:
         return 'Unknown';
+    }
+  }
+
+  Gender get genderEnum {
+    switch (_profileData['gender']) {
+      case 'MALE':
+        return Gender.male;
+        break;
+
+      case 'FEMALE':
+        return Gender.female;
+        break;
+      case 'OTHERS':
+        return Gender.others;
+        break;
+      default:
+        return Gender.others;
     }
   }
 
@@ -85,11 +107,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           focusNode: _genderFocusNode,
           value: genderVal,
           groupValue: gender,
+          autofocus: genderVal == genderEnum ? true : false,
           activeColor: Theme.of(context).primaryColor,
           onChanged: (Gender value) {
             setState(() {
               gender = value;
               print(genderText);
+              print(genderEnum);
             });
           },
         ),
@@ -121,10 +145,44 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         'profilePicUrl': _profileTraveller.profilePicUrl,
         'country': _profileTraveller.country,
         'city': _profileTraveller.city,
+        'gender': _profileTraveller.gender,
       };
+      if (_profileData['firstname'] == '') {
+        firstLogin = true;
+      }
+      setState(() {
+        appbarLoading = false;
+      });
+      print(firstLogin);
     } catch (error) {
       print(error);
     }
+  }
+
+  Future<bool> successDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Voila!'),
+            content: firstLogin
+                ? Text('Congrats! Profile Created successfully.')
+                : Text('Profile updated successfully.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Ok'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  if (firstLogin) {
+                    setState(() {
+                      goHome = true;
+                    });
+                  }
+                },
+              ),
+            ],
+          );
+        });
   }
 
   @override
@@ -152,14 +210,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
       return;
     }
-    // if (_pickedImage == null) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text('Please pick an image'),
-    //       backgroundColor: Theme.of(context).errorColor,
-    //     ),
-    //   );
-    //   return;
+    // if (firstLogin) {
+    //   if (_pickedImage == null) {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(
+    //         content: Text('Please pick an image'),
+    //         backgroundColor: Theme.of(context).errorColor,
+    //       ),
+    //     );
+    //     return;
+    //   }
     // }
     _form.currentState.save();
     if (_pickedImage != null) {
@@ -193,6 +253,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     try {
       await Provider.of<Profile>(context, listen: false)
           .editProfile(_profileTraveller);
+      successDialog(context);
     } catch (e) {
       const errorMessage = 'Uhoh an error occured! Please try again later.';
       showErrorDialog(errorMessage, context);
@@ -209,18 +270,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: appbarLoading
+            ? SizedBox(
+                height: 0,
+                width: 0,
+              )
+            : firstLogin
+                ? SizedBox(
+                    height: 0,
+                    width: 0,
+                  )
+                : IconButton(
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Colors.black,
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
         title: Text(
-          'Update your profile',
+          appbarLoading
+              ? ''
+              : firstLogin
+                  ? 'Let\'s create a profile for you'
+                  : 'Update your profile',
           style: TextStyle(
               color: Theme.of(context).primaryColor.withOpacity(0.9),
               fontSize: 20,
@@ -249,15 +323,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             alignment: Alignment.centerLeft,
                             child: Row(
                               mainAxisAlignment:
-                                  _profileData['firstname'] == null &&
-                                          _profileData['lastname'] == null
+                                  firstLogin && _profileData['lastname'] == ''
                                       ? MainAxisAlignment.center
                                       : MainAxisAlignment.start,
                               children: [
                                 DpInput(_selectImage,
                                     _profileData['profilePicUrl']),
-                                _profileData['firstname'] == null &&
-                                        _profileData['lastname'] == null
+                                firstLogin && _profileData['lastname'] == ''
                                     ? SizedBox(
                                         height: 0,
                                         width: 0,
@@ -511,13 +583,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           SizedBox(
                             height: deviceSize.height * 0.02,
                           ),
-                          _isLoading
-                              ? CircularProgressIndicator()
+                          !goHome
+                              ? _isLoading
+                                  ? CircularProgressIndicator()
+                                  : ElevatedButton.icon(
+                                      onPressed: _saveForm,
+                                      icon: Icon(Icons.done),
+                                      label: Text(
+                                        'Update Profile',
+                                      ),
+                                    )
                               : ElevatedButton.icon(
-                                  onPressed: _saveForm,
-                                  icon: Icon(Icons.done),
+                                  onPressed: () {
+                                    Navigator.of(context).pushReplacementNamed(
+                                        MainScreen.routeName);
+                                  },
+                                  icon: Icon(Icons.home),
                                   label: Text(
-                                    'Update Profile',
+                                    'Start Surfing',
                                   ),
                                 ),
                         ],

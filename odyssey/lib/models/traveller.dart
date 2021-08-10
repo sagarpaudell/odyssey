@@ -20,7 +20,7 @@ class Traveller {
     @required this.phone,
     this.profilePic,
     @required this.username,
-    this.gender,
+    @required this.gender,
     @required this.country,
     @required this.city,
     this.travellerId,

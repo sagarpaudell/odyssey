@@ -11,6 +11,7 @@ class Auth with ChangeNotifier {
   String userName;
   String fullName;
   String userId;
+  bool firstLogin = false;
   // bool dataPersisted;
   bool email_verifed = false;
   Map<String, dynamic> userProfileInfo;
@@ -67,7 +68,6 @@ class Auth with ChangeNotifier {
         }
       }
       await authenticate(token);
-      notifyListeners();
     } catch (e) {
       throw (e);
     }
@@ -88,27 +88,33 @@ class Auth with ChangeNotifier {
       final userData = json.decode(userDataResponse.body);
       userProfileInfo = userData;
       userName = userData['username'];
+
       fullName = '${userData['first_name ']} ${userData['last_name ']}';
       userId = userData['id'].toString();
+
+      const verifyUrl =
+          'https://travellum.herokuapp.com/accounts-api/checkverified';
+      try {
+        final verifyResponse = await http.get(
+          Uri.parse(verifyUrl),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': tokenHeader
+          },
+        );
+        email_verifed = json.decode(verifyResponse.body)['verified_email'];
+        print('the email is $email_verifed');
+      } catch (error) {
+        //throw error;
+        print('here is error');
+      }
+      if (["", null, false, 0].contains(userData["first_name"])) {
+        print('firstlogin');
+        firstLogin = true;
+      }
+      notifyListeners();
     } catch (error) {
       throw error;
-    }
-
-    const verifyUrl =
-        'https://travellum.herokuapp.com/accounts-api/checkverified';
-    try {
-      final verifyResponse = await http.get(
-        Uri.parse(verifyUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': tokenHeader
-        },
-      );
-      email_verifed = json.decode(verifyResponse.body)['verified_email'];
-      print('the email is $email_verifed');
-    } catch (error) {
-      //throw error;
-      print('here is error');
     }
   }
 
@@ -193,7 +199,6 @@ class Auth with ChangeNotifier {
       token = respondeDatam['access'];
       print('access $token');
       await authenticate(token);
-      notifyListeners();
       return true;
     } catch (e) {
       throw e;

@@ -26,6 +26,7 @@ class Profile with ChangeNotifier {
       request.fields['first_name'] = profile.firstname;
       request.fields['last_name'] = profile.lastname;
       request.fields['country'] = profile.country;
+      request.fields['gender'] = profile.gender;
       request.fields['city'] = profile.city;
       request.fields['contact_no'] = profile.phone;
       if (profile.profilePic != null) {
@@ -83,12 +84,13 @@ class Profile with ChangeNotifier {
         headers: {'Content-Type': 'application/json', 'Authorization': token},
       );
       final userData = json.decode(userDataResponse.body);
-
+      print('this is userdata $userData');
       final userProfile = Traveller(
         firstname: userData['first_name'],
         lastname: userData['last_name'],
         username: userData['username'],
         phone: userData['contact_no'],
+        gender: userData['gender'],
         country: userData['country'],
         city: userData['city'],
         profilePicUrl: userData['photo_main'],

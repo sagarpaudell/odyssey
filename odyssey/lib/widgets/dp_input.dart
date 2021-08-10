@@ -91,10 +91,14 @@ class _DpInputState extends State<DpInput> {
                 ? FileImage(
                     File(_storedImage.path),
                   )
-                : NetworkImage(widget._profilePicUrl),
-            child: widget._profilePicUrl == null
-                ? SvgPicture.asset("assets/icons/man.svg")
-                : null,
+                : widget._profilePicUrl == null
+                    ? AssetImage('./assets/images/logo1.png')
+                    : NetworkImage(widget._profilePicUrl),
+            // child: widget._profilePicUrl == null
+            //     ? SvgPicture.asset("assets/icons/man.svg")
+            //     : FileImage(
+            //         File(_storedImage.path),
+            //       ),
           ),
           Positioned(
             right: 7,
