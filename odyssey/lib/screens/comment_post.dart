@@ -8,6 +8,7 @@ import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:odyssey/providers/auth.dart';
 import 'package:odyssey/providers/posts.dart';
+import 'package:odyssey/providers/comments.dart' as com;
 import 'package:provider/provider.dart';
 import '../functions/dateformatter.dart';
 
@@ -52,7 +53,7 @@ class Comment extends StatelessWidget {
             Expanded(
               child: commentData.isEmpty
                   ? NoComments()
-                  : Comments(commentData, context),
+                  : Comments(commentData, context, fetchUserPosts),
             ),
             PostComment(context, post['id'], fetchUserPosts),
           ],
@@ -65,7 +66,12 @@ class Comment extends StatelessWidget {
 class Comments extends StatelessWidget {
   List<dynamic> commentData;
   BuildContext context;
-  Comments(this.commentData, this.context);
+  Function fetchUserPosts;
+  Comments(
+    this.commentData,
+    this.context,
+    this.fetchUserPosts,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +96,14 @@ class Comments extends StatelessWidget {
                           FocusedMenuItem(
                             title: Text('Delete Comment'),
                             trailingIcon: Icon(Icons.delete),
-                            onPressed: () {},
+                            onPressed: () {
+                              // commentData[index]['traveller']['id']
+                              Provider.of<com.Comments>(context, listen: false)
+                                  .deleteComment(commentData[index]['id']);
+                              Navigator.pop(context);
+                              fetchUserPosts();
+                              // print(commentData[index]['id']);
+                            },
                           ),
                           // FocusedMenuItem(
                           //   backgroundColor: Colors.white.withOpacity(0),
