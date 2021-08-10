@@ -7,27 +7,7 @@ class Comments with ChangeNotifier {
 
   Comments([this.authToken]);
 
-  Future<void> postComment(String id, String comment) async {
-    final url = 'https://travellum.herokuapp.com/post-api/comment/$id';
-
-    final token = 'Bearer ' + authToken;
-    try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json', 'Authorization': token},
-        body: json.encode(
-          {
-            "comment": comment,
-          },
-        ),
-      );
-      notifyListeners();
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> deleteComment(String id) async {
+  Future<void> deleteComment(int id) async {
     final url = 'https://travellum.herokuapp.com/post-api/comment/$id';
 
     final token = 'Bearer ' + authToken;
@@ -36,6 +16,7 @@ class Comments with ChangeNotifier {
         Uri.parse(url),
         headers: {'Content-Type': 'application/json', 'Authorization': token},
       );
+      print(response.statusCode);
       notifyListeners();
     } catch (e) {
       print(e);
