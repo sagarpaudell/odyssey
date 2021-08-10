@@ -148,7 +148,8 @@ class _NotificationsState extends State<Notifications> {
                                                           ['time'])),
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w600,
-                                                fontSize: 16,
+                                                color: Colors.grey,
+                                                fontSize: 12,
                                               ),
                                             ),
                                     ),

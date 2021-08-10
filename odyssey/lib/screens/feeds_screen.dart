@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../providers/posts.dart';
 import '../providers/blog.dart' as blogss;
 import 'package:rolling_switch/rolling_switch.dart';
+import '../widgets/empty.dart';
 
 // import '../themes/style.dart';
 // import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -143,7 +144,9 @@ class _FeedsScreenState extends State<FeedsScreen> {
                         childCount: 1,
                       ),
                     )
-                  : SliverList(
+                  : userPosts.isEmpty
+                  ? emptySliver(true)
+                  :SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           return PostContainer(
@@ -164,6 +167,8 @@ class _FeedsScreenState extends State<FeedsScreen> {
                         childCount: 1,
                       ),
                     )
+                  :allBlogs.isEmpty
+                  ? emptySliver(true)
                   : SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
