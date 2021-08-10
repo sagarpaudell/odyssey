@@ -210,17 +210,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
       return;
     }
-    // if (firstLogin) {
-    //   if (_pickedImage == null) {
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(
-    //         content: Text('Please pick an image'),
-    //         backgroundColor: Theme.of(context).errorColor,
-    //       ),
-    //     );
-    //     return;
-    //   }
-    // }
+    if (firstLogin) {
+      if (_pickedImage == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please pick an image'),
+            backgroundColor: Theme.of(context).errorColor,
+          ),
+        );
+        return;
+      }
+    }
     _form.currentState.save();
     if (_pickedImage != null) {
       _profileTraveller = Traveller(

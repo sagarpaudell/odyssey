@@ -28,13 +28,13 @@ class _FoFoState extends State<FoFo> {
   }
 
   Future<void> getselfFollowerList() async {
-    listData =
-        await Provider.of<Profile>(context, listen: false).getSelfFollowers();
+    listData = await Provider.of<Profile>(context, listen: false)
+        .getSelfFollowers(widget.usernameInQues);
   }
 
   Future<void> getselfFollowingList() async {
-    listData =
-        await Provider.of<Profile>(context, listen: false).getSelfFollowing();
+    listData = await Provider.of<Profile>(context, listen: false)
+        .getSelfFollowing(widget.usernameInQues);
   }
 
   @override

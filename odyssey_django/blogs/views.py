@@ -12,7 +12,7 @@ from .models import Blog,BlogComment, Blog_notification
 class MyBlogs(APIView):
     def get(self,request):
         user = Traveller.objects.get(username = self.request.user)
-        blogs = Blog.objects.filter(author = user)
+        blogs = Blog.objects.filter(author = user).order_by('-date')
         serializer = BlogSerializer(
                 blogs,
                 context = {"traveller":user},
@@ -24,14 +24,18 @@ class NewsfeedBlogs(APIView):
     def get(self, request):
         traveller = Traveller.objects.get(username = request.user)
         following = traveller.get_following()
-        blogs = Blog.objects.filter(Q(author__in = following) | Q(author = traveller))
-        blog_serialized = BlogSerializer(blogs, many=True, context={"traveller": traveller})
+        blogs = Blog.objects.filter(
+                Q(author__in = following) | Q(author = traveller)
+            ).order_by('-date')
+        blog_serialized = BlogSerializer(
+                blogs, many=True, context={"traveller": traveller}
+            )
         return Response(blog_serialized.data)
 
 class ViewBlogs(APIView):
     def get(self,request):
         user = Traveller.objects.get(username = self.request.user)
-        blogs = Blog.objects.filter(public_blog = True)
+        blogs = Blog.objects.filter(public_blog = True).order_by('-date')
         serializer = BlogSerializer(
                 blogs,
                 context = {"traveller":user},

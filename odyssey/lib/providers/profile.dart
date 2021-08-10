@@ -138,8 +138,13 @@ class Profile with ChangeNotifier {
     }
   }
 
-  Future<List<dynamic>> getSelfFollowers() async {
-    final url = 'https://travellum.herokuapp.com/traveller-api/followers';
+  Future<List<dynamic>> getSelfFollowers([String uname = '']) async {
+    String url;
+    if (uname == '') {
+      url = 'https://travellum.herokuapp.com/traveller-api/followers';
+    } else {
+      url = 'https://travellum.herokuapp.com/traveller-api/followers/$uname';
+    }
     final token = 'Bearer ' + authToken;
     try {
       final response = await http.get(
@@ -152,8 +157,13 @@ class Profile with ChangeNotifier {
     }
   }
 
-  Future<List<dynamic>> getSelfFollowing() async {
-    final url = 'https://travellum.herokuapp.com/traveller-api/following';
+  Future<List<dynamic>> getSelfFollowing([String uname = '']) async {
+    String url;
+    if (uname == '') {
+      url = 'https://travellum.herokuapp.com/traveller-api/following';
+    } else {
+      url = 'https://travellum.herokuapp.com/traveller-api/following/$uname';
+    }
     final token = 'Bearer ' + authToken;
     try {
       final response = await http.get(

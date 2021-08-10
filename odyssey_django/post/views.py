@@ -19,7 +19,6 @@ class NewsfeedView(APIView):
         posts = Post.objects.filter(
                 Q(traveller__in = following) | Q(traveller=traveller)
             ).order_by("-post_time")
-        print(posts)
         post_serialized = PostSerializer(
                 posts, many=True, context={"traveller":traveller}
             )
@@ -28,7 +27,7 @@ class NewsfeedView(APIView):
 
 class ExploreView(APIView):
     def get(self, request):
-        posts = Post.objects.filter(public_post=True)
+        posts = Post.objects.filter(public_post=True).order_by('-post_time')
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data, status = status.HTTP_200_OK)
 

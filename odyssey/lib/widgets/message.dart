@@ -118,7 +118,9 @@ class _MessageState extends State<Message> {
 
   @override
   void dispose() {
-    channel.sink.close();
+    //print('is dispoded');
+    // Provider.of<Chat>(context).setChatMessagesEmpty();
+    //channel.sink.close();
     _controller.dispose();
     super.dispose();
   }
@@ -312,6 +314,9 @@ class _MessageState extends State<Message> {
             color: Theme.of(context).primaryColor,
           ),
           onPressed: () {
+            Provider.of<Chat>(context, listen: false).setChatMessagesEmpty();
+            channel.sink.close();
+            _controller.text = '';
             Navigator.of(context).pushNamed(ChatScreen.routeName);
           },
         ),
@@ -389,6 +394,7 @@ class _MessageState extends State<Message> {
                           ),
                           child: Consumer<Chat>(
                             builder: (context, chat, child) {
+                              print('current message is ${chat.chatMessages}');
                               return CustomScrollView(
                                   controller: _scrollController,
                                   slivers: [

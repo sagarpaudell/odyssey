@@ -127,9 +127,11 @@ class FollowView(APIView):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class GetFollowers(APIView):
+class GetSelfFollowers(APIView):
     def get(self, request):
-        followers = Traveller.objects.get(username = request.user).get_followers()
+        followers = Traveller.objects.get(
+                username = request.user
+            ).get_followers()
         print(followers)
         serializer = TravellerSerializerPublic(followers, many=True)
         return Response(
@@ -138,13 +140,60 @@ class GetFollowers(APIView):
             )
 
 
-class GetFollowing(APIView):
+class GetSelfFollowing(APIView):
     def get(self, request):
-        following = Traveller.objects.get(username = request.user).get_following()
+        following = Traveller.objects.get(
+                username = request.user
+            ).get_following()
         serializer = TravellerSerializerPublic(following, many=True)
         return Response(
                 serializer.data,
                 status = status.HTTP_200_OK
+            )
+
+class GetUserFollowing(APIView):
+    def get(self, request, username):
+        traveller_self = Traveller.objects.get(username=request.user)
+        traveller_friend= Traveller.objects.get(
+                username__username = username
+            )
+        traveller_friend_following = traveller_friend.get_following()
+        if  traveller_friend in traveller_self.get_following():
+            serializer = TravellerSerializerPublic(
+                    traveller_friend_following , many=True
+                )
+            return Response(
+                    serializer.data,
+                    status = status.HTTP_200_OK
+                )
+        return Response(
+                {
+                    "error": True,
+                    "error_msg": "Follow the user first"
+                },
+                status = status.HTTP_401_UNAUTHORIZED
+            )
+
+class GetUserFollowers(APIView):
+    def get(self, request, username):
+        traveller_self = Traveller.objects.get(username=request.user)
+        traveller_friend_followers = Traveller.objects.get(
+                username__username = username
+            ).get_followers()
+        if traveller_self in traveller_friend_followers:
+            serializer = TravellerSerializerPublic(
+                    traveller_friend_followers , many=True
+                )
+            return Response(
+                    serializer.data,
+                    status = status.HTTP_200_OK
+                )
+        return Response(
+                {
+                    "error": True,
+                    "error_msg": "Follow the user first"
+                },
+                status = status.HTTP_401_UNAUTHORIZED
             )
 
 class SearchTraveller(APIView):
