@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:odyssey/data/data.dart';
 import '../providers/posts.dart';
 import '../providers/search.dart';
 import '../providers/place.dart';
@@ -10,6 +11,7 @@ import '../widgets/post_container.dart';
 import '../widgets/place_container.dart';
 import './profile_user.dart';
 import '../widgets/blog_container.dart';
+import '../widgets/empty.dart';
 
 class Explore extends StatefulWidget {
   @override
@@ -233,7 +235,9 @@ Widget PostContent(Future fbuilder, List<dynamic> explorePosts) {
                   childCount: 1,
                 ),
               )
-            : SliverList(
+            : explorePosts.isEmpty
+                  ? emptySliver(false)
+                  :SliverList(
                 delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   return PostContainer(post: explorePosts[index]);
@@ -253,7 +257,9 @@ Widget BlogContent(List<dynamic> exploreBlogs) {
             childCount: 1,
           ),
         )
-      : SliverList(
+      :exploreBlogs.isEmpty
+                  ? emptySliver(false)
+                  :SliverList(
           delegate: SliverChildBuilderDelegate(
           (context, index) {
             return BlogContainer(exploreBlogs[index]);
@@ -380,7 +386,9 @@ Widget PlaceContent(List<dynamic> explorePlace) {
             childCount: 1,
           ),
         )
-      : SliverList(
+      :explorePlace.isEmpty
+                  ? emptySliver(false)
+                  : SliverList(
           delegate: SliverChildBuilderDelegate(
           (context, index) {
             return PlaceContainer(explorePlace[index]);

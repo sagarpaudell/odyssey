@@ -144,7 +144,9 @@ class _FeedsScreenState extends State<FeedsScreen> {
                         childCount: 1,
                       ),
                     )
-                  : SliverList(
+                  : userPosts.isEmpty
+                  ? emptySliver(true)
+                  :SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           return PostContainer(
@@ -164,6 +166,8 @@ class _FeedsScreenState extends State<FeedsScreen> {
                         childCount: 1,
                       ),
                     )
+                  :allBlogs.isEmpty
+                  ? emptySliver(true)
                   : SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
