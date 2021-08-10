@@ -182,8 +182,8 @@ class CommentView(APIView):
         serializer = CommentSerializer(data = request.data)
         if serializer.is_valid(raise_exception = ValueError):
             comment = serializer.save(post_id=post, traveller=traveller)
-            notification(post = post, comment = comment)
-            return Response(serializer.data, status = status.HTTP_200_OK)
+            notification(post = post,traveller=traveller, comment = comment)
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
         return Response(
                {
                    "error":True,
@@ -291,16 +291,8 @@ class BookMarkPostView(APIView):
 class PostByPlaceView(APIView):
     def get(self, request, id):
         post = Post.objects.filter(place_id__id = id, public_post=True)
-        if post:
-            serializer = PostSerializer(post, many=True)
-            return Response(serializer.data, status = status.HTTP_200_OK )
-        return Response(
-                {
-                    "error":True,
-                    "error_msg": "post not found"
-                },
-                status = status.HTTP_404_NOT_FOUND
-            )
+        serializer = PostSerializer(post, many=True)
+        return Response(serializer.data, status = status.HTTP_200_OK )
 
 
 def get_post(id):

@@ -42,6 +42,11 @@ class _AuthCardState extends State<AuthCard>
     'userName': '',
     'password': '',
   };
+  Map<String, dynamic> signupResponse = {
+    'email': '',
+    'userName': '',
+    'password': '',
+  };
   void _switchAuthMode() {
     if (_authMode == AuthMode.Login) {
       setState(() {
@@ -102,12 +107,24 @@ class _AuthCardState extends State<AuthCard>
           _authData['password'],
           rememberMe,
         );
-        setState(() {});
       } else {
         // Sign user up
-        await Provider.of<Auth>(context, listen: false).signup(
+        signupResponse = await Provider.of<Auth>(context, listen: false).signup(
             _authData['email'], _authData['userName'], _authData['password']);
-        Navigator.of(context).popAndPushNamed(AuthPage.routeName);
+
+        if (signupResponse.containsKey('success')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Please select gender'),
+              backgroundColor: Theme.of(context).errorColor,
+            ),
+          );
+          Navigator.of(context).popAndPushNamed(AuthPage.routeName);
+        } else if (signupResponse.containsKey('email')) {
+          _showErrorDialog('The entered email is already used');
+        } else {
+          _showErrorDialog('The entered username is already used');
+        }
       }
     } on HttpException catch (error) {
       var errorMessage = error.toString();
@@ -168,7 +185,7 @@ class _AuthCardState extends State<AuthCard>
                         margin: _authMode == AuthMode.Signup
                             ? EdgeInsets.only(top: 12)
                             : EdgeInsets.only(top: 40),
-                        height: _authMode == AuthMode.Signup ? 80 : 200,
+                        height: _authMode == AuthMode.Signup ? 150 : 200,
                         alignment: Alignment.center,
                         child: Image.asset(
                           './assets/images/logo1.png',
@@ -177,7 +194,7 @@ class _AuthCardState extends State<AuthCard>
                       ),
                       _authMode == AuthMode.Signup
                           ? Container(
-                              height: (deviceSize.height - 80) * 0.55,
+                              height: (deviceSize.height - 80) * 0.45,
                               padding: EdgeInsets.only(left: 30, right: 30),
                               child: ListView(children: [
                                 Container(
@@ -530,31 +547,31 @@ class _AuthCardState extends State<AuthCard>
                         ),
                       ]),
 
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 30, right: 30),
-                        child: OutlinedButton(
-                          onPressed: () {},
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                FontAwesomeIcons.facebook,
-                                color: Colors.blue,
-                              ),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              Text(
-                                'Continue with Facebook',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
+                      // Container(
+                      //   margin: EdgeInsets.only(left: 30, right: 30),
+                      //   child: OutlinedButton(
+                      //     onPressed: () {},
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         Icon(
+                      //           FontAwesomeIcons.facebook,
+                      //           color: Colors.blue,
+                      //         ),
+                      //         SizedBox(
+                      //           width: 8,
+                      //         ),
+                      //         Text(
+                      //           'Continue with Facebook',
+                      //           style: TextStyle(color: Colors.blue),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(
                         height: 7,
                       ),

@@ -27,12 +27,14 @@ class Traveller(models.Model):
             blank=True
         )
     photo_main = models.ImageField(
-            upload_to='profile_photos/%Y/%m/%d/',blank=True)
+            default = 'man_mjrfou.png',
+            upload_to='profile_photos/%Y/%m/%d/',blank=True
+        )
     reg_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         id = self.id
-        return f"{self.username.username}({id}) "
+        return f"{self.username.username}({id})"
 
     def get_following(self):
         following = [x.following_traveller_id for x in self.following.all()]

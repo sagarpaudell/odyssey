@@ -1,18 +1,17 @@
 from django.db import models
 from traveller_api.models import Traveller
-from post.models import Post_notification, Post
-from blogs.models import Blog_notification, Blog
+from post.models import Post_notification
+from blogs.models import Blog_notification
 
 
 # Create your models here.
 class Notification_type(models.Model):
     NOTIFICATION_CHOICES = (
-        ("CHAT", "chat"),
         ("POST", "post"),
         ("BLOG", "blog"),
         ("FOLLOW", "follow"),
     )
-    category = models.CharField(max_length = 7, choices = NOTIFICATION_CHOICES, 
+    category = models.CharField(max_length = 7, choices = NOTIFICATION_CHOICES,
             blank = False)
     blog_noti = models.OneToOneField(
             Blog_notification,
@@ -32,6 +31,11 @@ class Notification_type(models.Model):
             if self.post_noti.is_like:
                 return f"like in {self.post_noti.post_id}"
             return f"{self.post_noti.comment_id}"
+        if self.blog_noti:
+            if self.blog_noti.is_like:
+                return f"like in {self.blog_noti.blog_id}"
+            return f"{self.blog_noti.comment_id}"
+        return "follow"
 
 
 class Notification(models.Model):

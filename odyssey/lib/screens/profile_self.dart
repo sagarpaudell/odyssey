@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:odyssey/pages/edit_profile_page.dart';
 import 'package:odyssey/screens/screens.dart';
 import '../widgets/profile_container.dart';
 import 'package:provider/provider.dart';
