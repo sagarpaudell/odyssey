@@ -100,7 +100,6 @@ class Posts with ChangeNotifier {
 
     void handlePlaceData(http.MultipartRequest request) {
       if (isSwitched) {
-        print('1');
         request.fields["place_name"] = place_name;
         request.fields["place_description"] = place_desc;
         request.fields["place_keywords"] = keywords.join(' ');
@@ -113,7 +112,6 @@ class Posts with ChangeNotifier {
             filename: '${DateTime.now().toString()}.jpg',
           ),
         );
-        print('2');
         request.headers.addAll(headers);
 
         // print('post published status: ${response.statusCode}');
@@ -130,18 +128,16 @@ class Posts with ChangeNotifier {
       try {
         request.fields['caption'] = caption;
 
-        print(caption);
-        print('isSwitched $isSwitched');
-        print(place_name + place_desc + keywords.join(' '));
+        // print(caption);
+        // print('isSwitched $isSwitched');
+        // print(place_name + place_desc + keywords.join(' '));
         handlePlaceData(request);
         var response = await request.send();
-        print('3');
-        print('Publish post Status Code: ${response.statusCode}');
+        // print('Publish post Status Code: ${response.statusCode}');
 
         response.stream.transform(utf8.decoder).listen((value) {
           print(value);
         });
-        print('4');
 
         notifyListeners();
       } catch (error) {
@@ -164,7 +160,7 @@ class Posts with ChangeNotifier {
 
         var response = await request.send();
 
-        print('Publish post Status Code: $response.statusCode');
+        // print('Publish post Status Code: $response.statusCode');
         notifyListeners();
       } catch (error) {
         print(error);
@@ -204,6 +200,24 @@ class Posts with ChangeNotifier {
     } catch (error) {
       print(json.decode(error));
       throw error;
+    }
+  }
+
+  Future<List<dynamic>> getPostsByPlace(String id) async {
+    final url = 'https://travellum.herokuapp.com/post-api/place/$id';
+
+    final token = 'Bearer ' + authToken;
+    try {
+      final userDataResponse = await http.get(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+      final postData = json.decode(userDataResponse.body);
+      print(postData);
+      notifyListeners();
+      return postData;
+    } catch (e) {
+      print(e);
     }
   }
 }

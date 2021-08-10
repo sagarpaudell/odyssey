@@ -75,4 +75,21 @@ class Blog with ChangeNotifier {
       print(e);
     }
   }
+
+  Future<List<dynamic>> getBlogsByPlace(String id) async {
+    final url = 'https://travellum.herokuapp.com/blogs-api/place/$id';
+
+    final token = 'Bearer ' + authToken;
+    try {
+      final userDataResponse = await http.get(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+      final blogData = json.decode(userDataResponse.body);
+      notifyListeners();
+      return blogData;
+    } catch (e) {
+      print(e);
+    }
+  }
 }

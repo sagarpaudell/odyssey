@@ -33,7 +33,7 @@ class Profile with ChangeNotifier {
         request.files.add(
           http.MultipartFile.fromBytes(
             'photo_main',
-            File(profile.profilePic.path).readAsBytesSync(),
+            profile.profilePic.readAsBytesSync(),
             filename: '$userId.jpg',
           ),
         );
@@ -87,6 +87,8 @@ class Profile with ChangeNotifier {
       final userProfile = Traveller(
         firstname: userData['first_name'],
         lastname: userData['last_name'],
+        username: userData['username'],
+        phone: userData['contact_no'],
         country: userData['country'],
         city: userData['city'],
         profilePicUrl: userData['photo_main'],

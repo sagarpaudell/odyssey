@@ -191,7 +191,7 @@ class Auth with ChangeNotifier {
         return false;
       }
       token = respondeDatam['access'];
-      // print('access $token');
+      print('access $token');
       await authenticate(token);
       notifyListeners();
       return true;
