@@ -34,6 +34,7 @@ class Chat with ChangeNotifier {
   }
 
   addImmediateMsg() {
+    print('current message is $chatMessages');
     channel.stream.listen((message) {
       chatMessages.add({
         'sender': {'username': json.decode(message)['sender']},
@@ -70,6 +71,10 @@ class Chat with ChangeNotifier {
       print(error);
       throw error;
     }
+  }
+
+  setChatMessagesEmpty() {
+    chatMessages = [];
   }
 
   Future<List<dynamic>> getChatOverview() async {
