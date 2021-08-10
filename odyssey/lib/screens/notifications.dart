@@ -135,7 +135,7 @@ class _NotificationsState extends State<Notifications> {
                                                 .fromNow()
                                                 .toString()
                                                 .contains(RegExp(
-                                                    r'hours|minutes|seconds'))
+                                                    r'hours|hour|minutes|seconds'))
                                             ? Text(
                                                 Jiffy(DateTime.parse(
                                                         allNotifications[index]
