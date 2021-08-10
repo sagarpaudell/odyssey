@@ -2,12 +2,12 @@ from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import BlogSerializer,BlogCommentSerializer
-from .models import Blog,BlogComment, Blog_notification
 from notification.models import Notification, Notification_type
 from traveller_api.models import Traveller
 from places_api.models import Place
 from post.views import get_or_create_place_from_request
+from .serializers import BlogSerializer,BlogCommentSerializer
+from .models import Blog,BlogComment, Blog_notification
 
 class MyBlogs(APIView):
     def get(self,request):
@@ -72,7 +72,7 @@ class BlogDetail(APIView):
     def delete(self, request, id):
         blog = self.get_object(id)
         current_user = Traveller.objects.get(username = request.user)
-        if (current_user==blog.author):
+        if current_user==blog.author:
             blog.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -266,4 +266,3 @@ def notification(blog=None, comment=None, traveller = None, remove = False):
     if remove:
         return notification_obj.noti_type.blog_noti.delete()
     return notification_obj
-
