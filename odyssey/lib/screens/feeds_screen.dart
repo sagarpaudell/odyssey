@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:odyssey/models/models.dart';
 import 'package:odyssey/data/data.dart';
+import 'package:odyssey/widgets/empty.dart';
 import './bookmarks.dart';
 import './chat_screen.dart';
 import '../widgets/fb_loading.dart';

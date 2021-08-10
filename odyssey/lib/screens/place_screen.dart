@@ -7,6 +7,7 @@ import 'package:odyssey/widgets/blog_container.dart';
 import '../providers/blog.dart';
 import 'package:provider/provider.dart';
 import '../providers/place.dart';
+import '../widgets/empty.dart';
 
 class PlaceScreen extends StatefulWidget {
   final Map<String, dynamic> _singlePlace;
@@ -342,7 +343,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
     Future<void> getPostByPlace() async {
       posts = await Provider.of<Posts>(context, listen: false)
           .getPostsByPlace(placeId.toString());
-      print('this is $posts');
+      ;
       //posts = await Provider.of<Posts>(context, listen: false).getPosts(true);
     }
 
@@ -358,13 +359,16 @@ class _PlaceScreenState extends State<PlaceScreen> {
                     childCount: 1,
                   ),
                 )
-              : SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return PostContainer(post: posts[index]);
-                  },
-                  childCount: posts.length,
-                )),
+              : posts.isEmpty
+                  ? emptySliver(false)
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return PostContainer(post: posts[index]);
+                        },
+                        childCount: posts.length,
+                      ),
+                    ),
     );
   }
 
@@ -387,14 +391,16 @@ class _PlaceScreenState extends State<PlaceScreen> {
                     childCount: 1,
                   ),
                 )
-              : SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return BlogContainer(blogs[index]);
-                    },
-                    childCount: blogs.length,
-                  ),
-                ),
+              : blogs.isEmpty
+                  ? emptySliver(false)
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return BlogContainer(blogs[index]);
+                        },
+                        childCount: blogs.length,
+                      ),
+                    ),
     );
   }
 }
