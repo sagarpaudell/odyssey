@@ -102,7 +102,8 @@ class Blog with ChangeNotifier {
       String place_name,
       String place_desc,
       List keywords,
-      bool isSwitched = false]) async {
+      bool isSwitched = false,
+      bool isPublic]) async {
     const url = 'https://travellum.herokuapp.com/blogs-api/addblogs';
     final token = 'Bearer ' + authToken;
 
@@ -138,6 +139,7 @@ class Blog with ChangeNotifier {
       try {
         request.fields['title'] = caption;
         request.fields['description'] = desc;
+        request.fields['public_blog'] = isPublic.toString();
 
         // print(caption);
         // print('isSwitched $isSwitched');
@@ -159,6 +161,7 @@ class Blog with ChangeNotifier {
       try {
         request.fields['title'] = caption;
         request.fields['description'] = desc;
+        request.fields['public_blog'] = isPublic.toString();
 
         handlePlaceData(request);
         request.files.add(

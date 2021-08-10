@@ -30,6 +30,7 @@ class _CreateState extends State<Create> {
   String place_id;
   bool publishingPost = false;
   bool publishingBlog = false;
+  bool isPublicCheckBox = false;
 
   Future<void> getAllPlaces() async {
     var temp = await Provider.of<Place>(context, listen: false).getAllPlaces();
@@ -167,6 +168,18 @@ class _CreateState extends State<Create> {
 
   @override
   Widget build(BuildContext context) {
+    Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return Theme.of(context).primaryColor;
+      }
+      return Theme.of(context).primaryColor;
+    }
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 50),
@@ -663,6 +676,33 @@ class _CreateState extends State<Create> {
             ),
             Row(
               children: [
+                SizedBox(
+                  width: 20,
+                  child: Checkbox(
+                      checkColor: Colors.white,
+                      fillColor: MaterialStateProperty.resolveWith(getColor),
+                      value: isPublicCheckBox,
+                      onChanged: (value) {
+                        setState(() {
+                          isPublicCheckBox = value;
+                          print(isPublicCheckBox);
+                        });
+                      }),
+                ),
+                SizedBox(
+                  width: 8,
+                ),
+                Text(
+                  isPost ? 'Make Post Public' : 'Make Blog Public',
+                  style: TextStyle(fontSize: 14, letterSpacing: 1.2),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Row(
+              children: [
                 isPost
                     // Publish Post
                     ? ElevatedButton(
@@ -672,6 +712,7 @@ class _CreateState extends State<Create> {
                             publishingPost = true;
                             print('publishingPost: $publishingPost');
                           });
+
                           await getPlaceId();
                           await Provider.of<Posts>(context, listen: false)
                               .publishPost(
@@ -683,9 +724,15 @@ class _CreateState extends State<Create> {
                             _placeDescController.text,
                             tags,
                             isSwitched,
+                            isPublicCheckBox,
                           );
                           await setState(() {
                             publishingPost = false;
+                            _placeNameController.clear();
+                            _placeDescController.clear();
+                            _captionController.clear();
+                            _blogDescriptionController.clear();
+                            tags = [];
                             print('publishingPost: $publishingPost');
                           });
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -724,9 +771,15 @@ class _CreateState extends State<Create> {
                             _placeDescController.text,
                             tags,
                             isSwitched,
+                            isPublicCheckBox,
                           );
                           setState(() {
                             publishingBlog = false;
+                            _placeNameController.clear();
+                            _placeDescController.clear();
+                            _captionController.clear();
+                            _blogDescriptionController.clear();
+                            tags = [];
                             print('publishingBlog: $publishingBlog');
                           });
                           ScaffoldMessenger.of(context).showSnackBar(
