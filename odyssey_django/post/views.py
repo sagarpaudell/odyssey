@@ -62,7 +62,7 @@ class SelfPostView(APIView):
 
     def get(self, request):
         traveller = Traveller.objects.get(username = request.user)
-        posts = traveller.posts.all()
+        posts = traveller.posts.all().order_by('-post_time')
         print(posts)
         serializer = PostSerializer(posts, many=True, context={"traveller":traveller})
         return Response(serializer.data)
