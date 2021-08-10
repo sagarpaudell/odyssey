@@ -146,7 +146,7 @@ class BlogLikeView(APIView):
 #         serializer = BlogCommentSerializer(blog_comments, many = True)
 #         return Response(serializer.data)
 
-class BlogCommentDetail(APIView):               
+class BlogCommentDetail(APIView):
     def get_object(self, id):
         try:
             return BlogComment.objects.get(id=id)
@@ -161,7 +161,7 @@ class BlogCommentDetail(APIView):
     def put(self, request , id):
         blog_comment = self.get_object(id)
         current_user = Traveller.objects.get(username = request.user)
-        if (current_user == blog_comment.user):
+        if current_user == blog_comment.user:
             serializer = BlogCommentSerializer(blog_comment, data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -171,11 +171,10 @@ class BlogCommentDetail(APIView):
     def delete(self, request, id):
         blog_comment = self.get_object(id)
         current_user = Traveller.objects.get(username = request.user)
-        if (current_user == blog_comment.user):
+        if current_user == blog_comment.user:
             blog_comment.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class AddBlogComment(APIView):
@@ -258,5 +257,7 @@ def notification(blog=None, comment=None, traveller = None, remove = False):
                 noti_type = noti_type
             )
     if remove:
+        if noti_type.notification.count() > 1:
+            return notification_obj.delete()
         return notification_obj.noti_type.blog_noti.delete()
     return notification_obj
