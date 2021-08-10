@@ -68,120 +68,123 @@ class _FeedsScreenState extends State<FeedsScreen> {
       getAllTheBlogs();
     }
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            toolbarHeight: MediaQuery.of(context).size.height * 0.09,
-            brightness: Brightness.light,
-            backgroundColor: Colors.white,
-            floating: true,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          Bookmark(selectPost: isPosts ? true : false),
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.bookmark_border,
-                    color: Colors.black,
-                  ),
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.07,
-                  child: RollingSwitch.icon(
-                    onChanged: (bool state) {
-                      setState(() {
-                        isPosts = !isPosts;
-                      });
-                    },
-                    rollingInfoRight: const RollingIconInfo(
-                      backgroundColor: Color(0xFF1C2E4A),
-                      icon: Icons.post_add,
-                      text: Text(
-                        'BLOGS',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
+      body: RefreshIndicator(
+        onRefresh: isPosts ? getAllPosts : getAllTheBlogs(),
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              toolbarHeight: MediaQuery.of(context).size.height * 0.09,
+              brightness: Brightness.light,
+              backgroundColor: Colors.white,
+              floating: true,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            Bookmark(selectPost: isPosts ? true : false),
                       ),
                     ),
-                    rollingInfoLeft: const RollingIconInfo(
-                      icon: Icons.home,
-                      backgroundColor: Colors.grey,
-                      text: Text(
-                        'POSTS',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
+                    child: Icon(
+                      Icons.bookmark_border,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: RollingSwitch.icon(
+                      onChanged: (bool state) {
+                        setState(() {
+                          isPosts = !isPosts;
+                        });
+                      },
+                      rollingInfoRight: const RollingIconInfo(
+                        backgroundColor: Color(0xFF1C2E4A),
+                        icon: Icons.post_add,
+                        text: Text(
+                          'BLOGS',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      rollingInfoLeft: const RollingIconInfo(
+                        icon: Icons.home,
+                        backgroundColor: Colors.grey,
+                        text: Text(
+                          'POSTS',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () => Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ChatScreen(),
+                  GestureDetector(
+                    onTap: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ChatScreen(),
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.chat_bubble_outline,
+                      color: Colors.black,
                     ),
                   ),
-                  child: Icon(
-                    Icons.chat_bubble_outline,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
+                ],
+              ),
+              centerTitle: true,
             ),
-            centerTitle: true,
-          ),
-          isPosts
-              ? userPosts == null
-                  ? SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return FbLoading();
-                        },
-                        childCount: 1,
-                      ),
-                    )
-                  : userPosts.isEmpty
-                      ? emptySliver(true)
-                      : SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              return PostContainer(
-                                post: userPosts[index],
-                                fetchUserPosts: fetchUserPosts,
-                                authData:
-                                    Provider.of<Auth>(context, listen: false),
-                              );
-                            },
-                            childCount: userPosts.length,
-                          ),
-                        )
-              : allBlogs == null
-                  ? SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return FbLoading();
-                        },
-                        childCount: 1,
-                      ),
-                    )
-                  : allBlogs.isEmpty
-                      ? emptySliver(true)
-                      : SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              return BlogContainer(
-                                allBlogs[index],
-                              );
-                            },
-                            childCount: allBlogs.length,
-                          ),
-                        )
-        ],
+            isPosts
+                ? userPosts == null
+                    ? SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return FbLoading();
+                          },
+                          childCount: 1,
+                        ),
+                      )
+                    : userPosts.isEmpty
+                        ? emptySliver(true)
+                        : SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                return PostContainer(
+                                  post: userPosts[index],
+                                  fetchUserPosts: fetchUserPosts,
+                                  authData:
+                                      Provider.of<Auth>(context, listen: false),
+                                );
+                              },
+                              childCount: userPosts.length,
+                            ),
+                          )
+                : allBlogs == null
+                    ? SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return FbLoading();
+                          },
+                          childCount: 1,
+                        ),
+                      )
+                    : allBlogs.isEmpty
+                        ? emptySliver(true)
+                        : SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                return BlogContainer(
+                                  allBlogs[index],
+                                );
+                              },
+                              childCount: allBlogs.length,
+                            ),
+                          )
+          ],
+        ),
       ),
     );
   }
