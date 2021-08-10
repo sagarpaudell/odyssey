@@ -317,7 +317,7 @@ class _MessageState extends State<Message> {
             Provider.of<Chat>(context, listen: false).setChatMessagesEmpty();
             channel.sink.close();
             _controller.text = '';
-            Navigator.of(context).pushNamed(ChatScreen.routeName);
+            Navigator.of(context).popAndPushNamed(ChatScreen.routeName);
           },
         ),
         title: Row(

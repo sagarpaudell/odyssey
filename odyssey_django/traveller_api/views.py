@@ -50,10 +50,10 @@ class TravellerGetView(APIView):
             traveller_followers = traveller.get_followers()
             total_posts = traveller.get_posts_count()
             total_blogs = traveller.get_blogs_count()
-            blogs = traveller.get_blogs()
+            blogs = traveller.get_blogs().order_by('-date')
             blog_serializer = BlogSerializer(blogs, many =True)
             if current_user in traveller_followers:
-                posts = traveller.get_posts()
+                posts = traveller.get_posts().order_by('-post_time')
                 post_serializer = PostSerializer(
                         posts,
                         many=True,
@@ -64,7 +64,7 @@ class TravellerGetView(APIView):
                         context = {"traveller": current_user}
                         ).data
             else:
-                public_posts = traveller.get_public_posts()
+                public_posts = traveller.get_public_posts().order_by('-post_time')
                 post_serializer = PostSerializer(
                         public_posts,
                         many=True,
