@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:provider/provider.dart';
 import '../providers/notification.dart' as noti;
 import 'package:jiffy/jiffy.dart';
-
+import '../widgets/empty.dart';
 import 'package:intl/intl.dart';
 
 class Notifications extends StatefulWidget {
@@ -28,6 +28,7 @@ class _NotificationsState extends State<Notifications> {
       allNotifications =
           await Provider.of<noti.Notification>(context, listen: false)
               .getAllNotifications();
+      print(allNotifications);
     } on Exception catch (e) {
       print(e);
     }
@@ -60,106 +61,103 @@ class _NotificationsState extends State<Notifications> {
                     ? SliverList(
                         delegate: SliverChildBuilderDelegate(
                             (context, index) => LinearProgressIndicator()))
-                    :
+                    : allNotifications.isEmpty
+                        ? emptySliver(false)
+                        : SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                // switch (allNotifications[index]['noti_type']
+                                //     ['category']) {
+                                //   case 'POST':
+                                //     notiCategory = 'post';
+                                //     break;
+                                //   case 'BLOG':
+                                //     notiCategory = 'blog';
+                                //     break;
+                                //   case 'FOLLOW':
+                                //     notiCategory = 'post';
+                                //     break;
 
-                    // Padding(
-                    //   padding:
-                    //       const EdgeInsets.symmetric(horizontal: 20),
-                    //   child: Divider(
-                    //     color: Colors.black,
-                    //   ),
-                    // ), child:
-                    SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            // switch (allNotifications[index]['noti_type']
-                            //     ['category']) {
-                            //   case 'POST':
-                            //     notiCategory = 'post';
-                            //     break;
-                            //   case 'BLOG':
-                            //     notiCategory = 'blog';
-                            //     break;
-                            //   case 'FOLLOW':
-                            //     notiCategory = 'post';
-                            //     break;
-
-                            //   default:
-                            // }
-                            senderName =
-                                '${allNotifications[index]['sender']['first_name']} ${allNotifications[index]['sender']['last_name']}';
-                            return Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 14, vertical: 8),
-                                  child: CircleAvatar(
-                                      radius: 18.0,
-                                      backgroundColor: Colors.grey[200],
-                                      backgroundImage: NetworkImage(
-                                          allNotifications[index]['sender']
-                                              ['photo_main']),
-                                      onBackgroundImageError: (Object exception,
-                                          StackTrace stackTrace) {
-                                        return Image.asset(
-                                            './assets/images/guptaji.jpg');
-                                      }),
-                                ),
-                                Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.6,
-                                    child: Text(
-                                      allNotifications[index]['noti_type']
-                                                  ['category'] ==
-                                              'FOLLOW'
-                                          ? '$senderName started following  you'
-                                          : allNotifications[index]['noti_type']
+                                //   default:
+                                // }
+                                senderName =
+                                    '${allNotifications[index]['sender']['first_name']} ${allNotifications[index]['sender']['last_name']}';
+                                return Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 14, vertical: 8),
+                                      child: CircleAvatar(
+                                          radius: 18.0,
+                                          backgroundColor: Colors.grey[200],
+                                          backgroundImage: NetworkImage(
+                                              allNotifications[index]['sender']
+                                                  ['photo_main']),
+                                          onBackgroundImageError:
+                                              (Object exception,
+                                                  StackTrace stackTrace) {
+                                            return Image.asset(
+                                                './assets/images/guptaji.jpg');
+                                          }),
+                                    ),
+                                    Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.6,
+                                        child: Text(
+                                          allNotifications[index]['noti_type']
                                                       ['category'] ==
-                                                  'CHAT'
-                                              ? '$senderName messaged you '
-                                              : "$senderName  liked your ${allNotifications[index]['noti_type']['category'].toLowerCase()} ",
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w400),
-                                    )),
-                                Container(
-                                  alignment: Alignment.centerRight,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.2,
-                                  child: Jiffy(DateTime.parse(
-                                              allNotifications[index]['time']))
-                                          .fromNow()
-                                          .toString()
-                                          .contains(
-                                              RegExp(r'hours|minutes|seconds'))
-                                      ? Text(
-                                          Jiffy(DateTime.parse(
+                                                  'FOLLOW'
+                                              ? '$senderName started following  you'
+                                              : allNotifications[index]
+                                                              ['noti_type']
+                                                          ['category'] ==
+                                                      'CHAT'
+                                                  ? '$senderName messaged you '
+                                                  : "$senderName  liked your ${allNotifications[index]['noti_type']['category'].toLowerCase()} ",
+                                          style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w400),
+                                        )),
+                                    Container(
+                                      alignment: Alignment.centerRight,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.2,
+                                      child: Jiffy(DateTime.parse(
                                                   allNotifications[index]
                                                       ['time']))
-                                              .fromNow(),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.grey,
-                                            fontSize: 12,
-                                          ),
-                                        )
-                                      : Text(
-                                          DateFormat('MMM dd, yyyy').format(
-                                              DateTime.parse(
-                                                  allNotifications[index]
-                                                      ['time'])),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                ),
-                              ],
-                            );
-                          },
-                          childCount: allNotifications.length,
-                        ),
-                      ),
+                                              .fromNow()
+                                              .toString()
+                                              .contains(RegExp(
+                                                  r'hours|minutes|seconds'))
+                                          ? Text(
+                                              Jiffy(DateTime.parse(
+                                                      allNotifications[index]
+                                                          ['time']))
+                                                  .fromNow(),
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.grey,
+                                                fontSize: 12,
+                                              ),
+                                            )
+                                          : Text(
+                                              DateFormat('MMM dd, yyyy').format(
+                                                  DateTime.parse(
+                                                      allNotifications[index]
+                                                          ['time'])),
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                    ),
+                                  ],
+                                );
+                              },
+                              childCount: allNotifications.length,
+                            ),
+                          ),
           ),
         ],
       ),
