@@ -219,7 +219,7 @@ class _PostContainerState extends State<PostContainer> {
 Widget _PostHeader(Map<String, dynamic> post, String selfUserName,
     BuildContext context, Function fetchUserPosts) {
   final authData = Provider.of<Auth>(context, listen: false);
-
+  print('hi' + Jiffy(DateTime.parse(post['post_time'])).fromNow());
   return Row(
     children: [
       GestureDetector(
@@ -252,7 +252,7 @@ Widget _PostHeader(Map<String, dynamic> post, String selfUserName,
             Jiffy(DateTime.parse(post['post_time']))
                     .fromNow()
                     .toString()
-                    .contains(RegExp(r'hours|minutes|seconds'))
+                    .contains(RegExp(r'hour|minutes|seconds'))
                 ? Text(
                     Jiffy(DateTime.parse(post['post_time'])).fromNow(),
                     style: const TextStyle(
