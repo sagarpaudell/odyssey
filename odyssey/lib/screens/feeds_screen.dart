@@ -69,7 +69,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
     }
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: isPosts ? getAllPosts : getAllTheBlogs(),
+        onRefresh: isPosts ? getAllPosts : getAllTheBlogs,
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
