@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:odyssey/models/models.dart';
 import 'package:odyssey/data/data.dart';
-import 'package:odyssey/widgets/empty.dart';
+import 'package:odyssey/providers/auth.dart';
 import './bookmarks.dart';
 import './chat_screen.dart';
 import '../widgets/fb_loading.dart';
@@ -33,6 +33,12 @@ class _FeedsScreenState extends State<FeedsScreen> {
   //   Provider.of<Posts>(context, listen: false).getPosts();
   //   super.initState();
   // }
+  Future<void> getAllPosts() async {
+    var temp = await Provider.of<Posts>(context, listen: false).getPosts(false);
+    setState(() {
+      userPosts = temp;
+    });
+  }
 
   fetchUserPosts() {
     Future fbuilder;
@@ -43,13 +49,6 @@ class _FeedsScreenState extends State<FeedsScreen> {
   void initState() {
     fetchUserPosts();
     super.initState();
-  }
-
-  Future<void> getAllPosts() async {
-    var temp = await Provider.of<Posts>(context, listen: false).getPosts(false);
-    setState(() {
-      userPosts = temp;
-    });
   }
 
   Future<void> getAllTheBlogs() async {
@@ -152,6 +151,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
                           return PostContainer(
                             post: userPosts[index],
                             fetchUserPosts: fetchUserPosts,
+                            authData: Provider.of<Auth>(context, listen: false),
                           );
                         },
                         childCount: userPosts.length,
