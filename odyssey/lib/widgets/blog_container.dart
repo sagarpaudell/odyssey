@@ -111,6 +111,8 @@ class _BlogContainerState extends State<BlogContainer> {
 
 Widget _BlogInfo(Map<String, dynamic> singleBlog, String selfUserName,
     BuildContext context, Function toggleB, bool _is_bookmarked) {
+  final authData = Provider.of<Auth>(context, listen: false);
+  // print('singleBlog:$singleBlog');
   return Column(
     children: [
       SizedBox(
@@ -201,6 +203,58 @@ Widget _BlogInfo(Map<String, dynamic> singleBlog, String selfUserName,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                authData.userName == singleBlog['author']['username']
+                    ? GestureDetector(
+                        onTap: () {
+                          showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                    title: Text('Confirm?'),
+                                    content: Text(
+                                        'Are you sure you want to delete this post?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, 'Cancel'),
+                                        child: Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          Navigator.pop(context, 'OK');
+                                          await Provider.of<Blog>(context,
+                                                  listen: false)
+                                              .deleteBlog(singleBlog['id']);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  'Post Sucessfully Deleted'),
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          );
+                                          // fetchUserPosts();
+                                        },
+                                        child: Text('OK'),
+                                      ),
+                                    ],
+                                  ));
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              borderRadius: BorderRadius.circular(50)),
+                          child: const Icon(
+                            Icons.delete_outline,
+                            size: 24,
+                            color: Colors.black,
+                          ),
+                        ),
+                      )
+                    : SizedBox(),
+                SizedBox(
+                  width: 5,
+                ),
                 Container(
                   padding: EdgeInsets.all(8),
                   decoration: BoxDecoration(
@@ -244,7 +298,7 @@ Widget _BlogInfo(Map<String, dynamic> singleBlog, String selfUserName,
                     child: const Icon(
                       Icons.arrow_forward_ios_outlined,
                       size: 24,
-                      color: Colors.grey,
+                      color: Colors.black,
                     ),
                   ),
                 ),

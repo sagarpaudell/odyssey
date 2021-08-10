@@ -185,4 +185,22 @@ class Blog with ChangeNotifier {
       }
     }
   }
+
+  Future<void> deleteBlog(int blogId) async {
+    final url = 'https://travellum.herokuapp.com/blogs-api/$blogId';
+    final token = 'Bearer ' + authToken;
+    try {
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+      );
+      print(response.body);
+
+      notifyListeners();
+      print('deleteBlogStatus: ${response.statusCode}');
+    } catch (error) {
+      print(json.decode(error));
+      throw error;
+    }
+  }
 }
