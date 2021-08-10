@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'dart:convert';
 import '../models/http_exception.dart';
-import 'dart:convert';
 import 'package:provider/provider.dart';
 
 import 'package:http/http.dart' as http;
@@ -203,9 +202,9 @@ class Posts with ChangeNotifier {
     }
   }
 
-  Future<List<dynamic>> getPostsByPlace(String id) async {   
+  Future<List<dynamic>> getPostsByPlace(String id) async {
     final url = 'https://travellum.herokuapp.com/post-api/place/$id';
-    
+
     final token = 'Bearer ' + authToken;
     try {
       final userDataResponse = await http.get(
@@ -221,5 +220,26 @@ class Posts with ChangeNotifier {
     }
   }
 
-}
+  Future<void> postComment(int id, String comment) async {
+    final url = 'https://travellum.herokuapp.com/post-api/comment/$id';
 
+    final token = 'Bearer ' + authToken;
+    try {
+      print('$id $comment');
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json', 'Authorization': token},
+        body: json.encode(
+          {
+            "comment": comment,
+          },
+        ),
+      );
+      print(response.body);
+      print(response.statusCode);
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
+}

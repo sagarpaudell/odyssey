@@ -1,15 +1,25 @@
+// import 'dart:js';
+
+// import 'dart:js';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:odyssey/providers/auth.dart';
+import 'package:odyssey/providers/posts.dart';
+import 'package:provider/provider.dart';
 import '../functions/dateformatter.dart';
 
 class Comment extends StatelessWidget {
   List<dynamic> commentData;
-  Comment(this.commentData);
+  Map<String, dynamic> post;
+  Function fetchUserPosts;
+  Comment(this.commentData, this.post, this.fetchUserPosts);
 
   @override
   Widget build(BuildContext context) {
+    print('postid: ${post['id']}');
     print(commentData);
     return Scaffold(
       appBar: AppBar(
@@ -40,9 +50,11 @@ class Comment extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: commentData.isEmpty ? NoComments() : Comments(commentData),
+              child: commentData.isEmpty
+                  ? NoComments()
+                  : Comments(commentData, context),
             ),
-            PostComment(),
+            PostComment(context, post['id'], fetchUserPosts),
           ],
         ),
       ),
@@ -52,10 +64,14 @@ class Comment extends StatelessWidget {
 
 class Comments extends StatelessWidget {
   List<dynamic> commentData;
-  Comments(this.commentData);
+  BuildContext context;
+  Comments(this.commentData, this.context);
 
   @override
   Widget build(BuildContext context) {
+    print(commentData);
+    final authData = Provider.of<Auth>(context, listen: false);
+
     return ListView.builder(
         itemBuilder: (ctx, index) => Column(
               children: [
@@ -63,14 +79,27 @@ class Comments extends StatelessWidget {
                   height: 12,
                 ),
                 FocusedMenuHolder(
-                  onPressed: () {},
-                  menuItems: [
-                    FocusedMenuItem(
-                      title: Text('Delete Comment'),
-                      trailingIcon: Icon(Icons.delete),
-                      onPressed: () {},
-                    ),
-                  ],
+                  onPressed: () {
+                    // print(authData.userId ==
+                    //     commentData[index][authData.userName]['id']);
+                    print(authData.userName);
+                  },
+                  menuItems: authData.userId ==
+                          commentData[index]['traveller']['id'].toString()
+                      ? [
+                          FocusedMenuItem(
+                            title: Text('Delete Comment'),
+                            trailingIcon: Icon(Icons.delete),
+                            onPressed: () {},
+                          ),
+                          // FocusedMenuItem(
+                          //   backgroundColor: Colors.white.withOpacity(0),
+                          //   title: Text(''),
+                          //   onPressed: () {},
+                          //   // trailingIcon: Icon(Icons.delete),
+                          // ),
+                        ]
+                      : [],
                   child: Container(
                     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
@@ -137,30 +166,36 @@ class NoComments extends StatelessWidget {
   }
 }
 
-class PostComment extends StatelessWidget {
-  const PostComment({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Write a comment',
-              ),
+Widget PostComment(
+  BuildContext context,
+  int post_id,
+  Function fetchUserPosts,
+) {
+  final _commentController = TextEditingController();
+  print(post_id);
+  return Row(
+    children: [
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: TextField(
+            controller: _commentController,
+            decoration: InputDecoration(
+              hintText: 'Write a comment',
             ),
           ),
         ),
-        IconButton(
-          icon: Icon(Icons.send),
-          onPressed: null,
-        )
-      ],
-    );
-  }
+      ),
+      IconButton(
+        icon: Icon(Icons.send),
+        onPressed: () async {
+          Navigator.pop(context);
+          await Provider.of<Posts>(context, listen: false)
+              .postComment(post_id, _commentController.text);
+          _commentController.clear();
+          fetchUserPosts();
+        },
+      )
+    ],
+  );
 }

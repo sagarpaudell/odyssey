@@ -10,7 +10,6 @@ import './screens/screens.dart';
 import './screens/bookmarks.dart';
 import './screens/splash_screen.dart';
 import './providers/place.dart';
-
 import './providers/blog.dart';
 import './providers/search.dart';
 import './screens/session_expired_screen.dart';

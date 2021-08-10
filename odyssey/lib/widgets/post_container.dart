@@ -31,13 +31,19 @@ class PostContainer extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PostContainerState createState() => _PostContainerState();
+  _PostContainerState createState() => _PostContainerState(
+        fetchUserPosts: fetchUserPosts,
+      );
 }
 
 class _PostContainerState extends State<PostContainer> {
   bool _is_bookmarked = false;
   int _like_counter;
   bool is_liked;
+
+  _PostContainerState({
+    Function fetchUserPosts,
+  });
 
   // void initState() {
   //   super.initState();
@@ -67,8 +73,8 @@ class _PostContainerState extends State<PostContainer> {
         // .contains('ketone(3) ')
         : false;
     // print(['ketone(3)', 'sagar(4)']);
-    print('flag:$flag');
-    print(widget.post['like_users']);
+    // print('flag:$flag');
+    // print(widget.post['like_users']);
     // print('${widget.authData.userName}(${widget.authData.userId})');
     if (flag) {
       setState(() async {
@@ -190,6 +196,7 @@ class _PostContainerState extends State<PostContainer> {
                 _is_bookmarked,
                 _like_counter,
                 is_liked,
+                widget.fetchUserPosts,
               ),
             ),
           ],
@@ -306,6 +313,7 @@ Widget _PostButtons(
   bool _is_bookmarked,
   int _like_counter,
   bool is_liked,
+  Function fetchUserPosts,
 ) {
   // print('flag: $flag');
   // print(post);
@@ -355,7 +363,7 @@ Widget _PostButtons(
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => Comment(post['comments']),
+                builder: (_) => Comment(post['comments'], post, fetchUserPosts),
               ),
             ),
             child: Row(
