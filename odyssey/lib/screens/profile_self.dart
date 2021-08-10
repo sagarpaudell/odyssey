@@ -218,7 +218,8 @@ class _SelfProfileState extends State<SelfProfile> {
                               delegate: SliverChildBuilderDelegate(
                                   (BuildContext context, int index) {
                                 return PostContainer(
-                                    post: selfProfileData['posts'][index]);
+                                  post: selfProfileData['posts'][index],
+                                );
                               }, childCount: selfProfileData['posts'].length),
                             ),
                           ]),
