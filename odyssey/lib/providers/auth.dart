@@ -118,7 +118,7 @@ class Auth with ChangeNotifier {
     }
   }
 
-  Future<void> signup(
+  Future<Map<String, dynamic>> signup(
     String email,
     String userName,
     String password,
@@ -142,6 +142,7 @@ class Auth with ChangeNotifier {
           },
         ),
       );
+      return json.decode(response.body);
     } catch (error) {
       throw error;
     }
