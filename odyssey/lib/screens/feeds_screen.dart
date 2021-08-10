@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:odyssey/models/models.dart';
 import 'package:odyssey/data/data.dart';
-import 'package:odyssey/widgets/empty.dart';
+import 'package:odyssey/providers/auth.dart';
 import './bookmarks.dart';
 import './chat_screen.dart';
 import '../widgets/fb_loading.dart';
@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../providers/posts.dart';
 import '../providers/blog.dart' as blogss;
 import 'package:rolling_switch/rolling_switch.dart';
+import '../widgets/empty.dart';
 
 // import '../themes/style.dart';
 // import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -33,6 +34,12 @@ class _FeedsScreenState extends State<FeedsScreen> {
   //   Provider.of<Posts>(context, listen: false).getPosts();
   //   super.initState();
   // }
+  Future<void> getAllPosts() async {
+    var temp = await Provider.of<Posts>(context, listen: false).getPosts(false);
+    setState(() {
+      userPosts = temp;
+    });
+  }
 
   fetchUserPosts() {
     Future fbuilder;
@@ -43,13 +50,6 @@ class _FeedsScreenState extends State<FeedsScreen> {
   void initState() {
     fetchUserPosts();
     super.initState();
-  }
-
-  Future<void> getAllPosts() async {
-    var temp = await Provider.of<Posts>(context, listen: false).getPosts(false);
-    setState(() {
-      userPosts = temp;
-    });
   }
 
   Future<void> getAllTheBlogs() async {
@@ -144,12 +144,15 @@ class _FeedsScreenState extends State<FeedsScreen> {
                         childCount: 1,
                       ),
                     )
-                  : SliverList(
+                  : userPosts.isEmpty
+                  ? emptySliver(true)
+                  :SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           return PostContainer(
                             post: userPosts[index],
                             fetchUserPosts: fetchUserPosts,
+                            authData: Provider.of<Auth>(context, listen: false),
                           );
                         },
                         childCount: userPosts.length,
@@ -164,6 +167,8 @@ class _FeedsScreenState extends State<FeedsScreen> {
                         childCount: 1,
                       ),
                     )
+                  :allBlogs.isEmpty
+                  ? emptySliver(true)
                   : SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {

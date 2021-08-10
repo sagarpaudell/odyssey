@@ -20,21 +20,30 @@ class PostContainer extends StatefulWidget {
   final Map<String, dynamic> post;
   final Function fun;
   final Function fetchUserPosts;
+  final authData;
+
   PostContainer({
     Key key,
     @required this.post,
     this.fun,
     this.fetchUserPosts,
+    this.authData,
   }) : super(key: key);
 
   @override
-  _PostContainerState createState() => _PostContainerState();
+  _PostContainerState createState() => _PostContainerState(
+        fetchUserPosts: fetchUserPosts,
+      );
 }
 
 class _PostContainerState extends State<PostContainer> {
   bool _is_bookmarked = false;
   int _like_counter;
   bool is_liked;
+
+  _PostContainerState({
+    Function fetchUserPosts,
+  });
 
   // void initState() {
   //   super.initState();
@@ -51,28 +60,40 @@ class _PostContainerState extends State<PostContainer> {
   }
 
   void toggleLikes() async {
-    await Provider.of<Posts>(context, listen: false)
-        .toggleLike(widget.post['id']);
-    await widget.fetchUserPosts();
-    print(widget.post);
-    print(widget.post['like_users']);
+    // await Provider.of<Posts>(context, listen: false).toggleLike(widget.post['id']);
+    // await widget.fetchUserPosts();
+    // print(widget.post);
+    // print(widget.post['like_users']);
 
-    final authData = Provider.of<Auth>(context, listen: false);
-    bool flag = await (widget.post['like_users'].toList().length != 0)
+    bool flag = await (widget.post['like_users'].length != 0)
         ? widget.post['like_users']
-            .toList()
+
             // .contains('id=${authData.userId}, ${authData.userName}')
-            .contains('${authData.userName}(${authData.userId})')
+            .contains('${widget.authData.userName}(${widget.authData.userId})')
+        // .contains('ketone(3) ')
         : false;
+    // print(['ketone(3)', 'sagar(4)']);
+    // print('flag:$flag');
+    // print(widget.post['like_users']);
+    // print('${widget.authData.userName}(${widget.authData.userId})');
     if (flag) {
-      setState(() {
+      setState(() async {
         is_liked = false;
+        print('is_liked: $is_liked');
         _like_counter -= 1;
+        await Provider.of<Posts>(context, listen: false)
+            .toggleLike(widget.post['id']);
+        widget.fetchUserPosts();
       });
     } else {
-      setState(() {
+      setState(() async {
         is_liked = true;
+        print('is_liked: $is_liked');
+
         _like_counter += 1;
+        await Provider.of<Posts>(context, listen: false)
+            .toggleLike(widget.post['id']);
+        widget.fetchUserPosts();
       });
     }
     // await print(authData.userName);
@@ -98,9 +119,8 @@ class _PostContainerState extends State<PostContainer> {
     // _like_counter = widget.post['like_users'].toList().length ~/ 2;
     _like_counter = widget.post['like_users'].toList().length;
 
-    is_liked = (widget.post['like_users'].toList().length != 0)
+    is_liked = (widget.post['like_users'].length != 0)
         ? widget.post['like_users']
-            .toList()
             .contains('${authData.userName}(${authData.userId})')
         : false;
 
@@ -176,6 +196,7 @@ class _PostContainerState extends State<PostContainer> {
                 _is_bookmarked,
                 _like_counter,
                 is_liked,
+                widget.fetchUserPosts,
               ),
             ),
           ],
@@ -292,6 +313,7 @@ Widget _PostButtons(
   bool _is_bookmarked,
   int _like_counter,
   bool is_liked,
+  Function fetchUserPosts,
 ) {
   // print('flag: $flag');
   // print(post);
@@ -341,7 +363,7 @@ Widget _PostButtons(
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => Comment(post['comments']),
+                builder: (_) => Comment(post['comments'], post, fetchUserPosts),
               ),
             ),
             child: Row(

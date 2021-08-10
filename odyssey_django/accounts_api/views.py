@@ -29,11 +29,21 @@ class UserRecordView(APIView):
         request.data["username"] = request.data["username"].lower()
         request.data["first_name"] = request.data["first_name"].title()
         request.data["last_name"] = request.data["last_name"].title()
+        email = request.data["email"]
+        user = User.objects.filter(email = email)
+        if user:
+            return Response(
+                    {
+                        "email": ["A user with that email already exists."]
+                    }
+                )
         serializer = UserSerializer(data = request.data)
         if serializer.is_valid(raise_exception=ValueError):
             serializer.create(validated_data=request.data)
+            update_data = serializer.data
+            update_data.update({"success":True})
             return Response(
-                    serializer.data,
+                    update_data,
                     status=status.HTTP_201_CREATED,
                 )
         return Response(
