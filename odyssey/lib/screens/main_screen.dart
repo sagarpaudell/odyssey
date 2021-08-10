@@ -85,8 +85,8 @@ class _MainScreenState extends State<MainScreen> {
             icons: newNoti.isEmpty ? _icons : _iconsN,
             selectedIndex: _selectedIndex,
             onTap: (index) async {
-              await checkNoti();
               setState(() => _selectedIndex = index);
+              await checkNoti();
             },
           ),
         ),
