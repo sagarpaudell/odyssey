@@ -5,7 +5,6 @@ import './providers/profile.dart';
 import './providers/posts.dart';
 import 'package:odyssey/widgets/signup_verification.dart';
 import './screens/profile_self.dart';
-import './pages/edit_profile_page.dart';
 import './screens/screens.dart';
 import './screens/bookmarks.dart';
 import './screens/splash_screen.dart';
@@ -155,7 +154,9 @@ class _MyAppState extends State<MyApp> {
 
           home: auth.isAuth
               ? auth.email_verifed
-                  ? MainScreen()
+                  ? auth.firstLogin
+                      ? EditProfileScreen()
+                      : MainScreen()
                   : SignupVerification()
               : FutureBuilder(
                   future: Future.wait([
