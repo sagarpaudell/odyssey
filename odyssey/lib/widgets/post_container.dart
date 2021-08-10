@@ -285,9 +285,36 @@ Widget _PostHeader(Map<String, dynamic> post, String selfUserName,
                   title: Text('Delete Post'),
                   trailingIcon: Icon(Icons.delete),
                   onPressed: () {
-                    Provider.of<Posts>(context, listen: false)
-                        .deletePost(post['id']);
-                    fetchUserPosts();
+                    showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              title: Text('Confirm?'),
+                              content: Text(
+                                  'Are you sure you want to delete this post?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, 'Cancel'),
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context, 'OK');
+                                    Provider.of<Posts>(context, listen: false)
+                                        .deletePost(post['id']);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content:
+                                            Text('Post Sucessfully Deleted'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                    fetchUserPosts();
+                                  },
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            ));
                   },
                 ),
               ],
