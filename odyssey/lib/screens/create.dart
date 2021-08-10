@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:odyssey/providers/blog.dart';
 import 'package:odyssey/providers/place.dart';
 import 'package:odyssey/providers/posts.dart';
 import 'package:odyssey/providers/profile.dart';
@@ -27,6 +28,8 @@ class _CreateState extends State<Create> {
   List places = [];
   List<String> placesList = [];
   String place_id;
+  bool publishingPost = false;
+  bool publishingBlog = false;
 
   Future<void> getAllPlaces() async {
     var temp = await Provider.of<Place>(context, listen: false).getAllPlaces();
@@ -77,6 +80,7 @@ class _CreateState extends State<Create> {
   final _placeNameController = TextEditingController();
   final _placeDescController = TextEditingController();
   final _captionController = TextEditingController();
+  final _blogDescriptionController = TextEditingController();
   Future<void> _pickImage(ImageSource source) async {
     final selected = await ImagePicker().pickImage(source: source);
     final selection = File(selected.path);
@@ -250,6 +254,7 @@ class _CreateState extends State<Create> {
                 : SizedBox(),
             !isPost
                 ? TextField(
+                    controller: _blogDescriptionController,
                     maxLines: 15,
                     //enable multiline keyboard
                     // keyboardType: TextInputType.multiline,
@@ -260,7 +265,7 @@ class _CreateState extends State<Create> {
                     // },
                     maxLength: 2000,
                     decoration: InputDecoration(
-                      labelText: 'DESCRITPION',
+                      labelText: 'DESCRIPTION',
                       alignLabelWithHint: true,
                       labelStyle: TextStyle(
                         letterSpacing: 1.5,
@@ -661,10 +666,14 @@ class _CreateState extends State<Create> {
                 isPost
                     // Publish Post
                     ? ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           // print('caption: ${_captionController.text}');
-                          getPlaceId();
-                          Provider.of<Posts>(context, listen: false)
+                          setState(() {
+                            publishingPost = true;
+                            print('publishingPost: $publishingPost');
+                          });
+                          await getPlaceId();
+                          await Provider.of<Posts>(context, listen: false)
                               .publishPost(
                             _captionController.text,
                             _imageFile,
@@ -675,11 +684,66 @@ class _CreateState extends State<Create> {
                             tags,
                             isSwitched,
                           );
+                          await setState(() {
+                            publishingPost = false;
+                            print('publishingPost: $publishingPost');
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Post Published'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                          print('done');
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            setState(() {});
+                          });
                         },
-                        child: Text('Publish'),
+                        child: publishingPost
+                            ? Text('Posting . . .')
+                            : Text('Publish'),
                       )
                     // Publish Blog
-                    : ElevatedButton(onPressed: () {}, child: Text('Publish')),
+                    : ElevatedButton(
+                        onPressed: () async {
+                          getPlaceId();
+                          setState(() {
+                            publishingBlog = true;
+                            print('publishinBlog: $publishingBlog');
+                          });
+                          print('publishingBlog: $publishingBlog');
+
+                          await Provider.of<Blog>(context, listen: false)
+                              .publishBlog(
+                            _captionController.text,
+                            _blogDescriptionController.text,
+                            _imageFile,
+                            place_id,
+                            _placeImageFile,
+                            _placeNameController.text,
+                            _placeDescController.text,
+                            tags,
+                            isSwitched,
+                          );
+                          setState(() {
+                            publishingBlog = false;
+                            print('publishingBlog: $publishingBlog');
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Blog Published'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                          print('done');
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            setState(() {});
+                          });
+                        },
+                        child: publishingBlog
+                            ? Text('Posting . . .')
+                            : Text('Publish'),
+                      ),
               ],
             )
           ],

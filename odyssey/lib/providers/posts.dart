@@ -147,7 +147,7 @@ class Posts with ChangeNotifier {
       try {
         final request = new http.MultipartRequest('POST', Uri.parse(url));
         request.fields['caption'] = caption;
-        // handlePlaceData(request);
+        handlePlaceData(request);
         request.files.add(
           http.MultipartFile.fromBytes(
             'photo',
@@ -159,7 +159,7 @@ class Posts with ChangeNotifier {
 
         var response = await request.send();
 
-        // print('Publish post Status Code: $response.statusCode');
+        print('Publish post Status Code: ${response.statusCode}');
         notifyListeners();
       } catch (error) {
         print(error);
