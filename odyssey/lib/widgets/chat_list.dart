@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:odyssey/widgets/message.dart';
 import 'package:provider/provider.dart';
 import '../providers/chat.dart';
@@ -203,18 +204,57 @@ class _ChatListState extends State<ChatList> {
                                               padding:
                                                   EdgeInsets.only(right: 0),
                                               width: deviceSize.width * 0.18,
-                                              child: Text(
-                                                  DateFormat.yMd().format(
-                                                      DateTime.parse(
-                                                          chatOverview[index][
-                                                              'message_time'])),
-                                                  //11:49 a.m
+                                              child:
+                                                  // Jiffy(DateTime.parse(
+                                                  //             chatOverview[index]
+                                                  //                 ['message_time']))
+                                                  //         .fromNow()
+                                                  //         .toString()
+                                                  //         .contains(RegExp(
+                                                  //             r'hours|minutes|seconds'))
+                                                  //     ? Text(
+                                                  //         Jiffy(DateTime.parse(
+                                                  //                 chatOverview[
+                                                  //                         index][
+                                                  //                     'message_time']))
+                                                  //             .fromNow(),
+                                                  //         style: const TextStyle(
+                                                  //           fontWeight:
+                                                  //               FontWeight.w600,
+                                                  //           fontSize: 16,
+                                                  //         ),
+                                                  //       )
+                                                  //     : Text(
+                                                  //         DateFormat('MMM dd, yyyy')
+                                                  //             .format(DateTime.parse(
+                                                  //                 chatOverview[
+                                                  //                         index][
+                                                  //                     'message_time'])),
+                                                  //         style: const TextStyle(
+                                                  //           fontWeight:
+                                                  //               FontWeight.w600,
+                                                  //           fontSize: 16,
+                                                  //         ),
+                                                  //       ),
 
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                  )),
+                                                  Text(
+                                                      DateFormat.MMMd()
+                                                          .format(
+                                                            DateTime.parse(
+                                                              chatOverview[
+                                                                      index][
+                                                                  'message_time'],
+                                                            ),
+                                                          )
+                                                          .toString(),
+
+                                                      //11:49 a.m
+
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                      )),
                                             ),
                                           ],
                                         ),

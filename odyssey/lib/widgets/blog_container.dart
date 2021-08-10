@@ -169,7 +169,7 @@ Widget _BlogInfo(Map<String, dynamic> singleBlog, String selfUserName,
                       Jiffy(DateTime.parse(singleBlog['date'])).fromNow(),
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                        fontSize: 16,
                       ),
                     )
                   : Text(
@@ -177,9 +177,17 @@ Widget _BlogInfo(Map<String, dynamic> singleBlog, String selfUserName,
                           .format(DateTime.parse(singleBlog['date'])),
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                        fontSize: 16,
                       ),
                     ),
+              // Text(
+              //   DateFormat('MMM dd, yyyy')
+              //       .format(DateTime.parse(singleBlog['date'])),
+              //   style: const TextStyle(
+              //     fontWeight: FontWeight.w600,
+              //     fontSize: 14,
+              //   ),
+              // ),
               // Text(
               //   '{singleBlog.timeAgo}',
               //   style: const TextStyle(

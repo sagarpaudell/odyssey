@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:odyssey/widgets/profile_avatar.dart';
 import 'package:provider/provider.dart';
 import '../providers/blog.dart';
@@ -51,7 +52,8 @@ class _BlogScreenState extends State<BlogScreen> {
                               Row(
                                 children: [
                                   Text(
-                                    "Odyssey • July 20, 2021",
+                                    DateFormat('MMM dd, yyyy').format(
+                                        DateTime.parse(singleBlogData['date'])),
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                       color: Colors.black54,
