@@ -92,7 +92,7 @@ class Auth with ChangeNotifier {
 
       fullName = '${userData['first_name ']} ${userData['last_name ']}';
       userId = userData['id'].toString();
-
+      bool _email_verifed;
       const verifyUrl =
           'https://travellum.herokuapp.com/accounts-api/checkverified';
       try {
@@ -103,18 +103,22 @@ class Auth with ChangeNotifier {
             'Authorization': tokenHeader
           },
         );
-        email_verifed = json.decode(verifyResponse.body)['verified_email'];
+        _email_verifed = json.decode(verifyResponse.body)['verified_email'];
         print('the email is $email_verifed');
       } catch (error) {
         //throw error;
         print('here is error');
       }
-      if (["", null, false, 0].contains(userData["first_name"])) {
-        print('firstlogin');
-        firstLogin = true;
-      }
+      print('token is $isAuth');
       token = tempToken;
-      print(isAuth);
+      email_verifed = _email_verifed;
+      print('the email is $email_verifed');
+      if (["", null, false, 0].contains(userData["first_name"])) {
+        firstLogin = true;
+        print('firstlogin');
+      }
+      firstLogin = false;
+      print('token is $isAuth');
       notifyListeners();
     } catch (error) {
       throw error;
@@ -204,9 +208,9 @@ class Auth with ChangeNotifier {
       if (respondeDatam.containsKey('code')) {
         return false;
       }
-      token = respondeDatam['access'];
-      print('access $token');
-      await authenticate(token);
+      String _token = respondeDatam['access'];
+      print('access $_token');
+      await authenticate(_token);
       return true;
     } catch (e) {
       throw e;
